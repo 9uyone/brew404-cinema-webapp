@@ -14,7 +14,6 @@ namespace DataAccess.Configurations
 		public void Configure(EntityTypeBuilder<Movie> builder)
 		{
 			builder.HasKey(m => m.Id);
-
 		}
 	}
 }

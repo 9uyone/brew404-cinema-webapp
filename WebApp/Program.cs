@@ -4,20 +4,21 @@ using BusinessLogic;
 using DataAccess;
 using DotNetEnv;
 using DataAccess.Context;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-//string connectionString = builder.Configuration.GetConnectionString("LocalDb");
-//string connectionString = "Env.GetString("DB_CONNECTION")";
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+//string connectionString = Env.GetString("DB_CONNECTION");
 
 builder.Services.AddControllersWithViews();
 
 
-/*builder.Services.AddDbContext<CinemaDbContext>(options =>
-	{
-		options.UseMySql
-
-	});*/
+builder.Services.AddDbContext<CinemaDbContext>(options =>
+		options.UseMySql(connectionString
+		, new MySqlServerVersion(new Version(10, 3, 39)))
+	);
 
 
 builder.Services.AddAutoMapper();
