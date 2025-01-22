@@ -7,19 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\**" />
+    <Compile Remove="Entities\**" />
+    <Compile Remove="Repositories\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="Entities\**" />
+    <EmbeddedResource Remove="Repositories\**" />
+    <None Remove="Data\**" />
+    <None Remove="Entities\**" />
+    <None Remove="Repositories\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Configurations\" />
-    <Folder Include="Data\" />
-    <Folder Include="Entities\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>

@@ -7,19 +7,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DTOs\**" />
+    <Compile Remove="Interfaces\**" />
+    <Compile Remove="Services\**" />
+    <Compile Remove="Validators\**" />
+    <EmbeddedResource Remove="DTOs\**" />
+    <EmbeddedResource Remove="Interfaces\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <EmbeddedResource Remove="Validators\**" />
+    <None Remove="DTOs\**" />
+    <None Remove="Interfaces\**" />
+    <None Remove="Services\**" />
+    <None Remove="Validators\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure\DataAccess.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DTOs\" />
-    <Folder Include="Interfaces\Services\" />
-    <Folder Include="Services\" />
-    <Folder Include="Validators\" />
   </ItemGroup>
 
 </Project>
