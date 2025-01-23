@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
 using System.Diagnostics;
+using BusinessLogic.TMDbServise;
+using BusinessLogic.TMDbService;
 
 namespace WebApp.Controllers
 {
@@ -16,8 +18,11 @@ namespace WebApp.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> Privacy()
         {
+			TMDbApiService service = new TMDbApiService();
+			var json = await service.GetAsync(TmdbEndpoints.MovieDetails(27205));
+			Console.WriteLine(json);
             return View();
         }
 

@@ -1,16 +1,14 @@
 using Microsoft.EntityFrameworkCore;
-//using WebApp.Services;
 using BusinessLogic;
-using DataAccess;
-using DotNetEnv;
 using DataAccess.Context;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using DotNetEnv;
+using BusinessLogic.Property;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
-string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-//string connectionString = Env.GetString("DB_CONNECTION");
+//string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+Env.Load(EnvProperty.EnvFullPath); 
+string connectionString = EnvProperty.DbConnection;
 
 builder.Services.AddControllersWithViews();
 
