@@ -1,4 +1,5 @@
-﻿namespace DataAccess.Interfaces
+﻿
+namespace DataAccess.Interfaces
 {
 	public interface IEntity
 	{

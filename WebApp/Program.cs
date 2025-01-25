@@ -1,46 +1,35 @@
 using Microsoft.EntityFrameworkCore;
-//using WebApp.Services;
 using BusinessLogic;
-using DataAccess;
+using DataAccess.Context;
 using DotNetEnv;
+using BusinessLogic.Property;
+
 
 var builder = WebApplication.CreateBuilder(args);
+//string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+Env.Load(EnvProperty.EnvFullPath); 
+string connectionString = EnvProperty.DbConnection;
 
-//string connectionString = builder.Configuration.GetConnectionString("LocalDb");
-//string connectionString = "Env.GetString("DB_CONNECTION")";
-
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-//builder.Services.AddDbContext(connectionString);
 
-// repository 
-//builder.Services.AddRepository();
+builder.Services.AddDbContext<CinemaDbContext>(options =>
+		options.UseMySql(connectionString
+		, new MySqlServerVersion(new Version(10, 3, 39)))
+	);
 
-// services
 
-
-// auto mapper
 builder.Services.AddAutoMapper();
 
-// fluent validators
 builder.Services.AddValidators();
 
-// session configurations
 builder.Services.AddDistributedMemoryCache();
 
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromSeconds(10);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
 
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -53,9 +42,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
-
-app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
