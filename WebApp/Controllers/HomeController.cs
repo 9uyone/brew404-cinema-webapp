@@ -1,30 +1,43 @@
-﻿//using BusinessLogic.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
 using System.Diagnostics;
 using BusinessLogic.TMDbServise;
+using BusinessLogic.DTOs;
 using BusinessLogic.TMDbService;
+using System;
 
 namespace WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        public HomeController()
+		TMDbApiService service = new TMDbApiService();
+
+		public HomeController()
         {
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
+			return View(await service.GetMovies("venom"));
+		}
 
         public async Task<IActionResult> Privacy()
         {
-			TMDbApiService service = new TMDbApiService();
-			var json = await service.GetAsync(TmdbEndpoints.MovieDetails(27205));
-			Console.WriteLine(json);
-            return View();
+			List<CrewMemberDTO>? res = await service.GetCrew(335983);
+			foreach(var el in res)
+				Console.WriteLine(el.Name);
+			return View();
         }
+
+		[HttpGet]
+		public async Task<IActionResult> Details(int id)
+		{
+			MovieDTO? movie = await service.GetMovieDetails(id);
+			if(movie != null)
+				movie.Crew = await service.GetCrew(movie.Id);
+			return View(movie);
+		}
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

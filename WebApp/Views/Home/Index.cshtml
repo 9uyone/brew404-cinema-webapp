@@ -1,1 +1,118 @@
-﻿<h1>Main page</h1>
+﻿@using System.Collections.Generic;
+@using BusinessLogic.DTOs;
+@model List<MovieDTO>
+
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КіноСайт</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- Banner Section -->
+    <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @foreach (var (movie, index) in Model.Select((movie, index) => (movie, index)))
+            {
+                var str = "https://image.tmdb.org/t/p/w1280" + movie.BackgroundUrl;
+                var isActiveClass = index == 0 ? "active" : "";
+                <div class="carousel-item @isActiveClass">
+                    <img src="@str" class="d-block w-100 banner-img" alt="@movie.Title">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h3>@movie.Title</h3>
+                        <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <!-- Premieres Section -->
+    <div class="container mt-5">
+        <h2>Найсвіжіші прем'єри</h2>
+        <div class="row d-flex justify-content-start">
+            @for (int i = 0; i < 3; i++)
+            {
+                var movie = Model[i];
+                var str = "https://image.tmdb.org/t/p/w500" + movie.ImageUrl;
+                <div class="col-md-4 col-sm-6 col-12 mb-3">
+                    <div class="card">
+                        <img src="@str" class="card-img-top fixed-size" alt="@movie.Title">
+                        <div class="card-body">
+                            <h5 class="card-title" style="color: white">@movie.Title</h5>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Увійти</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email адреса</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Увійти</button>
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#registerModal">Реєстрація</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal fade" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Реєстрація</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label">Email адреса</label>
+                            <input type="email" class="form-control" id="registerEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">Пароль</label>
+                            <input type="password" class="form-control" id="registerPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Зареєструватися</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -7,17 +7,16 @@ using BusinessLogic.Property;
 
 var builder = WebApplication.CreateBuilder(args);
 //string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-Env.Load(EnvProperty.EnvFullPath); 
-string connectionString = EnvProperty.DbConnection;
+//Env.Load(EnvProperty.EnvFullPath);
+//string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddControllersWithViews();
 
 
-builder.Services.AddDbContext<CinemaDbContext>(options =>
+/*builder.Services.AddDbContext<CinemaDbContext>(options =>
 		options.UseMySql(connectionString
 		, new MySqlServerVersion(new Version(10, 3, 39)))
-	);
-
+	);*/
 
 builder.Services.AddAutoMapper();
 
@@ -46,5 +45,10 @@ app.UseRouting();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+	name: "admin",
+	pattern: "admin/{controller=Admin}/{action=Index}/{id?}");
+
 
 app.Run();

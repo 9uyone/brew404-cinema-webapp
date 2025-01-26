@@ -12,13 +12,24 @@ namespace DataAccess.Configurations
 
 			builder.Property(m => m.Title)
 				.IsRequired()
-				.HasMaxLength(40);
+				.HasMaxLength(255);
 
 			builder.Property(m => m.Overview)
+				.HasMaxLength(2000);
+
+			builder.Property(m => m.ReleaseDate)
 				.IsRequired()
-				.HasMaxLength(200);
+				.HasColumnType("datetime");
 
+			builder.HasMany(m => m.Genres)
+				.WithMany(g => g.Movies)
+				.UsingEntity(j => j
+					.ToTable("MovieGenres"));
 
+			builder.HasMany(m => m.Credits)
+				.WithMany(c => c.Movies)
+				.UsingEntity(j => j
+					.ToTable("MoviesCredits"));
 		}
 	}
 }

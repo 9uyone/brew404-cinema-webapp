@@ -1,0 +1,70 @@
+﻿@using BusinessLogic.DTOs;
+@model MovieDTO
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <h2>Інформація про фільм: @Model.Title</h2>
+
+    <ul class="list-group">
+        <li class="list-group-item">
+            <input type="checkbox" disabled @(string.IsNullOrEmpty(Model.Title) ? "" : "checked") />
+            <strong>Назва:</strong> @Model.Title
+        </li>
+        <li class="list-group-item">
+            <input type="checkbox" disabled @(string.IsNullOrEmpty(Model.Overview) ? "" : "checked") />
+            <strong>Опис:</strong> @Model.Overview
+        </li>
+        <li class="list-group-item">
+            <input type="checkbox" disabled @(string.IsNullOrEmpty(Model.ReleaseDate?.ToString()) ? "" : "checked") />
+            <strong>Дата релізу:</strong> @(Model.ReleaseDate)
+        </li>
+        <li class="list-group-item">
+            <input type="checkbox" disabled @(Model.Genres != null && Model.Genres.Any() ? "checked" : "") />
+            @{
+                var genresStr = "";
+                if(Model.Genres != null)
+                {
+                    foreach (var genre in Model.Genres)
+                        genresStr += genre.Name + " , ";
+                }
+            }
+            <strong>жанри:</strong> @(genresStr)
+        </li>
+        <li class="list-group-item">
+            <input type="checkbox" disabled @(string.IsNullOrEmpty(Model.ImageUrl) ? "" : "checked") />
+            @{
+                var posterUrl = "https://image.tmdb.org/t/p/w500" + Model.ImageUrl;
+            }
+            <strong>Постер:</strong>
+            <a href="@posterUrl">@posterUrl</a>
+        </li>
+        <li class="list-group-item">
+            <input type="checkbox" disabled @(string.IsNullOrEmpty(Model.BackgroundUrl) ? "" : "checked") />
+            @{
+                var backGroudUrl = "https://image.tmdb.org/t/p/w1280" + Model.BackgroundUrl;
+            }
+            <strong>Задній фон:</strong>
+            <a href="@backGroudUrl">@backGroudUrl</a>
+        </li>
+        <li class="list-group-item">
+            <input type="checkbox" disabled @(string.IsNullOrEmpty(Model.TrailerUrl) ? "" : "checked") />
+            <strong>Трейлер:</strong>
+            <a href="@Model.TrailerUrl">@Model.TrailerUrl</a>
+        </li>
+        <li class="list-group-item">
+            <input type="checkbox" disabled @(Model.Crew != null && Model.Crew.Any() ? "checked" : "") />
+            <strong>Команда:</strong>
+            @if (Model.Crew != null)
+            {
+                var result = "";
+                foreach (var member in Model.Crew)
+                {
+                    result += member.Name + " , ";
+                }
+                <p>@result</p>
+            }
+        </li>
+    </ul>
+</div>
