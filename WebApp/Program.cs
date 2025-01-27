@@ -1,8 +1,4 @@
-using Microsoft.EntityFrameworkCore;
 using BusinessLogic;
-using DataAccess.Context;
-using DotNetEnv;
-using BusinessLogic.Property;
 
 
 var builder = WebApplication.CreateBuilder(args);

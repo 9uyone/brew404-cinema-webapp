@@ -5,23 +5,27 @@
 }
 
 <div class="container mt-4">
-    <h2>Інформація про фільм: @Model.Title</h2>
+    <h2>Інформація про фільм "@Model.Title"</h2>
 
     <ul class="list-group">
         <li class="list-group-item">
-            <input type="checkbox" disabled @(string.IsNullOrEmpty(Model.Title) ? "" : "checked") />
+            <input class="form-check-input" type="checkbox" disabled @(string.IsNullOrEmpty(Model.Title) ? "" : "checked") />
             <strong>Назва:</strong> @Model.Title
         </li>
         <li class="list-group-item">
-            <input type="checkbox" disabled @(string.IsNullOrEmpty(Model.Overview) ? "" : "checked") />
+            <input class="form-check-input" type="checkbox" disabled @(string.IsNullOrEmpty(Model.Overview) ? "" : "checked") />
             <strong>Опис:</strong> @Model.Overview
         </li>
         <li class="list-group-item">
-            <input type="checkbox" disabled @(string.IsNullOrEmpty(Model.ReleaseDate?.ToString()) ? "" : "checked") />
+            <input class="form-check-input" type="checkbox" disabled @(Model.Runtime == 0 ? "" : "checked") />
+            <strong>тривалість:</strong> @(Model.Runtime) хв
+        </li>
+        <li class="list-group-item">
+            <input class="form-check-input" type="checkbox" disabled @(string.IsNullOrEmpty(Model.ReleaseDate?.ToString()) ? "" : "checked") />
             <strong>Дата релізу:</strong> @(Model.ReleaseDate)
         </li>
         <li class="list-group-item">
-            <input type="checkbox" disabled @(Model.Genres != null && Model.Genres.Any() ? "checked" : "") />
+            <input class="form-check-input" type="checkbox" disabled @(Model.Genres != null && Model.Genres.Any() ? "checked" : "") />
             @{
                 var genresStr = "";
                 if(Model.Genres != null)
@@ -33,7 +37,7 @@
             <strong>жанри:</strong> @(genresStr)
         </li>
         <li class="list-group-item">
-            <input type="checkbox" disabled @(string.IsNullOrEmpty(Model.ImageUrl) ? "" : "checked") />
+            <input class="form-check-input" type="checkbox" disabled @(string.IsNullOrEmpty(Model.ImageUrl) ? "" : "checked") />
             @{
                 var posterUrl = "https://image.tmdb.org/t/p/w500" + Model.ImageUrl;
             }
@@ -41,7 +45,7 @@
             <a href="@posterUrl">@posterUrl</a>
         </li>
         <li class="list-group-item">
-            <input type="checkbox" disabled @(string.IsNullOrEmpty(Model.BackgroundUrl) ? "" : "checked") />
+            <input class="form-check-input" type="checkbox" disabled @(string.IsNullOrEmpty(Model.BackgroundUrl) ? "" : "checked") />
             @{
                 var backGroudUrl = "https://image.tmdb.org/t/p/w1280" + Model.BackgroundUrl;
             }
@@ -49,12 +53,12 @@
             <a href="@backGroudUrl">@backGroudUrl</a>
         </li>
         <li class="list-group-item">
-            <input type="checkbox" disabled @(string.IsNullOrEmpty(Model.TrailerUrl) ? "" : "checked") />
+            <input class="form-check-input"  type="checkbox" disabled @(string.IsNullOrEmpty(Model.TrailerUrl) ? "" : "checked") />
             <strong>Трейлер:</strong>
             <a href="@Model.TrailerUrl">@Model.TrailerUrl</a>
         </li>
         <li class="list-group-item">
-            <input type="checkbox" disabled @(Model.Crew != null && Model.Crew.Any() ? "checked" : "") />
+            <input class="form-check-input" type="checkbox" disabled @(Model.Crew != null && Model.Crew.Any() ? "checked" : "") />
             <strong>Команда:</strong>
             @if (Model.Crew != null)
             {
@@ -67,4 +71,7 @@
             }
         </li>
     </ul>
+    <div class="container">
+        <a class="btn btn-primary px-5 mt-3">Save</a>
+    </div>
 </div>

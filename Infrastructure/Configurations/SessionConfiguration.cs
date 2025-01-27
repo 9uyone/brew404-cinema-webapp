@@ -27,7 +27,6 @@ namespace DataAccess.Configurations
 				.WithMany(h => h.Sessions)
 				.HasForeignKey(s => s.HallId)
 				.OnDelete(DeleteBehavior.Cascade);
-
 		}
 	}
 }

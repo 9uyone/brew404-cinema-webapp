@@ -1,37 +1,10 @@
 ﻿@{
     Layout = "_AdminLayout";
 }
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/Admin/addmovies.css" asp-append-version="true" />
+</head>
 
-<div class="container mt-4">
-    <form method="get" action="@Url.Action("Search", "Admin")">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Пошук фільму" name="query" value="@Context.Request.Query["query"]">
-            <button class="btn btn-outline-secondary" type="submit">Пошук</button>
-        </div>
-    </form>
-
-    @if (Model != null)
-    {
-        <div class="container mt-5">
-            <div class="row d-flex justify-content-start">
-                @foreach(var movie in Model)
-                {
-                    var str = "https://image.tmdb.org/t/p/w500" + movie.ImageUrl;
-                    <div class="col-md-4 col-sm-6 col-12 mb-3">
-                        <div class="card">
-                            <img src="@str" class="card-img-top fixed-size" alt="@movie.Title">
-                            <div class="card-body">
-                                <h5 class="card-title">@movie.Title<br>@movie.ReleaseDate</h5>
-                                <a asp-action="Details" asp-controller="Admin" asp-route-id="@movie.Id" class="btn btn-primary">Details</a>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
-    }
-    else
-    {
-        <p>Фільми не знайдено.</p>
-    }
-</div>
+<div class="container">Wellcome Admin!</div>

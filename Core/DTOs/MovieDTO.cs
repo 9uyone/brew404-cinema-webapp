@@ -32,6 +32,9 @@ namespace BusinessLogic.DTOs
 
 		public List<CrewMemberDTO>? Crew { get; set; }
 
+		[JsonPropertyName("runtime")]
+		public int Runtime { get; set; }
+
 		[JsonPropertyName("genres")]
 		public List<GenreDTO>? Genres { get; set; }
 

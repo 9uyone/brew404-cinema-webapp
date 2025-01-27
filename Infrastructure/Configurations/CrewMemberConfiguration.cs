@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DataAccess.Configurations
 {
-	public class CreditConfiguration : IEntityTypeConfiguration<Credit>
+	public class CrewMemberConfiguration : IEntityTypeConfiguration<CrewMember>
 	{
-		public void Configure(EntityTypeBuilder<Credit> builder)
+		public void Configure(EntityTypeBuilder<CrewMember> builder)
 		{
 			builder.HasKey(c => c.Id);
 
@@ -15,8 +15,8 @@ namespace DataAccess.Configurations
 				.HasMaxLength(100);
 
 			builder.HasMany(c => c.Roles)
-				.WithMany(r => r.Credits)
-				.UsingEntity(j => j.ToTable("CreditRoles"));
+				.WithMany(r => r.Crew)
+				.UsingEntity(j => j.ToTable("CrewRoles"));
 		}
 	}
 }
