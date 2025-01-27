@@ -9,7 +9,7 @@ namespace DataAccess.Context
 	{
 		public DbSet<Movie> Movies { get; set; }
 		public DbSet<Genre> Genres { get; set; }
-		public DbSet<Credit> Credits { get; set; }
+		public DbSet<CrewMember> Credits { get; set; }
 		public DbSet<Role> Roles { get; set; }
 		public DbSet<Session> Sessions { get; set; }
 		public DbSet<Hall> Halls { get; set; }
@@ -21,7 +21,7 @@ namespace DataAccess.Context
 		{
 			modelBuilder.ApplyConfiguration(new MovieConfiguration());
 			modelBuilder.ApplyConfiguration(new GenreConfiguration());
-			modelBuilder.ApplyConfiguration(new CreditConfiguration());
+			modelBuilder.ApplyConfiguration(new CrewMemberConfiguration());
 			modelBuilder.ApplyConfiguration(new RoleConfiguration());
 			modelBuilder.ApplyConfiguration(new SessionConfiguration());
 			modelBuilder.ApplyConfiguration(new HallConfiguration());

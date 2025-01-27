@@ -3,7 +3,7 @@ using DataAccess.Models;
 
 namespace DataAccess.EntityModels
 {
-	public class Credit : IEntity
+	public class CrewMember : IEntity
 	{
 		public int Id { get; set; }
 		public string Name { get; set; } = null!;
@@ -13,4 +13,3 @@ namespace DataAccess.EntityModels
 		public ICollection<Role> Roles { get; set; } = new List<Role>(); 
 	}
 }
-	

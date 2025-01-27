@@ -8,6 +8,6 @@ namespace DataAccess.EntityModels
 		public int Id { get; set; }
 		public string Name { get; set; } = null!;
 
-		public ICollection<Credit> Credits { get; set; } = new List<Credit>();
+		public ICollection<CrewMember> Crew { get; set; } = new List<CrewMember>();
 	}
 }

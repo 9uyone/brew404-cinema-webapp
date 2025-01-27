@@ -1,0 +1,70 @@
+﻿body {
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.sidebar {
+    width: 350px;
+    background-color: #343a40;
+    color: #fff;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.sidebar a {
+    color: #ddd;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: block;
+}
+
+.sidebar a:hover {
+    background-color: #495057;
+    color: aqua;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.admin-profile {
+    display: flex; /* Вирівнює елементи в рядок */
+    align-items: center; /* Вирівнює по вертикалі */
+    gap: 10px; /* Відстань між фото та текстом */
+    padding: 10px; /* Відступи навколо блоку */
+    border-radius: 8px; /* Закруглені кути */
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1); /* Легка тінь */
+    width: 100%; /* Підлаштовується під контент */
+}
+
+.admin-photo {
+    width: 70px; /* Розмір фото */
+    height: 70px; /* Розмір фото */
+    border-radius: 50%; /* Робить фото круглим */
+    object-fit: cover; /* Адаптує зображення до рамки */
+    border: 2px solid #ddd; /* Додатковий контур */
+}
+
+.admin-info {
+    display: flex; /* Вирівнює ім'я та статус вертикально */
+    flex-direction: column;
+}
+
+.admin-name {
+    margin: 0;
+    font-size: 1.2rem; /* Розмір шрифту імені */
+    font-weight: 600; /* Жирний текст */
+}
+
+.admin-status {
+    margin: 0;
+    font-size: 0.9rem; /* Розмір шрифту статусу */
+    color: greenyellow; /* Колір статусу */
+    font-weight: 500; /* Півжирний текст */
+}

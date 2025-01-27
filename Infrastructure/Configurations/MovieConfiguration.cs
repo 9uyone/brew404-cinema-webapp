@@ -26,10 +26,10 @@ namespace DataAccess.Configurations
 				.UsingEntity(j => j
 					.ToTable("MovieGenres"));
 
-			builder.HasMany(m => m.Credits)
+			builder.HasMany(m => m.Crew)
 				.WithMany(c => c.Movies)
 				.UsingEntity(j => j
-					.ToTable("MoviesCredits"));
+					.ToTable("MoviesCrew"));
 		}
 	}
 }
