@@ -1,6 +1,8 @@
-﻿using DataAccess.Configurations;
+﻿using BusinessLogic.Property;
+using DataAccess.Configurations;
 using DataAccess.EntityModels;
 using DataAccess.Models;
+using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Context
@@ -31,7 +33,8 @@ namespace DataAccess.Context
 		{
 			if(!optionsBuilder.IsConfigured)
 			{
-				string connectionString = "Server=107.174.71.14;Database=cinema_db;User=webapp;Password=SUNUuAra;";
+				Env.Load(EnvProperty.EnvFullPath);
+				string connectionString = Env.GetString(EnvProperty.DbConnection);
 				optionsBuilder.UseMySql(connectionString, new MySqlServerVersion(new Version(10, 3, 39)));
 			}
 		}

@@ -1,20 +1,20 @@
 using BusinessLogic;
 using BusinessLogic.Helpers;
+using BusinessLogic.Property;
 using BusinessLogic.Services;
 using DataAccess.Context;
 using DataAccess.Interfaces;
 using DataAccess.Repository;
+using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
 //string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-//Env.Load(EnvProperty.EnvFullPath);
-//string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
+Env.Load(EnvProperty.EnvFullPath);
+string connectionString = Env.GetString(EnvProperty.DbConnection);
 builder.Services.AddControllersWithViews();
 
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 
 builder.Services.AddDbContext<CinemaDbContext>(options =>

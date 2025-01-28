@@ -4,6 +4,7 @@ using System.Diagnostics;
 using BusinessLogic.TMDbServise;
 using BusinessLogic.DTOs;
 using BusinessLogic.Services;
+using BusinessLogic.TMDbService;
 
 namespace WebApp.Controllers
 {
@@ -32,6 +33,7 @@ namespace WebApp.Controllers
 
 		public async Task<IActionResult> Details(int id)
 		{
+			//Console.WriteLine(await service.GetAsync(TmdbEndpoints.Genres));
 			MovieDTO? movie = await _movieService.GetMovieByIdAsync(id);
 			return View(movie);
 		}

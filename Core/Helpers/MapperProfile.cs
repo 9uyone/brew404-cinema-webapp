@@ -20,8 +20,9 @@ namespace BusinessLogic.Helpers
 				.ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.Actors));
 		
 			CreateMap<Genre, GenreDTO>().ReverseMap();
-		
 			CreateMap<Actor, ActorDTO>().ReverseMap();
+
+
 		}
 		
 		private static DateTime ParseReleaseDate(string? releaseDate)
