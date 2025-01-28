@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(CinemaDbContext))]
-    [Migration("20250126120151_Update2")]
-    partial class Update2
+    [Migration("20250128121617_NewUpdate")]
+    partial class NewUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,37 +25,22 @@ namespace DataAccess.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("CreditMovie", b =>
+            modelBuilder.Entity("ActorMovie", b =>
                 {
-                    b.Property<int>("CreditsId")
+                    b.Property<int>("ActorsId")
                         .HasColumnType("int");
 
                     b.Property<int>("MoviesId")
                         .HasColumnType("int");
 
-                    b.HasKey("CreditsId", "MoviesId");
+                    b.HasKey("ActorsId", "MoviesId");
 
                     b.HasIndex("MoviesId");
 
-                    b.ToTable("MoviesCredits", (string)null);
+                    b.ToTable("MovieActors", (string)null);
                 });
 
-            modelBuilder.Entity("CreditRole", b =>
-                {
-                    b.Property<int>("CreditsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RolesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CreditsId", "RolesId");
-
-                    b.HasIndex("RolesId");
-
-                    b.ToTable("CreditRoles", (string)null);
-                });
-
-            modelBuilder.Entity("DataAccess.EntityModels.Credit", b =>
+            modelBuilder.Entity("DataAccess.EntityModels.Actor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,6 +51,10 @@ namespace DataAccess.Migrations
                     b.Property<string>("AvatarUrl")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Character")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -73,7 +62,10 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Credits");
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Actors");
                 });
 
             modelBuilder.Entity("DataAccess.EntityModels.Genre", b =>
@@ -90,6 +82,9 @@ namespace DataAccess.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Genres");
                 });
@@ -112,24 +107,6 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Halls");
-                });
-
-            modelBuilder.Entity("DataAccess.EntityModels.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("DataAccess.EntityModels.Session", b =>
@@ -182,6 +159,9 @@ namespace DataAccess.Migrations
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("RunTime")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -210,32 +190,17 @@ namespace DataAccess.Migrations
                     b.ToTable("MovieGenres", (string)null);
                 });
 
-            modelBuilder.Entity("CreditMovie", b =>
+            modelBuilder.Entity("ActorMovie", b =>
                 {
-                    b.HasOne("DataAccess.EntityModels.Credit", null)
+                    b.HasOne("DataAccess.EntityModels.Actor", null)
                         .WithMany()
-                        .HasForeignKey("CreditsId")
+                        .HasForeignKey("ActorsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DataAccess.Models.Movie", null)
                         .WithMany()
                         .HasForeignKey("MoviesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CreditRole", b =>
-                {
-                    b.HasOne("DataAccess.EntityModels.Credit", null)
-                        .WithMany()
-                        .HasForeignKey("CreditsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccess.EntityModels.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

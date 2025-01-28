@@ -1,17 +1,21 @@
 ﻿using BusinessLogic.DTOs;
+using BusinessLogic.Services;
 using BusinessLogic.TMDbService;
 using BusinessLogic.TMDbServise;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace WebApp.Controllers
 {
 	public class AdminController : Controller
 	{
-		TMDbApiService service;
+		TMDbApiService _apiService;
+		MovieService _movieService;
 
-		public AdminController()
+		public AdminController(MovieService movieService)
 		{
-			service = new TMDbApiService();
+			_apiService = new TMDbApiService();
+			_movieService = movieService;
 		}
 
 		public IActionResult Index()
@@ -26,7 +30,7 @@ namespace WebApp.Controllers
 
 		public async Task<IActionResult> Search(string query)
 		{
-			var movies = await service.GetMovies(query);
+			var movies = await _apiService.GetMovies(query);
 			return View(nameof(SearchMovies), movies);
 		}
 
@@ -34,14 +38,27 @@ namespace WebApp.Controllers
 
 		public async Task<IActionResult> MovieDetails(int id)
 		{
-			MovieDTO? movie = await service.GetMovieDetails(id);
+			MovieDTO? movie = await _apiService.GetMovieDetails(id);
 			if(movie != null)
 			{
-				movie.Crew = await service.GetCrew(movie.Id);
-				movie.TrailerUrl = await service.GetTrailer(movie.Id);
-				Console.WriteLine(await service.GetAsync(TmdbEndpoints.MovieDetails(movie.Id)));
+				movie.Actors = await _apiService.GetActors(movie.Id);
+				movie.TrailerUrl = await _apiService.GetTrailer(movie.Id);
 			}
 			return View(movie);
+		}
+
+		public async Task<IActionResult> AddMovie(int id)
+		{
+			MovieDTO? movie = await _apiService.GetMovieDetails(id);
+			if (movie == null)
+				NotFound();
+
+			movie.Actors = await _apiService.GetActors(movie.Id);
+			movie.TrailerUrl = await _apiService.GetTrailer(movie.Id);
+
+			await _movieService.AddMovieAsync(movie);
+
+			return RedirectToAction(nameof(SearchMovies));
 		}
 	}
 }

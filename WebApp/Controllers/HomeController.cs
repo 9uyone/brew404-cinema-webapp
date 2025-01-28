@@ -3,38 +3,36 @@ using WebApp.Models;
 using System.Diagnostics;
 using BusinessLogic.TMDbServise;
 using BusinessLogic.DTOs;
-using BusinessLogic.TMDbService;
-using System;
+using BusinessLogic.Services;
 
 namespace WebApp.Controllers
 {
     public class HomeController : Controller
     {
 		TMDbApiService service = new TMDbApiService();
-
-		public HomeController()
+		MovieService _movieService;
+		public HomeController(MovieService movieService)
         {
+			_movieService = movieService;
         }
 
         public async Task<IActionResult> Index()
         {
-			return View(await service.GetMovies("venom"));
+			Console.WriteLine(await service.GetActors(335983));
+			return View(await _movieService.GetAllMoviesAsync());
 		}
 
         public async Task<IActionResult> Privacy()
         {
-			List<CrewMemberDTO>? res = await service.GetCrew(335983);
+			List<ActorDTO>? res = await service.GetActors(335983);
 			foreach(var el in res)
 				Console.WriteLine(el.Name);
 			return View();
         }
 
-		[HttpGet]
 		public async Task<IActionResult> Details(int id)
 		{
-			MovieDTO? movie = await service.GetMovieDetails(id);
-			if(movie != null)
-				movie.Crew = await service.GetCrew(movie.Id);
+			MovieDTO? movie = await _movieService.GetMovieByIdAsync(id);
 			return View(movie);
 		}
 
