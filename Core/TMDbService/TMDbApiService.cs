@@ -95,5 +95,9 @@ namespace BusinessLogic.TMDbServise
 			string result = TmdbEndpoints.SubTrailerUrl + trailerKey;
 			return result;
 		}
+	
+        
 	}
 }
+
+

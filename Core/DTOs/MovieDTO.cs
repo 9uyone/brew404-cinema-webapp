@@ -25,13 +25,15 @@ namespace BusinessLogic.DTOs
 		public string? ReleaseDate { get; set; }
 
 		public List<ActorDTO>? Actors { get; set; }
-
-		[JsonPropertyName("runtime")]
-		public int RunTime { get; set; }
+		
 
 		[JsonPropertyName("genres")]
 		public List<GenreDTO>? Genres { get; set; }
 
+
+		[JsonPropertyName("runtime")]
+		public int RunTime { get; set; }
+		
 		public override string ToString()
 		{
 			return $"Tile:{Title}\n\noverview: {Overview}\n\nImageUrl: {ImageUrl}\n\nBackgroundUrl: {BackgroundUrl}\n\n" +

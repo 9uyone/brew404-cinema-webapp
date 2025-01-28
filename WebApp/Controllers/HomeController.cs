@@ -31,18 +31,35 @@ namespace WebApp.Controllers
 			return View();
         }
 
-		public async Task<IActionResult> Details(int id)
-		{
-			//Console.WriteLine(await service.GetAsync(TmdbEndpoints.Genres));
-			MovieDTO? movie = await _movieService.GetMovieByIdAsync(id);
-			return View(movie);
-		}
+		[HttpGet]
+     public async Task<IActionResult> Details(int id)
+        {
+            // Отримуємо деталі фільму
+            MovieDTO? movie = await service.GetMovieDetails(id);
+            if (movie != null)
+            {
+                // Отримуємо команду фільму
+                movie.Actors = await service.GetActors(movie.Id);
 
+               /* // Отримуємо список усіх фільмів
+                List<MovieDTO> allMovies = await service.GetAllMovies();
+
+                // Фільтруємо рекомендації за жанром
+                movie.Recommendations = allMovies
+                    .Where(m => m.Genres != null && movie.Genres != null &&
+                                m.Genres.Any(g => movie.Genres.Select(genre => genre.Id).Contains(g.Id)))
+                    .ToList();*/
+            }
+             return View(movie);
+             }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+	
+
     }
 }

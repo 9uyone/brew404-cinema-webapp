@@ -73,6 +73,7 @@
 
         <div class="container mt-5">
             <h2 class="mb-4">Actors</h2>
+            <h2 class="mb-4">Actors</h2>
             <div id="actorCarousel" class="actor-carousel d-flex overflow-hidden position-relative">
                 @foreach (var credit in Model.Actors)
                 {
@@ -81,7 +82,7 @@
                         <img src="@avatar" class="card-img-top" alt="@credit.Name">
                         <div class="card-body">
                             <h5 class="card-title" style="color: white">@credit.Name</h5>
-                            <p class="card-title" style="color: white">@credit.Character</p>
+                        
                         </div>
                     </div>
                 }
