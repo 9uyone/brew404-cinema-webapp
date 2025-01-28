@@ -1,0 +1,10 @@
+﻿
+.search-container {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: white; /* Щоб забезпечити видимість поверх іншого контенту */
+    padding: 50px 0; /* Додати відступи для зручності */
+    border-bottom: 1px solid #ddd; /* Легка рамка для розділення */
+    width: 100%;
+}

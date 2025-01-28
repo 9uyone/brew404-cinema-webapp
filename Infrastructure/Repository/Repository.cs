@@ -1,6 +1,7 @@
 ﻿using DataAccess.Context;
 using DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace DataAccess.Repository
 {
@@ -15,12 +16,40 @@ namespace DataAccess.Repository
 			DbSet = Context.Set<TEntity>();
 		}
 
-		public async Task<IEnumerable<TEntity>> GetAll()
+		public virtual async Task<IEnumerable<TEntity>> Get(
+			Expression<Func<TEntity, bool>>? filter = null,
+			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+			string includeProperties = "")
 		{
-			return await DbSet.AsNoTracking().ToListAsync();
+			IQueryable<TEntity> query = DbSet.AsNoTracking();
+
+			if (filter != null)
+				query = query.Where(filter);
+
+			foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+			{
+				query = query.Include(includeProperty);
+			}
+
+			if (orderBy != null)
+				return await orderBy(query).ToListAsync();
+			else
+				return await query.ToListAsync();
 		}
 
-		public async Task<TEntity?> Get(Guid id)
+		public async Task<TEntity?> GetByID(int id, string includeProperties = "")
+		{
+			IQueryable<TEntity> query = DbSet.AsNoTracking();
+
+			foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+			{
+				query = query.Include(includeProperty);
+			}
+
+			return await query.FirstOrDefaultAsync(el => el.Id == id);
+		}
+
+		public virtual async Task<TEntity?> GetByID(int id)
 		{
 			return await DbSet.AsNoTracking().FirstOrDefaultAsync(el => el.Id == id);
 		}
@@ -31,24 +60,17 @@ namespace DataAccess.Repository
 			await Context.SaveChangesAsync();
 		}
 
-		/// <summary>
-		/// in progress...
-		/// </summary>
-		/// <param name="entity"></param>
-		/// <returns></returns>
-		/// <exception cref="NotImplementedException"></exception>
-		public async Task Update(TEntity entity)
+		public virtual async Task Update(TEntity entity)
 		{
-			await DbSet
-				.Where(el => el.Id == entity.Id)
-				.ExecuteUpdateAsync(el => el
-				//	.SetProperty()
-					);
-				
-			throw new NotImplementedException();
+			DbSet.Attach(entity);
+
+			var entry = Context.Entry(entity);
+			entry.State = EntityState.Modified;
+
+			await Context.SaveChangesAsync();
 		}
 
-		public async Task Delete(Guid id)
+		public virtual async Task Delete(int id)
 		{
 			await DbSet
 				.Where(el => el.Id == id)
@@ -57,11 +79,12 @@ namespace DataAccess.Repository
 		}
 
 		private bool _dispose = false;
-		public void Dispose()
+
+		public virtual void Dispose()
 		{
 			if(!_dispose)
 			{
-				Context.Dispose();
+				Context?.Dispose();
 				_dispose = true;
 			}
 		}

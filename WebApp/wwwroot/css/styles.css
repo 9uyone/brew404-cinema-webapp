@@ -1,0 +1,272 @@
+﻿/* Загальні стилі */
+body {
+    background-color: #121212;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Навігація */
+.navbar {
+    background-color: #1c1c1c;
+}
+
+.navbar-brand img {
+    max-height: 50px;
+}
+
+.nav-link {
+    color: #fff;
+    margin-right: 15px;
+}
+
+.nav-link:hover {
+    color: #00d8ff;
+}
+
+.btn-custom {
+    background-color: #00d8ff;
+    color: #000;
+    font-weight: bold;
+}
+
+.btn-custom:hover {
+    background-color: #008fcc;
+    color: #fff;
+}
+
+/* Слайдер */
+.banner-img {
+    height: 500px;
+    object-fit: cover;
+}
+
+/* Розділи прем'єр та серіалів */
+h2 {
+    font-size: 24px;
+    border-bottom: 2px solid #00d8ff;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.card {
+    background-color: #1c1c1c;
+    border: none;
+}
+
+.fixed-size {
+    height: 300px;
+    object-fit: cover;
+}
+
+/* Відступи */
+.mt-4 {
+    margin-top: 1.5rem !important;
+}
+
+.mt-5 {
+    margin-top: 3rem !important;
+}
+
+/* Modal styles */
+.modal-content {
+    background-color: #1c1c1c;
+    color: #fff;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+.modal-body .form-label,
+.modal-body .form-control {
+    color: #fff;
+}
+
+.modal-body .form-control {
+    background-color: #333;
+    border: 1px solid #555;
+}
+
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+header, footer {
+    background-color: #1f1f1f;
+}
+
+.movie-poster {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.recommendations {
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    gap: 16px;
+}
+
+.recommendation-track {
+    display: flex;
+    transition: transform 0.5s ease;
+    gap: 16px;
+}
+
+.recommendation-card {
+    flex: 0 0 auto;
+    width: 200px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recommendation-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+}
+
+.recommendation-card img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.carousel-controls {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+}
+
+.carousel-controls button {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.carousel-controls button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.btn-primary, .btn-success {
+    padding: 12px 20px;
+    font-size: 1rem;
+    border-radius: 50px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.btn-success:hover {
+    background-color: #28a745;
+    transform: scale(1.05);
+}
+
+/* FILMDETAILS */
+
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+header, footer {
+    background-color: #1f1f1f;
+}
+
+.movie-poster {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.recommendations {
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    gap: 16px;
+}
+
+.recommendation-track {
+    display: flex;
+    transition: transform 0.5s ease;
+    gap: 16px;
+}
+
+.recommendation-card {
+    flex: 0 0 auto;
+    width: 200px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recommendation-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+}
+
+.recommendation-card img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.carousel-controls {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+}
+
+.carousel-controls button {
+background-color: rgba(255, 255, 255, 0.1);
+border: 1px solid rgba(255, 255, 255, 0.3);
+color: #ffffff;
+font-size: 1.5rem;
+border-radius: 50%;
+width: 40px;
+height: 40px;
+display: flex;
+justify-content: center;
+align-items: center;
+transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.carousel-controls button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.btn-primary, .btn-success {
+    padding: 12px 20px;
+    font-size: 1rem;
+    border-radius: 50px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.btn-success:hover {
+    background-color: #28a745;
+    transform: scale(1.05);
+}
