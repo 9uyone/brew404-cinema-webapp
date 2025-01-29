@@ -16,7 +16,7 @@ namespace BusinessLogic.Services
 		public async Task<IEnumerable<GenreDTO>> GetAllGenresAsync()
 		{
 			var genres = await Task.Run(() => _genreRepository.Get(orderBy: q => q.OrderBy(g => g.Name)));
-			return genres.Select(g => new GenreDTO { Id = g.Id, Name = g.Name });
+			return genres.Select(g => new GenreDTO { Name = g.Name });
 		}
 
 		public async Task AddGenreAsync(GenreDTO genreDTO)
@@ -27,7 +27,7 @@ namespace BusinessLogic.Services
 
 		public async Task UpdateGenreAsync(GenreDTO genreDTO)
 		{
-			var genre = new Genre { Id = genreDTO.Id, Name = genreDTO.Name };
+			var genre = new Genre { Name = genreDTO.Name };
 			await _genreRepository.Update(genre);
 		}
 

@@ -1,7 +1,6 @@
 ﻿using DataAccess.Context;
 using DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace DataAccess.Repository
@@ -17,7 +16,7 @@ namespace DataAccess.Repository
 			DbSet = Context.Set<TEntity>();
 		}
 
-		public virtual IEnumerable<TEntity> Get(
+		public virtual async Task<IEnumerable<TEntity>> Get(
 			Expression<Func<TEntity, bool>>? filter = null,
 			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
 			string includeProperties = "")
@@ -27,16 +26,27 @@ namespace DataAccess.Repository
 			if (filter != null)
 				query = query.Where(filter);
 
-			foreach (var includeProperty in includeProperties.Split
-				(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+			foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
 			{
 				query = query.Include(includeProperty);
 			}
 
 			if (orderBy != null)
-				return orderBy(query).ToList();
+				return await orderBy(query).ToListAsync();
 			else
-				return query.ToList();
+				return await query.ToListAsync();
+		}
+
+		public async Task<TEntity?> GetByID(int id, string includeProperties = "")
+		{
+			IQueryable<TEntity> query = DbSet.AsNoTracking();
+
+			foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+			{
+				query = query.Include(includeProperty);
+			}
+
+			return await query.FirstOrDefaultAsync(el => el.Id == id);
 		}
 
 		public virtual async Task<TEntity?> GetByID(int id)
@@ -78,5 +88,6 @@ namespace DataAccess.Repository
 				_dispose = true;
 			}
 		}
+
 	}
 }

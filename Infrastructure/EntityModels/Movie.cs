@@ -17,7 +17,7 @@ namespace DataAccess.Models
 		public DateTime ReleaseDate { get; set; }
 
 		public ICollection<Genre> Genres { get; set; } = new List<Genre>();
-		public ICollection<CrewMember> Crew { get; set; } = new List<CrewMember>();
+		public ICollection<Actor> Actors { get; set; } = new List<Actor>();
 		public ICollection<Session> Sessions { get; set; } = new List<Session>();
 	}
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace BusinessLogic.DTOs
 {
@@ -30,10 +24,10 @@ namespace BusinessLogic.DTOs
 		[JsonPropertyName("release_date")]
 		public string? ReleaseDate { get; set; }
 
-		public List<CrewMemberDTO>? Crew { get; set; }
+		public List<ActorDTO>? Actors { get; set; }
 
 		[JsonPropertyName("runtime")]
-		public int Runtime { get; set; }
+		public int RunTime { get; set; }
 
 		[JsonPropertyName("genres")]
 		public List<GenreDTO>? Genres { get; set; }

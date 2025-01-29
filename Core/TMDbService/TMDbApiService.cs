@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using BusinessLogic.DTOs;
 using BusinessLogic.Property;
 using BusinessLogic.TMDbService;
 using DotNetEnv;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BusinessLogic.TMDbServise
 {
@@ -53,18 +50,19 @@ namespace BusinessLogic.TMDbServise
 			return result;
 		}
 
-		public async Task<List<CrewMemberDTO>?> GetCrew(int movieId)
+		public async Task<List<ActorDTO>?> GetActors(int movieId, int count = 5)
 		{
 			JsonObject? jsonObj = await GetAsync(TmdbEndpoints.MovieCredits(movieId));
 			if (jsonObj == null)
 				return null;
 			JsonArray? jsonArray = jsonObj["cast"]?.AsArray();
 
+			Console.WriteLine(jsonObj);
 			if (jsonArray == null)
 				return null;
 
-			List<CrewMemberDTO>? result = JsonSerializer.Deserialize<List<CrewMemberDTO>>(jsonArray.ToString());
-			return result;
+			List<ActorDTO>? result = JsonSerializer.Deserialize<List<ActorDTO>>(jsonArray.ToString());
+			return result?.Take(count).ToList();
 		}
 
 		public async Task<MovieDTO?> GetMovieDetails(int movieId)

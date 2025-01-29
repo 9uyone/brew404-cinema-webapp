@@ -10,9 +10,15 @@ namespace DataAccess.Configurations
 		{
 			builder.HasKey(g => g.Id);
 
+			builder.Property(g => g.Id)
+				.ValueGeneratedOnAdd();
+
 			builder.Property(g => g.Name)
 				.IsRequired()
 				.HasMaxLength(100);
+
+			builder.HasIndex(g => g.Name)
+				.IsUnique();
 		}
 	}
 }

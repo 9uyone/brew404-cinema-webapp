@@ -42,9 +42,8 @@
     <div class="container mt-5">
         <h2>Найсвіжіші прем'єри</h2>
         <div class="row d-flex justify-content-start">
-            @for (int i = 0; i < 3; i++)
+            @foreach(var movie in Model)
             {
-                var movie = Model[i];
                 var str = "https://image.tmdb.org/t/p/w500" + movie.ImageUrl;
                 <div class="col-md-4 col-sm-6 col-12 mb-3">
                     <div class="card">

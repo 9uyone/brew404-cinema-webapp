@@ -3,13 +3,13 @@ using DataAccess.Models;
 
 namespace DataAccess.EntityModels
 {
-	public class CrewMember : IEntity
+	public class Actor : IEntity
 	{
 		public int Id { get; set; }
 		public string Name { get; set; } = null!;
+		public string? Character { get; set; }
 		public string? AvatarUrl { get; set; }
 
-		public ICollection<Movie> Movies { get; set; } = new List<Movie>();
-		public ICollection<Role> Roles { get; set; } = new List<Role>(); 
+		public ICollection<Movie> Movies { get; set; } = new List<Movie>(); 
 	}
 }
