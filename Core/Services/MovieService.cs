@@ -33,7 +33,7 @@ namespace BusinessLogic.Services
 				TrailerUrl = m.TrailerUrl,
 				ReleaseDate = m.ReleaseDate.ToString("yyyy-MM-dd"),
 				Genres = m.Genres.Select(g => new GenreDTO { Id = g.Id, Name = g.Name }).ToList(),
-				Crew = m.Credits.Select(c => new CrewMemberDTO { Id = c.Id, Name = c.Name, AvatarUrl = c.AvatarUrl }).ToList()
+				Crew = m.Crew.Select(c => new CrewMemberDTO { Id = c.Id, Name = c.Name, AvatarUrl = c.AvatarUrl }).ToList()
 			});
 		}
 
@@ -52,7 +52,7 @@ namespace BusinessLogic.Services
 				TrailerUrl = movie.TrailerUrl,
 				ReleaseDate = movie.ReleaseDate.ToString("yyyy-MM-dd"),
 				Genres = movie.Genres.Select(g => new GenreDTO { Id = g.Id, Name = g.Name }).ToList(),
-				Crew = movie.Credits.Select(c => new CrewMemberDTO { Id = c.Id, Name = c.Name, AvatarUrl = c.AvatarUrl }).ToList()
+				Crew = movie.Crew.Select(c => new CrewMemberDTO { Id = c.Id, Name = c.Name, AvatarUrl = c.AvatarUrl }).ToList()
 			};
 		}
 
@@ -68,7 +68,7 @@ namespace BusinessLogic.Services
 				TrailerUrl = movieDTO.TrailerUrl,
 				ReleaseDate =DateTime.Parse(movieDTO.ReleaseDate),
 				Genres = movieDTO.Genres.Select(g => new Genre { Id = g.Id, Name = g.Name }).ToList(),
-				Credits = movieDTO.Crew.Select(c => new Credit { Id = c.Id, Name = c.Name, AvatarUrl = c.AvatarUrl }).ToList()
+				Crew = movieDTO.Crew.Select(c => new CrewMember { Id = c.Id, Name = c.Name, AvatarUrl = c.AvatarUrl }).ToList()
 			};
 
 			await _movieRepository.Insert(movie);
@@ -86,7 +86,7 @@ namespace BusinessLogic.Services
 				TrailerUrl = movieDTO.TrailerUrl,
 				ReleaseDate = DateTime.Parse(movieDTO.ReleaseDate),
 				Genres = movieDTO.Genres.Select(g => new Genre { Id = g.Id, Name = g.Name }).ToList(),
-				Credits = movieDTO.Crew.Select(c => new Credit { Id = c.Id, Name = c.Name, AvatarUrl = c.AvatarUrl }).ToList()
+				Crew = movieDTO.Crew.Select(c => new CrewMember { Id = c.Id, Name = c.Name, AvatarUrl = c.AvatarUrl }).ToList()
 			};
 
 			await _movieRepository.Update(movie);
