@@ -24,7 +24,7 @@ namespace DataAccess.Repository
 		{
 			IQueryable<TEntity> query = DbSet;
 
-			if (!tracking)  // Якщо tracking == false, вимикаємо відстеження
+			if (!tracking)
 				query = query.AsNoTracking();
 
 			if (filter != null)
