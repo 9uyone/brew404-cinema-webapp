@@ -4,14 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AdminPanel</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/Admin/sidebar.css">
 </head>
 <body>
     <div class="sidebar">
         <div class="admin-profile">
-            <img src="https://cdn.discordapp.com/attachments/1329104666088177688/1332813079964160122/logo.jpg?ex=67969e68&is=67954ce8&hm=c664c36d303925f72b1701071c57ecb20a3b3a1379cd967f97745c40765590b0&"
+            <img src="https://cdn.discordapp.com/attachments/1329104666088177688/1332813079964160122/logo.jpg"
                  alt="Логотип" class="admin-photo rounded-circle">
             <div class="admin-info">
                 <h4 class="admin-name">Admin Adminovuch</h4>
@@ -20,11 +19,28 @@
         </div>
         <a href="/Admin/Index">Головна</a>
         <a href="/Admin/Sessions">Керування сеансами</a>
-        <a href="/Admin/SearchMovies">Пошук фільмів</a>
+
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        Фільми
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <a href="/Admin/SearchMovies">Пошук фільмів</a><br>
+                        <a href="/Admin/SearchMovies">Керування фільмами</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <a href="/Admin/Statistics">Статистика</a>
         <a href="/Admin/Users">Користувачі</a>
         <a href="/Account/Logout">Вийти</a>
     </div>
+
     <div style="width: 100%">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -32,7 +48,5 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
