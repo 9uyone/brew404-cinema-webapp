@@ -19,9 +19,13 @@ namespace DataAccess.Repository
 		public virtual async Task<IEnumerable<TEntity>> Get(
 			Expression<Func<TEntity, bool>>? filter = null,
 			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-			string includeProperties = "")
+			string includeProperties = "",
+			bool tracking = false)
 		{
-			IQueryable<TEntity> query = DbSet.AsNoTracking();
+			IQueryable<TEntity> query = DbSet;
+
+			if (!tracking)  // Якщо tracking == false, вимикаємо відстеження
+				query = query.AsNoTracking();
 
 			if (filter != null)
 				query = query.Where(filter);
@@ -36,6 +40,7 @@ namespace DataAccess.Repository
 			else
 				return await query.ToListAsync();
 		}
+
 
 		public async Task<TEntity?> GetByID(int id, string includeProperties = "")
 		{
@@ -57,6 +62,12 @@ namespace DataAccess.Repository
 		public async Task Insert(TEntity entity)
 		{
 			await DbSet.AddAsync(entity);
+			await Context.SaveChangesAsync();
+		}
+
+		public async Task AddRange(ICollection<TEntity> entities)
+		{
+			await DbSet.AddRangeAsync(entities);
 			await Context.SaveChangesAsync();
 		}
 
@@ -88,6 +99,5 @@ namespace DataAccess.Repository
 				_dispose = true;
 			}
 		}
-
 	}
 }

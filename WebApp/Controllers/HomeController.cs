@@ -10,7 +10,7 @@ namespace WebApp.Controllers
 {
     public class HomeController : Controller
     {
-		TMDbApiService service = new TMDbApiService();
+		TMDbApiService _tmdbService = new TMDbApiService();
 		MovieService _movieService;
 		public HomeController(MovieService movieService)
         {
@@ -19,25 +19,19 @@ namespace WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-			Console.WriteLine(await service.GetActors(335983));
 			return View(await _movieService.GetAllMoviesAsync());
 		}
 
-        public async Task<IActionResult> Privacy()
-        {
-			List<ActorDTO>? res = await service.GetActors(335983);
-			foreach(var el in res)
-				Console.WriteLine(el.Name);
+		public IActionResult Privacy()
+		{
 			return View();
-        }
+		}
 
 		public async Task<IActionResult> Details(int id)
 		{
-			//Console.WriteLine(await service.GetAsync(TmdbEndpoints.Genres));
 			MovieDTO? movie = await _movieService.GetMovieByIdAsync(id);
 			return View(movie);
 		}
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

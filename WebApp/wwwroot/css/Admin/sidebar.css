@@ -16,6 +16,10 @@
     overflow-y: auto;
 }
 
+.accordion-button {
+    background-color: #343a40;
+}
+
 .sidebar a {
     color: #ddd;
     text-decoration: none;
