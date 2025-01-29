@@ -46,33 +46,96 @@
         text-align: center;
         padding: 10px;
         }
+
+        .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* Це забезпечить пропорції 16:9 */
+        height: 0;
+        overflow: hidden;
+        max-width: 100%;
+        }
+
+        .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%; /* Встановлює ширину на 100% */
+        height: 600px; /* Задайте висоту за бажанням */
+        }
+
+        body {
+            background-image: url('@("https://image.tmdb.org/t/p/w1280" + Model.BackgroundUrl)');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }  
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* 0.6 — рівень затемнення */
+            z-index: -1; /* Щоб фон був позаду контенту */
+        }
     </style>
 
 </head>
 <body>
-
     <!-- Main content -->
-    <main class="container my-4">
-        <!-- Movie Details -->
+    <main class="container bg-dark">
         <div class="row">
-            <div class="col-md-4">
+            <!-- Movie Poster -->
+                        <div class="col-md-4">
                 @{var str = "https://image.tmdb.org/t/p/w1280" + Model.ImageUrl;
                     <img src="@str" alt="@Model.Title Movie Poster" class="movie-poster">
                 }
-            </div>
-            <div class="col-md-8">
-                <h2>@Model.Title</h2>
-                <p><strong>@Model.ReleaseDate</strong> &bull; <strong>2 hr 19 min</strong> &bull; <strong>Horror</strong></p>
-                <p>@Model.Overview</p>
+            </div
 
-                <button class="btn btn-primary">Watch Trailer</button>
-                <button class="btn btn-success">Buy Tickets</button>
+            <!-- Movie Details -->
+            <div class="col-md-8">
+                <h1>@Model.Title</h1>
+
+                <br/><br/><br/>
+                <h5 style="color: darkgrey">Release Date:</h5> 
+                <h4>@Model.ReleaseDate</h4>
+
+                <br/>
+                <h5 style="color: darkgrey">Runtime:</h5>
+                <h4>@Model.RunTime min</h4>
+
+                <!-- Genres -->
+                <br/>
+                <h5 style="color: darkgrey">Genres:</h5>
+                <h4>@String.Join(", ", Model.Genres.Select(g => g.Name))</h4>
+
+                <!-- Movie Overview -->
+                <br/>
+                <h5 style="color: darkgrey">Overview:</h5>
+                <h4>@Model.Overview</h4>
+
+                <!-- Trailer -->
+                <br/>
+                <br/>
+                <div class="movie-trailer mt-4">
+                    <h5>Watch Trailer:</h5>
+                    @{
+                         var trailerId = Model.TrailerUrl?.Split("=")[1];
+                     }
+                     <div class="video-container">
+                         <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/@trailerId" allowfullscreen></iframe>
+                     </div>
+                </div>
+
+                <!-- Buy Tickets Button -->
+                <button class="btn btn-success mt-4">Buy Tickets</button>
             </div>
         </div>
 
-
+        <!-- Actors Section -->
         <div class="container mt-5">
-            <h2 class="mb-4">Actors</h2>
             <h2 class="mb-4">Actors</h2>
             <div id="actorCarousel" class="actor-carousel d-flex overflow-hidden position-relative">
                 @foreach (var credit in Model.Actors)
@@ -82,7 +145,7 @@
                         <img src="@avatar" class="card-img-top" alt="@credit.Name">
                         <div class="card-body">
                             <h5 class="card-title" style="color: white">@credit.Name</h5>
-                        
+                            <p class="card-title" style="color: white">@credit.Character</p>
                         </div>
                     </div>
                 }
@@ -93,37 +156,15 @@
             </div>
         </div>
 
-        <!-- Recommendations -->
+        <!-- Recommendations Section -->
         <section class="mt-5">
             <h3>You May Also Like</h3>
-            <div class="recommendations">
-                <div class="recommendation-track" id="recommendationTrack">
-                    <a href="#" class="recommendation-card">
-                        <img src="https://uaserials.pro/posters/1794.webp" alt="Recommendation 1">
-                    </a>
-                    <a href="#" class="recommendation-card">
-                        <img src="https://uaserials.pro/posters/1794.webp" alt="Recommendation 2">
-                    </a>
-                    <a href="#" class="recommendation-card">
-                        <img src="https://uaserials.pro/posters/1794.webp" alt="Recommendation 3">
-                    </a>
-                    <a href="#" class="recommendation-card">
-                        <img src="https://uaserials.pro/posters/1794.webp" alt="Recommendation 4">
-                    </a>
-                    <a href="#" class="recommendation-card">
-                        <img src="https://uaserials.pro/posters/1794.webp" alt="Recommendation 5">
-                    </a>
-                    <a href="#" class="recommendation-card">
-                        <img src="https://uaserials.pro/posters/1794.webp" alt="Recommendation 6">
-                    </a>
-                </div>
-                <div class="carousel-controls">
-                    <button id="prevBtn">&#8249;</button>
-                    <button id="nextBtn">&#8250;</button>
-                </div>
+            <div class="d-flex overflow-auto">
+                
             </div>
         </section>
     </main>
+
 
     <!-- Footer -->
     <footer class="bg-dark text-light py-3">
