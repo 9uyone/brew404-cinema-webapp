@@ -21,8 +21,16 @@ namespace BusinessLogic.Helpers
 		
 			CreateMap<Genre, GenreDTO>().ReverseMap();
 			CreateMap<Actor, ActorDTO>().ReverseMap();
+			CreateMap<Hall, HallDTO>().ReverseMap();
 
+			CreateMap<Session, SessionDTO>()
+				.ForMember(dest => dest.MovieId, opt => opt.MapFrom(src => src.Movie.Id))
+				.ForMember(dest => dest.MovieTitle, opt => opt.MapFrom(src => src.Movie.Title))
+				.ForMember(dest => dest.HallName, opt => opt.MapFrom(src => src.Hall.Name));
 
+			CreateMap<SessionDTO, Session>()
+				.ForMember(dest => dest.Movie, opt => opt.Ignore())
+				.ForMember(dest => dest.Hall, opt => opt.Ignore());
 		}
 		
 		private static DateTime ParseReleaseDate(string? releaseDate)
