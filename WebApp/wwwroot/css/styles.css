@@ -378,3 +378,71 @@ transition: background-color 0.2s ease, transform 0.2s ease;
         height: 100%;
         border: none;
     }
+
+    /* date */
+    .date-selector {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .date-display {
+        text-align: center;
+        margin: 0;
+    }
+    
+    .date {
+        display: block;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    
+    .day {
+        display: block;
+        font-size: 0.9em;
+        color: #666;
+    }
+    
+    .arrow-btn {
+        background: none;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        color: #333;
+        transition: color 0.3s;
+    }
+    
+    .arrow-btn:hover {
+        color: #007bff;
+    }
+    
+    /* Existing styles */
+    .session-list {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 15px 0;
+    }
+    
+    .session-time {
+        padding: 8px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .session-time:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .session-divider {
+        margin: 15px 0;
+    }
+    
+    .session-highlight {
+        text-align: center;
+        color: #007bff;
+        cursor: pointer;
+    }
