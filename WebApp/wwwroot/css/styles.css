@@ -313,4 +313,68 @@ transition: background-color 0.2s ease, transform 0.2s ease;
         border-color: #e50914;
         transform: scale(1.05);
     }
-
+/* details */
+    .session-block {
+        background: #222;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        text-align: center;
+    }
+    .session-title {
+        color: #fff;
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+    .session-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .session-time {
+        background: #333;
+        padding: 10px;
+        border-radius: 5px;
+        color: #ddd;
+        font-size: 18px;
+        transition: 0.3s;
+    }
+    .session-time:hover {
+        background: #444;
+        color: #fff;
+    }
+    .session-divider {
+        border-color: #666;
+        margin: 20px 0;
+    }
+    .session-highlight {
+        background: #ffcc00;
+        color: #222;
+        font-weight: bold;
+        padding: 12px;
+        border-radius: 5px;
+        font-size: 20px;
+    }
+    .trailer-container {
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        height: 0;
+        overflow: hidden;
+        margin-top: 10px;
+    }
+    
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
