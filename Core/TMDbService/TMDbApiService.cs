@@ -50,7 +50,7 @@ namespace BusinessLogic.TMDbServise
 			return result;
 		}
 
-		public async Task<List<ActorDTO>?> GetActors(int movieId, int count = 5)
+		public async Task<List<ActorDTO>?> GetActors(int movieId, int count = 10)
 		{
 			JsonObject? jsonObj = await GetAsync(TmdbEndpoints.MovieCredits(movieId));
 			if (jsonObj == null)
@@ -95,8 +95,21 @@ namespace BusinessLogic.TMDbServise
 			string result = TmdbEndpoints.SubTrailerUrl + trailerKey;
 			return result;
 		}
-	
-        
+
+		public async Task<List<GenreDTO>?> GetGenres()
+		{
+			JsonObject? jsonObj = await GetAsync(TmdbEndpoints.Genres);
+
+			if (jsonObj == null)
+				return null;
+
+			JsonArray? jsonArray = jsonObj["genres"]?.AsArray();
+
+			if (jsonArray == null)
+				return null;
+
+			return JsonSerializer.Deserialize<List<GenreDTO>>(jsonArray.ToString());
+		}
 	}
 }
 

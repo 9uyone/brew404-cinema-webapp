@@ -43,8 +43,7 @@ body {
 }
 
 /* Розділи прем'єр та серіалів */
-h2 {
-    font-size: 24px;
+h1 {
     border-bottom: 2px solid #00d8ff;
     display: inline-block;
     padding-bottom: 5px;
