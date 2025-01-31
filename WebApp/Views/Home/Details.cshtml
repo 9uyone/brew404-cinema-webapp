@@ -139,20 +139,23 @@
     </div>
     
     <!-- Movie Details and Trailer -->
-    <div class="col-md-8">
-        <h1>@Model.Title</h1>
-        <br/><br/><br/>
-        <h5 style="color: darkgrey">Release Date:</h5>
-        <h4>@Model.ReleaseDate</h4>
-        <br/>
-        <h5 style="color: darkgrey">Runtime:</h5>
-        <h4>@Model.RunTime min</h4>
-        <br/>
-        <h5 style="color: darkgrey">Genres:</h5>
-        <h4>@String.Join(", ", Model.Genres.Select(g => g.Name))</h4>
-        <br/>
-        <h5 style="color: darkgrey">Overview:</h5>
-        <h4>@Model.Overview</h4>
+<div class="col-md-8">
+    <h1>@Model.Title</h1>
+    <br/><br/><br/>
+    <h5 class="detail-label">Release Date:</h5>
+    <h4>@Model.ReleaseDate</h4>
+    <br/>
+    <h5 class="detail-label">Runtime:</h5>
+    <h4>@Model.RunTime min</h4>
+    <br/>
+    <h5 class="detail-label">Genres:</h5>
+    <h4>@String.Join(", ", Model.Genres.Select(g => g.Name))</h4>
+    <br/>
+    <h5 class="detail-label">Overview:</h5>
+    <h4>@Model.Overview</h4>
+
+
+
         
         <!-- Trailer -->
         <br/><br/>
