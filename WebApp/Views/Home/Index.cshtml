@@ -14,29 +14,32 @@
 
     <!-- Banner Section -->
     <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            @foreach (var (movie, index) in Model.Select((movie, index) => (movie, index)))
-            {
-                var str = "https://image.tmdb.org/t/p/w1280" + movie.BackgroundUrl;
-                var isActiveClass = index == 0 ? "active" : "";
-                <div class="carousel-item @isActiveClass">
+    <div class="carousel-inner">
+        @foreach (var (movie, index) in Model.Select((movie, index) => (movie, index)))
+        {
+            var str = "https://image.tmdb.org/t/p/w1280" + movie.BackgroundUrl;
+            var isActiveClass = index == 0 ? "active" : "";
+            <div class="carousel-item @isActiveClass">
+                <!-- ПОМІНЯНО: Додано посилання на весь банер -->
+                <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id">
                     <img src="@str" class="d-block w-100 banner-img" alt="@movie.Title">
                     <div class="carousel-caption d-none d-md-block">
                         <h3>@movie.Title</h3>
-                        <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="btn btn-primary">Details</a>
+                        <!-- ПОМІНЯНО: Кнопка видалена -->
                     </div>
-                </div>
-            }
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
+                </a>
+            </div>
+        }
     </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
 
     <!-- Premieres Section -->
     <div class="container mt-5">
