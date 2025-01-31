@@ -1,0 +1,75 @@
+﻿﻿@using BusinessLogic.DTOs;
+@model MovieDTO
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <h2>Інформація про фільм "@Model.Title"</h2>
+
+    <ul class="list-group">
+        <li class="list-group-item">
+            <input class="form-check-input" type="checkbox" disabled @(string.IsNullOrEmpty(Model.Title) ? "" : "checked") />
+            <strong>Назва:</strong> @Model.Title
+        </li>
+        <li class="list-group-item">
+            <input class="form-check-input" type="checkbox" disabled @(string.IsNullOrEmpty(Model.Overview) ? "" : "checked") />
+            <strong>Опис:</strong> @Model.Overview
+        </li>
+        <li class="list-group-item">
+            <input class="form-check-input" type="checkbox" disabled @(Model.RunTime == 0 ? "" : "checked") />
+            <strong>тривалість:</strong> @(Model.RunTime) хв
+        </li>
+        <li class="list-group-item">
+            <input class="form-check-input" type="checkbox" disabled @(string.IsNullOrEmpty(Model.ReleaseDate?.ToString()) ? "" : "checked") />
+            <strong>Дата релізу:</strong> @(Model.ReleaseDate)
+        </li>
+        <li class="list-group-item">
+            <input class="form-check-input" type="checkbox" disabled @(Model.Genres != null && Model.Genres.Any() ? "checked" : "") />
+            @{
+                var genresStr = "";
+                if (Model.Genres != null)
+                {
+                    foreach (var genre in Model.Genres)
+                        genresStr += genre.Name + " , ";
+                }
+            }
+            <strong>жанри:</strong> @(genresStr)
+        </li>
+        <li class="list-group-item">
+            <input class="form-check-input" type="checkbox" disabled @(string.IsNullOrEmpty(Model.ImageUrl) ? "" : "checked") />
+            <strong>Постер:</strong>
+            <a href="@Model.ImageUrl">@Model.ImageUrl</a>
+        </li>
+        <li class="list-group-item">
+            <input class="form-check-input" type="checkbox" disabled @(string.IsNullOrEmpty(Model.BackgroundUrl) ? "" : "checked") />
+            <strong>Задній фон:</strong>
+            <a href="@Model.BackgroundUrl">@Model.BackgroundUrl</a>
+        </li>
+        <li class="list-group-item">
+            <input class="form-check-input" type="checkbox" disabled @(string.IsNullOrEmpty(Model.TrailerUrl) ? "" : "checked") />
+            <strong>Трейлер:</strong>
+            <a href="@Model.TrailerUrl">@Model.TrailerUrl</a>
+        </li>
+        <li class="list-group-item">
+            <input class="form-check-input" type="checkbox" disabled @(Model.Actors != null && Model.Actors.Any() ? "checked" : "") />
+            <strong>Команда:</strong>
+            @if (Model.Actors != null)
+            {
+                var result = "";
+                foreach (var member in Model.Actors)
+                {
+                    result += member.Name + " , ";
+                }
+                <p>@result</p>
+            }
+        </li>
+    </ul>
+    <form asp-action="AddMovie" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <div class="container">
+            <button type="submit" class="btn btn-primary px-5 mt-3">Save</button>
+        </div>
+    </form>
+</div>

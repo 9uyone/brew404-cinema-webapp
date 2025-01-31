@@ -47,6 +47,7 @@ namespace BusinessLogic.TMDbServise
 				return null;
 
 			List<MovieDTO>? result = JsonSerializer.Deserialize<List<MovieDTO>>(jsonArray.ToString());
+
 			return result;
 		}
 
@@ -62,7 +63,17 @@ namespace BusinessLogic.TMDbServise
 				return null;
 
 			List<ActorDTO>? result = JsonSerializer.Deserialize<List<ActorDTO>>(jsonArray.ToString());
-			return result?.Take(count).ToList();
+
+			return result?.Select(actor =>
+			{
+				actor.AvatarUrl = !string.IsNullOrEmpty(actor.AvatarUrl)
+				? $"{TmdbEndpoints.SubImgUrl}{actor.AvatarUrl}"
+				: string.Empty;
+
+				return actor;
+			})
+			.Take(count)
+			.ToList();
 		}
 
 		public async Task<MovieDTO?> GetMovieDetails(int movieId)
@@ -72,6 +83,11 @@ namespace BusinessLogic.TMDbServise
 				return null;
 
 			MovieDTO? result = JsonSerializer.Deserialize<MovieDTO>(jsonObj.ToString());
+			if (result != null)
+			{
+				result.ImageUrl = $"{TmdbEndpoints.SubImgUrl}{result.ImageUrl}";
+				result.BackgroundUrl = $"{TmdbEndpoints.SubBackGroundUrl}{result.BackgroundUrl}";
+			}
 			return result;
 		}
 

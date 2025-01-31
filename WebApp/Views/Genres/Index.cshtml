@@ -1,0 +1,31 @@
+﻿@using System.Collections.Generic;
+@using BusinessLogic.DTOs;
+@model List<GenreDTO>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+
+<div class="container mx-5">
+    <br/><br/>
+    <div class="container mx-2">
+        <form asp-action="AddGenre" method="post" class="d-flex">
+            <input type="text" name="name" class="form-control form-control-sm me-2" placeholder="Введіть назву жанру" required>
+            <button type="submit" class="btn btn-primary btn-sm">Додати жанр</button>
+        </form>
+    </div>
+    <br/><br/>
+    <h2 class="mb-4 text-center">Список жанрів</h2>
+    <div class="list-group mx-auto" style="max-width: 600px;">
+        @foreach (var genre in Model)
+        {
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span class="fs-5">@genre.Name</span>
+                <form asp-action="DeleteGenre" asp-route-id="@genre.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити жанр @genre.Name?');">
+                    <button type="submit" class="btn btn-danger btn-sm">Видалити</button>
+                </form>
+            </div>
+        }
+    </div>
+</div>

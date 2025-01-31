@@ -25,7 +25,9 @@ builder.Services.AddDbContext<CinemaDbContext>(options =>
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<MovieService>();
-
+builder.Services.AddScoped<GenreService>();
+builder.Services.AddScoped<SessionService>();
+builder.Services.AddScoped<ActorService>();
 
 /*builder.Services.AddDbContext<CinemaDbContext>(options =>
 		options.UseMySql(connectionString
@@ -62,7 +64,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
 	name: "admin",
-	pattern: "admin/{controller=Admin}/{action=Index}/{id?}");
+	pattern: "admin/{controller=Panel}/{action=Index}/{id?}");
 
 
 app.Run();

@@ -1,0 +1,34 @@
+﻿@using System.Collections.Generic;
+@using BusinessLogic.DTOs;
+@model List<ActorDTO>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="container mx-5">
+    <br /><br />
+    <div class="container mx-2">
+        <form asp-action="AddActor" method="post" class="d-flex">
+            <input type="text" name="name" class="form-control form-control-sm me-2" placeholder="Введіть ім'я" required>
+            <button type="submit" class="btn btn-primary btn-sm">Додати актора</button>
+        </form>
+    </div>
+    <br /><br />
+    <h2 class="mb-4 text-center">Список Акторів</h2>
+    <div class="list-group mx-auto" style="max-width: 600px;">
+        @foreach (var actor in Model)
+        {
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                @{
+                    var actorUrl = $"https://image.tmdb.org/t/p/w500{actor.AvatarUrl}";
+                }
+                <img src="@actorUrl" class="img-fluid rounded" style="width: 50px; height: auto; margin-right: 15px;" alt="Фото @actor.Name">
+                <span class="fs-5">@actor.Name</span>
+                <form asp-action="DeleteActor" asp-route-id="@actor.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити актора @actor.Name?');">
+                    <button type="submit" class="btn btn-danger btn-sm">Видалити</button>
+                </form>
+            </div>
+        }
+    </div>
+</div>
