@@ -10,9 +10,10 @@ using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
-//string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 Env.Load(EnvProperty.EnvFullPath);
 string connectionString = Env.GetString(EnvProperty.DbConnection);
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAutoMapper(typeof(MapperProfile));
@@ -29,17 +30,10 @@ builder.Services.AddScoped<GenreService>();
 builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<ActorService>();
 
-/*builder.Services.AddDbContext<CinemaDbContext>(options =>
-		options.UseMySql(connectionString
-		, new MySqlServerVersion(new Version(10, 3, 39)))
-	);*/
-
 builder.Services.AddAutoMapper();
-
 builder.Services.AddValidators();
 
 builder.Services.AddDistributedMemoryCache();
-
 
 builder.Services.AddHttpContextAccessor();
 

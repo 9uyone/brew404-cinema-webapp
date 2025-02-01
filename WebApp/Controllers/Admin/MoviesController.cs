@@ -48,6 +48,7 @@ namespace WebApp.Controllers.Admin
 			return View(movie);
 		}
 
+		[HttpPost("add")]
 		public async Task<IActionResult> AddMovie(int id)
 		{
 			MovieDTO? movie = await _tMDbApiService.GetMovieDetails(id);
@@ -62,5 +63,11 @@ namespace WebApp.Controllers.Admin
 			return RedirectToAction(nameof(SearchMovies));
 		}
 
+		[HttpPost("")]
+		public async Task<IActionResult> DeleteMovie(int id)
+		{
+			await _movieService.DeleteMovieAsync(id);
+			return RedirectToAction(nameof(Index));
+		}
 	}
 }

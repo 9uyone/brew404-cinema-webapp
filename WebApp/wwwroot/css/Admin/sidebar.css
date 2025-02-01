@@ -18,6 +18,12 @@
 
 .accordion-button {
     background-color: #343a40;
+    color: white;
+}
+
+.accordion-body {
+    background-color: #343a40;
+    color: white;
 }
 
 .sidebar a {
@@ -28,7 +34,6 @@
 }
 
 .sidebar a:hover {
-    background-color: #495057;
     color: aqua;
 }
 

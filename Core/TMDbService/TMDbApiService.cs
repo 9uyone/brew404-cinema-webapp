@@ -58,7 +58,6 @@ namespace BusinessLogic.TMDbServise
 				return null;
 			JsonArray? jsonArray = jsonObj["cast"]?.AsArray();
 
-			Console.WriteLine(jsonObj);
 			if (jsonArray == null)
 				return null;
 

@@ -10,7 +10,6 @@ namespace WebApp.Controllers
 {
     public class HomeController : Controller
     {
-		TMDbApiService _tmdbService = new TMDbApiService();
 		MovieService _movieService;
 		public HomeController(MovieService movieService)
         {

@@ -22,6 +22,9 @@ namespace WebApp.Controllers.Admin
 		[HttpPost("add")]
 		public async Task<IActionResult> AddActor(ActorDTO actor)
 		{
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
 			await _actorService.AddActorAsync(actor);
 			return RedirectToAction(nameof(Index));
 		}
