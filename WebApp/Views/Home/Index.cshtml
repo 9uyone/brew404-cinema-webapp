@@ -19,24 +19,26 @@
             {
                 var isActiveClass = i == 0 ? "active" : "";
                 var movie = Model[i];
-                <div class="carousel-item @isActiveClass" >
-                    <img src="@movie.BackgroundUrl" class="d-block w-100 banner-img" alt="@movie.Title">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h3>@movie.Title</h3>
-                        <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="btn btn-primary">Details</a>
-                    </div>
+            <div class="carousel-item @isActiveClass" >
+                <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id">
+                <img src="@movie.BackgroundUrl" class="d-block w-100 banner-img" alt="@movie.Title">
+                <div class="carousel-caption d-none d-md-block">
+                    <h3>@movie.Title</h3>
+                    <!-- ПОМІНЯНО: Кнопка видалена -->
                 </div>
-            }
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
+                </a>
+            </div>
+        }
     </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
 
     <!-- Premieres Section -->
     <div class="container mt-5">

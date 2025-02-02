@@ -8,27 +8,52 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <header style="position: sticky; top: 0; z-index: 100;">
-        <nav class="navbar navbar-expand-sm bg-dark navbar-toggleable-sm box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" class="nav-link" asp-controller="Home" asp-action="Index"><img src="https://cdn.discordapp.com/attachments/1329104666088177688/1332813079964160122/logo.jpg?ex=67969e68&is=67954ce8&hm=c664c36d303925f72b1701071c57ecb20a3b3a1379cd967f97745c40765590b0&"
-                    alt="Логотип" class="rounded-circle"></a>
-                <h4>404-Cinema</h4>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" asp-controller="Panel" asp-action="Index">Адмін</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Privacy">Фільми</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Details">Серіали</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Мультфільми</a></li>
-                    </ul>
-                    <button class="btn btn-custom ms-3" data-bs-toggle="modal" data-bs-target="#loginModal">Увійти</button>
-                </div>
+   <header style="position: sticky; top: 0; z-index: 100;">
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark shadow-sm py-3">
+        <div class="container">
+            <!-- Логотип і назва -->
+            <div class="d-flex align-items-center">
+                <a class="navbar-brand me-3" asp-controller="Home" asp-action="Index">
+                    <img src="https://i.ibb.co/pjyQMk7G/IMG-9011.jpg" alt="IMG-9011" border="0"
+                         alt="Логотип 404-Cinema" 
+                         style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                </a>
+                <h4 class="mb-0 text-uppercase fw-bold" style="letter-spacing: 2px; color: #e50914;">404-Cinema</h4>
             </div>
-        </nav>
-    </header>
+
+            <!-- Навігація -->
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item mx-2">
+                        <a class="nav-link position-relative hover-effect" 
+                           asp-controller="Home" 
+                           asp-action="Privacy">
+                            Фільми
+                        </a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <button class="btn btn-outline-light px-4 py-2 rounded-pill" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#loginModal">
+                            Увійти
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Мобільне меню -->
+            <button class="navbar-toggler border-0" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" 
+                    aria-expanded="false" 
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+</header>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
