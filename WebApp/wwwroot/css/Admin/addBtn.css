@@ -1,0 +1,41 @@
+﻿.fixed-button {
+    position: fixed;
+    bottom: 50px; /* Відступ від нижнього краю */
+    right: 50px; /* Відступ від правого краю */
+    width: 100px; /* Ширина кнопки */
+    height: 100px; /* Висота кнопки */
+    background-color: #007bff; /* Колір фону */
+    border: none; /* Без обводки */
+    border-radius: 25px; /* Заокруглення кутів */
+    display: flex;
+    align-items: center; /* Центрування по вертикалі */
+    justify-content: center; /* Центрування по горизонталі */
+    z-index: 1000; /* Щоб кнопка була над іншими елементами */
+}
+
+    .fixed-button::before, .fixed-button::after {
+        content: '';
+        position: absolute;
+        background-color: white; /* Колір плюсика */
+    }
+
+    /* Горизонтальна лінія */
+    .fixed-button::before {
+        width: 40px; /* Довжина горизонтальної лінії */
+        height: 6px; /* Товщина лінії */
+    }
+
+    /* Вертикальна лінія */
+    .fixed-button::after {
+        width: 6px; /* Товщина вертикальної лінії */
+        height: 40px; /* Довжина вертикальної лінії */
+    }
+
+    /* Центруємо лінії */
+    .fixed-button::before {
+        transform: translateX(0%) translateY(0%);
+    }
+
+    .fixed-button::after {
+        transform: translateX(0%) translateY(0%);
+    }
