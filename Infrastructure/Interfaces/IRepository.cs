@@ -14,6 +14,7 @@ namespace DataAccess.Interfaces
 		Task Insert(TEntity entity);
 		Task AddRange(ICollection<TEntity> entities);
 		Task Update(TEntity entity);
+		Task Update(TEntity entity, List<string> propertiesToUpdate);
 		Task Delete(int id);
     }
 }

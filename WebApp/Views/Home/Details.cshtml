@@ -64,7 +64,7 @@
         }
 
         body {
-            background-image: url('@("https://image.tmdb.org/t/p/w1280" + Model.BackgroundUrl)');
+            background-image: url('@Model.BackgroundUrl');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -80,6 +80,10 @@
             background-color: rgba(0, 0, 0, 0.6); /* 0.6 — рівень затемнення */
             z-index: -1; /* Щоб фон був позаду контенту */
         }
+
+        main {
+            opacity: 1;
+        }
     </style>
 
 </head>
@@ -88,11 +92,9 @@
     <main class="container bg-dark p-3 rounded-3">
         <div class="row">
             <!-- Movie Poster -->
-                        <div class="col-md-4">
-                @{var str = "https://image.tmdb.org/t/p/w1280" + Model.ImageUrl;
-                    <img src="@str" alt="@Model.Title Movie Poster" class="movie-poster">
-                }
-            </div
+                <div class="col-md-4">
+                    <img src="@Model.ImageUrl" alt="@Model.Title Movie Poster" class="movie-poster">
+            </div>
 
             <!-- Movie Details -->
             <div class="col-md-8">

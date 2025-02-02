@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers.Admin
 {
-	[Route("admin/Movies")]
+	[Route("admin/[Controller]")]
 	public class MoviesController : Controller
 	{
 		private readonly TMDbApiService _tMDbApiService;
@@ -60,13 +60,23 @@ namespace WebApp.Controllers.Admin
 
 			await _movieService.AddMovieAsync(movie);
 
-			return RedirectToAction(nameof(SearchMovies));
+			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpPost("")]
+		[HttpPost("delete")]
 		public async Task<IActionResult> DeleteMovie(int id)
 		{
 			await _movieService.DeleteMovieAsync(id);
+			return RedirectToAction(nameof(Index));
+		}
+
+		[HttpPost("update")]
+		public async Task<IActionResult> UpdateMovie(MovieDTO movie)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
+			await _movieService.UpdateMovieAsync(movie);
 			return RedirectToAction(nameof(Index));
 		}
 	}

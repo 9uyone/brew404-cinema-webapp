@@ -34,9 +34,10 @@
                     <span class="fs-5">@actor.Name</span>
 
                     <div class="d-flex flex-row ms-auto">
-                        <form asp-action="UpdateActor" asp-route-id="@actor.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити актора @actor.Name?');">
-                            <button type="submit" class="btn btn-warning btn-lg me-2">Update</button>
-                        </form>
+                        <button type="button" class="btn btn-warning btn-lg me-2"
+                                onclick="openUpdateModal('@actor.Id', '@actor.Name', '@actor.AvatarUrl')">
+                            Update
+                        </button>
 
                         <form asp-action="DeleteActor" asp-route-id="@actor.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити актора @actor.Name?');">
                             <button type="submit" class="btn btn-danger btn-lg">Delete</button>
@@ -87,5 +88,44 @@
             </div>
         </div>
     </div>
+
+    <!-- Модальне вікно для оновлення Актора -->
+    <div class="modal fade" id="UpdateActorModal" tabindex="-1" aria-labelledby="updateActorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateActorModalLabel">Оновити актора</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateActorForm" method="post" asp-action="UpdateActor">
+                        <input type="hidden" id="updateActorId" name="Id">
+
+                        <div class="mb-3">
+                            <label for="updateActorName" class="form-label">Ім'я актора</label>
+                            <input type="text" class="form-control" id="updateActorName" name="Name" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="updateActorAvatar" class="form-label">Посилання на фото</label>
+                            <input type="text" class="form-control" id="updateActorAvatar" name="AvatarUrl" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Оновити</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+            function openUpdateModal(id, name, avatarUrl) {
+                document.getElementById("updateActorId").value = id;
+                document.getElementById("updateActorName").value = name;
+                document.getElementById("updateActorAvatar").value = avatarUrl;
+                var updateModal = new bootstrap.Modal(document.getElementById("UpdateActorModal"));
+                updateModal.show();
+        }
+
+    </script>
 </body>
 </html>

@@ -26,6 +26,7 @@ builder.Services.AddDbContext<CinemaDbContext>(options =>
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<MovieService>();
+builder.Services.AddScoped<HallService>();
 builder.Services.AddScoped<GenreService>();
 builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<ActorService>();

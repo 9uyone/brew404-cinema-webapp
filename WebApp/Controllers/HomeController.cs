@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
 using System.Diagnostics;
-using BusinessLogic.TMDbServise;
 using BusinessLogic.DTOs;
 using BusinessLogic.Services;
-using BusinessLogic.TMDbService;
 
 namespace WebApp.Controllers
 {

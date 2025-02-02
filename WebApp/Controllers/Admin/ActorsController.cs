@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers.Admin
 {
-	[Route("admin/Actors")]
+	[Route("admin/[Controller]")]
 	public class ActorsController : Controller
 	{
 		private readonly ActorService _actorService;
@@ -33,6 +33,16 @@ namespace WebApp.Controllers.Admin
 		public async Task<IActionResult> DeleteActor(int id)
 		{
 			await _actorService.DeleteActorAsync(id);
+			return RedirectToAction(nameof(Index));
+		}
+
+		[HttpPost("update")]
+		public async Task<IActionResult> UpdateActor(ActorDTO actor)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
+			await _actorService.UpdateActorAsync(actor);
 			return RedirectToAction(nameof(Index));
 		}
 

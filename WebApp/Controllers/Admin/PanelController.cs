@@ -2,7 +2,7 @@
 
 namespace WebApp.Controllers.Admin
 {
-	[Route("admin/Panel")]
+	[Route("admin/[Controller]")]
 	public class PanelController : Controller
 	{
 		public IActionResult Index()

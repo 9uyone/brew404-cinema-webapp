@@ -36,16 +36,81 @@
                 <h3 class="movie-title ms-2">@movie.Title</h3>
 
                 <div class="d-flex flex-row ms-auto">
-                    <form asp-action="UpdateMovie" asp-route-id="@movie.Id" method="post">
-                            <button type="submit" class="btn btn-warning btn-lg me-2">Update</button>
-                    </form>
+                    <button type="button" class="btn btn-warning btn-lg me-2"
+                        onclick='openUpdateModal("@movie.Id", "@movie.Title", "@movie.Overview","@movie.RunTime","@movie.ReleaseDate", "@movie.ImageUrl", "@movie.BackgroundUrl", "@movie.TrailerUrl")'>
+                        Update
+                    </button>
 
-                    <form asp-action="DeleteMovie" asp-route-id="@movie.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити фільм '@movie.Title?');">
+
+                    <form asp-action="DeleteMovie" asp-route-id="@movie.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити фільм @movie.Title?');">
                             <button type="submit" class="btn btn-lg btn-danger btn-lg">Delete</button>
                     </form>
                 </div>
             </div>
         }
     </div>
+
+    <div class="modal fade" id="UpdateMovieModal" tabindex="-1" aria-labelledby="updateMovieModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Оновити фільм</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateMovieForm" method="post" asp-action="UpdateMovie">
+                        <input type="hidden" id="UpdateMovieId" name="Id"/>
+                        <input type="hidden" id="UpdateMovieRunTime" name="RunTime"/>
+                        <input type="hidden" id="UpdateMovieReleaseDate" name="ReleaseDate"/>
+
+                        <div class="mb-3">
+                            <label for="updateMovieName" class="form-label">назва фільму</label>
+                            <input type="text" class="form-control" id="updateMovieName" name="Title" required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="updateMovieOverview" class="form-label">Опис фільму</label>
+                            <textarea class="form-control" id="updateMovieOverview" name="Overview" rows="4" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="updateMovieImage" class="form-label">url фото</label>
+                            <input type="text" class="form-control" id="updateMovieImage" name="ImageUrl" required/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateMovieBackgruond" class="form-label">url задній фон</label>
+                            <input type="text" class="form-control" id="updateMovieBackgruond" name="BackgroundUrl" required/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateMovieTrailer" class="form-label">url трейлер</label>
+                            <input type="text" class="form-control" id="updateMovieTrailer" name="TrailerUrl" required/>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Оновити</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+           function openUpdateModal(id, title, overview, runtime, releaseDate, imageUrl, backgroundUrl, trailerUrl) {
+                console.log("DEBUG:", { id, title, overview, runtime, releaseDate, imageUrl, backgroundUrl, trailerUrl });
+
+                document.getElementById("UpdateMovieId").value = id;
+                document.getElementById("updateMovieName").value = title;
+                document.getElementById("updateMovieOverview").value = overview;
+
+                document.getElementById("UpdateMovieRunTime").value = runtime;
+                document.getElementById("UpdateMovieReleaseDate").value = releaseDate;
+
+                document.getElementById("updateMovieImage").value = imageUrl;
+                document.getElementById("updateMovieBackgruond").value = backgroundUrl;
+                document.getElementById("updateMovieTrailer").value = trailerUrl;
+                var updateModal = new bootstrap.Modal(document.getElementById("UpdateMovieModal"));
+                updateModal.show();
+            }
+
+    </script>
 </body>
 </html>

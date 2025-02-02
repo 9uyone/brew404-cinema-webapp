@@ -44,10 +44,9 @@
         <div class="row d-flex justify-content-start">
             @foreach(var movie in Model)
             {
-                var str = "https://image.tmdb.org/t/p/w500" + movie.ImageUrl;
                 <div class="col-md-4 col-sm-6 col-12 mb-3">
                     <div class="card">
-                        <img src="@str" class="card-img-top fixed-size" alt="@movie.Title">
+                        <img src="@movie.ImageUrl" class="card-img-top fixed-size" alt="@movie.Title">
                         <div class="card-body">
                             <h5 class="card-title" style="color: white">@movie.Title</h5>
                         </div>
