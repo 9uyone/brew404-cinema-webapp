@@ -65,7 +65,7 @@
         }
 
         body {
-            background-image: url('@("https://image.tmdb.org/t/p/w1280" + Model.BackgroundUrl)');
+            background-image: url('@Model.BackgroundUrl');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -114,9 +114,7 @@
        <div class="row">
     <!-- Movie Poster -->
     <div class="col-md-4">
-        @{var str = "https://image.tmdb.org/t/p/w1280" + Model.ImageUrl;
-            <img src="@str" alt="@Model.Title Movie Poster" class="movie-poster">
-        }
+            <img src="@Model.ImageUrl" alt="@Model.Title Movie Poster" class="movie-poster">
         
         <div class="session-block mt-3">
     <div class="date-selector">
