@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
 using System.Diagnostics;
-using BusinessLogic.TMDbServise;
 using BusinessLogic.DTOs;
 using BusinessLogic.Services;
-using BusinessLogic.TMDbService;
 
 namespace WebApp.Controllers
 {
     public class HomeController : Controller
     {
-		TMDbApiService _tmdbService = new TMDbApiService();
 		MovieService _movieService;
 		public HomeController(MovieService movieService)
         {

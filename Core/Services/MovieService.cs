@@ -78,7 +78,8 @@ namespace BusinessLogic.Services
 		public async Task UpdateMovieAsync(MovieDTO movieDTO)
 		{
 			var movie = _mapper.Map<Movie>(movieDTO);
-			await _movieRepository.Update(movie);
+			await _movieRepository.Update(movie,
+				new List<string> { "Title", "Overview", "ImageUrl", "BackgroundUrl", "TrailerUrl" });
 		}
 
 		public async Task DeleteMovieAsync(int id)

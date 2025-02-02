@@ -14,9 +14,14 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Toycloud.AspNetCore.Mvc.ModelBinding;
 
+
+var builder = WebApplication.CreateBuilder(args);
+
 Env.Load(EnvProperty.EnvFullPath);
 string connectionString = Env.GetString(EnvProperty.DbConnection);
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<CinemaDbContext>(options =>
 	options.UseMySql(
@@ -39,21 +44,27 @@ builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(typeof(MapperProfile));
+builder.Services.AddScoped<HallService>();
+builder.Services.AddScoped<GenreService>();
+builder.Services.AddScoped<SessionService>();
+builder.Services.AddScoped<ActorService>();
+
+builder.Services.AddAutoMapper();
+
+builder.Services.AddAutoMapper();
+
+
+builder.Services.AddAutoMapper();
+
+
+builder.Services.AddAutoMapper();
+
+
+builder.Services.AddAutoMapper();
+
 builder.Services.AddValidators();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddHttpContextAccessor();
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-	.AddJwtBearer(options => {
-		options.TokenValidationParameters = new TokenValidationParameters {
-			ValidateIssuerSigningKey = true,
-			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-			ValidateIssuer = true,
-			ValidateAudience = true,
-			ValidIssuer = builder.Configuration["Jwt:Issuer"],
-			ValidAudience = builder.Configuration["Jwt:Audience"],
-			ValidateLifetime = true
-		};
 
 		options.Events = new JwtBearerEvents {
 			OnMessageReceived = context => {
@@ -68,6 +79,19 @@ builder.Services.AddMvc(options =>
 	 {
 		 options.ModelBinderProviders.InsertBodyOrDefaultBinding();
 	 });
+builder.Services.AddHttpContextAccessor();
+		options.TokenValidationParameters = new TokenValidationParameters {
+
+builder.Services.AddHttpContextAccessor();
+			ValidateIssuer = true,
+
+builder.Services.AddHttpContextAccessor();
+			ValidAudience = builder.Configuration["Jwt:Audience"],
+
+builder.Services.AddHttpContextAccessor();
+
+
+builder.Services.AddHttpContextAccessor();
 
 // ***
 // Application configuration
@@ -93,7 +117,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
 	name: "admin",
-	pattern: "admin/{controller=Admin}/{action=Index}/{id?}");
+	pattern: "admin/{controller=Panel}/{action=Index}/{id?}");
 
 using (var scope = app.Services.CreateScope())
 {
