@@ -3,11 +3,13 @@ using DataAccess.Configurations;
 using DataAccess.EntityModels;
 using DataAccess.Models;
 using DotNetEnv;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Context
 {
-	public class CinemaDbContext : DbContext
+	public class CinemaDbContext : IdentityDbContext<User>
 	{
 		public DbSet<Movie> Movies { get; set; }
 		public DbSet<Genre> Genres { get; set; }
@@ -15,7 +17,7 @@ namespace DataAccess.Context
 		public DbSet<Session> Sessions { get; set; }
 		public DbSet<Hall> Halls { get; set; }
 
-		public CinemaDbContext(DbContextOptions options) : base(options) { }
+		public CinemaDbContext(DbContextOptions options) : base(options) {}
 		public CinemaDbContext(): base() {}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,6 +27,7 @@ namespace DataAccess.Context
 			modelBuilder.ApplyConfiguration(new ActorConfiguration());
 			modelBuilder.ApplyConfiguration(new SessionConfiguration());
 			modelBuilder.ApplyConfiguration(new HallConfiguration());
+			modelBuilder.ApplyConfiguration(new UserConfiguration());
 
 			base.OnModelCreating(modelBuilder);
 		}

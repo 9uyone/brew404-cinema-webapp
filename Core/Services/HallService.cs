@@ -19,7 +19,7 @@ namespace BusinessLogic.Services
 
 		public async Task<IEnumerable<HallDTO>> GetAllHallsAsync()
 		{
-			var halls = await Task.Run(() => _hallRepository.Get(orderBy: q => q.OrderBy(h => h.Name)));
+			var halls = await _hallRepository.Get(orderBy: q => q.OrderBy(h => h.Name));
 			return _mapper.Map<List<HallDTO>>(halls);
 		}
 

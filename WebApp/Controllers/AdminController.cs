@@ -2,11 +2,13 @@
 using BusinessLogic.Services;
 using BusinessLogic.TMDbService;
 using BusinessLogic.TMDbServise;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace WebApp.Controllers
 {
+	//[Authorize(Roles = "Admin")]
 	public class AdminController : Controller
 	{
 		TMDbApiService _apiService;

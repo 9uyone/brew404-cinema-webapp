@@ -1,0 +1,25 @@
+﻿@using BusinessLogic.DTOs.Auth
+@model LoginDTO
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h2>Login</h2>
+
+<form method="post" asp-controller="Auth" asp-action="Login">
+    <div>
+        <label>Email:</label>
+        <input type="email" asp-for="Email" required />
+    </div>
+    <div>
+        <label>Password:</label>
+        <input type="password" asp-for="Password" required />
+    </div>
+    <button type="submit">Login</button>
+</form>
+
+@if (ViewData["Error"] != null)
+{
+    <p style="color: red;">@ViewData["Error"]</p>
+}
