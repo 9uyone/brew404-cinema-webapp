@@ -20,11 +20,13 @@
                 var isActiveClass = i == 0 ? "active" : "";
                 var movie = Model[i];
             <div class="carousel-item @isActiveClass" >
+                <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id">
                 <img src="@movie.BackgroundUrl" class="d-block w-100 banner-img" alt="@movie.Title">
                 <div class="carousel-caption d-none d-md-block">
                     <h3>@movie.Title</h3>
                     <!-- ПОМІНЯНО: Кнопка видалена -->
                 </div>
+                </a>
             </div>
         }
     </div>
