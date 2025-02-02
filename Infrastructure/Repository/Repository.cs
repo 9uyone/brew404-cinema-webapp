@@ -24,7 +24,7 @@ namespace DataAccess.Repository
 		{
 			IQueryable<TEntity> query = DbSet;
 
-			if (!tracking)  // Якщо tracking == false, вимикаємо відстеження
+			if (!tracking)
 				query = query.AsNoTracking();
 
 			if (filter != null)
@@ -56,7 +56,7 @@ namespace DataAccess.Repository
 
 		public virtual async Task<TEntity?> GetByID(int id)
 		{
-			return await DbSet.AsNoTracking().FirstOrDefaultAsync(el => el.Id == id);
+			return await DbSet.FirstOrDefaultAsync(el => el.Id == id);
 		}
 
 		public async Task Insert(TEntity entity)
@@ -73,10 +73,33 @@ namespace DataAccess.Repository
 
 		public virtual async Task Update(TEntity entity)
 		{
-			DbSet.Attach(entity);
-
 			var entry = Context.Entry(entity);
-			entry.State = EntityState.Modified;
+
+			if (entry.State == EntityState.Detached)
+				DbSet.Attach(entity);
+
+			foreach(var property in entry.Properties)
+			{
+				if (property.Metadata.Name != nameof(entity.Id))
+					property.IsModified = true;
+			}
+
+			await Context.SaveChangesAsync();
+		}
+
+		public async Task Update(TEntity entity, List<string> propertiesToUpdate)
+		{
+			var entry = Context.Entry(entity);
+
+			if (entry.State == EntityState.Detached)
+				DbSet.Attach(entity);
+
+			foreach(var property in entry.Properties)
+			{
+				if (propertiesToUpdate.Contains(property.Metadata.Name)
+					&& property.CurrentValue != null)
+					property.IsModified = true;
+			}
 
 			await Context.SaveChangesAsync();
 		}
@@ -99,5 +122,6 @@ namespace DataAccess.Repository
 				_dispose = true;
 			}
 		}
+
 	}
 }

@@ -1,0 +1,62 @@
+﻿@using System.Collections.Generic;
+@using BusinessLogic.DTOs;
+@model List<GenreDTO>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список жанрів</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/Admin/addmovies.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Admin/addBtn.css" asp-append-version="true" />
+
+</head>
+<body>
+    <button type="button" class="btn btn-primary fixed-button" data-bs-toggle="modal" data-bs-target="#genreModal">
+        <span class="plus-sign"></span>
+    </button>
+
+    <div class="container mx-5">
+        <br/><br/>
+        <h2 class="mb-4 text-center">Список жанрів</h2>
+        <div class="list-group mx-auto" style="max-width: 600px;">
+            @foreach (var genre in Model)
+            {
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <span class="fs-5">@genre.Name</span>
+                    <form asp-action="DeleteGenre" asp-route-id="@genre.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити жанр @genre.Name?');">
+                        <button type="submit" class="btn btn-danger btn-lg">Видалити</button>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Модальне вікно для додавання жанра -->
+    <div class="modal fade" id="genreModal" tabindex="-1" aria-labelledby="genreModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="genreModalLabel">Додати новий жанр</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="genreForm" method="post" asp-action="AddGenre">
+                        <div class="mb-3">
+                            <label for="genreName" class="form-label">Назва жанра</label>
+                            <input type="text" class="form-control" id="genreName" name="Name" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Зберегти</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

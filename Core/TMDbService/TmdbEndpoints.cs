@@ -8,7 +8,8 @@ namespace BusinessLogic.TMDbService
 		public static string Genres => $"{BaseUrl}genre/movie/list";
 		public static string SubImgUrl => "https://image.tmdb.org/t/p/w500";
 		public static string SubTrailerUrl => "https://www.youtube.com/watch?v=";
-		
+		public static string SubBackGroundUrl => "https://image.tmdb.org/t/p/w1280";
+
 		public static string MoviesEnd() => $"{BaseUrl}search/movie";
 		public static string MovieQuery(string query, int pageNum) => $"&query={query}&page={pageNum}";
 		public static string MovieDetails(int movieId) => $"{BaseUrl}movie/{movieId}";

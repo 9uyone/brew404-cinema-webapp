@@ -14,15 +14,13 @@
 
     <!-- Banner Section -->
     <div id="mainCarousel" class="carousel slide mt-3" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        @foreach (var (movie, index) in Model.Select((movie, index) => (movie, index)))
-        {
-            var str = "https://image.tmdb.org/t/p/w1280" + movie.BackgroundUrl;
-            var isActiveClass = index == 0 ? "active" : "";
-            <div class="carousel-item @isActiveClass">
-                <!-- ПОМІНЯНО: Додано посилання на весь банер -->
-                <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id">
-                    <img src="@str" class="d-block w-100 banner-img" alt="@movie.Title">
+        <div class="carousel-inner">
+            @for(int i = 0; i < Model.Count; i++)
+            {
+                var isActiveClass = i == 0 ? "active" : "";
+                var movie = Model[i];
+                <div class="carousel-item @isActiveClass" >
+                    <img src="@movie.BackgroundUrl" class="d-block w-100 banner-img" alt="@movie.Title">
                     <div class="carousel-caption d-none d-md-block">
                         <h3>@movie.Title</h3>
                         <!-- ПОМІНЯНО: Кнопка видалена -->
@@ -47,10 +45,9 @@
         <div class="row d-flex justify-content-start">
             @foreach(var movie in Model)
             {
-                var str = "https://image.tmdb.org/t/p/w500" + movie.ImageUrl;
                 <div class="col-md-4 col-sm-6 col-12 mb-3">
                     <div class="card">
-                        <img src="@str" class="card-img-top fixed-size" alt="@movie.Title">
+                        <img src="@movie.ImageUrl" class="card-img-top fixed-size" alt="@movie.Title">
                         <div class="card-body">
                             <h5 class="card-title" style="color: white">@movie.Title</h5>
                         </div>

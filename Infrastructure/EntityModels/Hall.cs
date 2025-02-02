@@ -1,6 +1,5 @@
 ﻿using DataAccess.Interfaces;
 
-
 namespace DataAccess.EntityModels
 {
 	public class Hall : IEntity

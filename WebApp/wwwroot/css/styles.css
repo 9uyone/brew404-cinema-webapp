@@ -38,7 +38,7 @@ body {
 
 /* Слайдер */
 .banner-img {
-    height: 500px;
+    height: auto;
     object-fit: cover;
     transition: filter 0.3s ease; /* ПОМІНЯНО: Додано перехід для затемнення */
 }
