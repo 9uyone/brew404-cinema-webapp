@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers.Admin
 {
-	[Route("admin/[Controller]")]
+	//[Route("admin/[Controller]")]
 	[Area("admin")]
 	public class GenresController : Controller
 	{

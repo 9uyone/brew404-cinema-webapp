@@ -24,8 +24,6 @@ builder.Services.AddIdentity<User, IdentityRole>()
 	.AddEntityFrameworkStores<CinemaDbContext>()
 	.AddDefaultTokenProviders();
 
-builder.Services.AddOpenApiDocument();
-
 // Add services
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<MovieService>();
@@ -42,16 +40,18 @@ builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.AddValidators();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddOpenApiDocument();
+builder.Services.AddSession();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 	.AddJwtBearer(options => {
 		options.TokenValidationParameters = new TokenValidationParameters {
 			ValidateIssuerSigningKey = true,
-			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwt:secret"])),
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"])),
 			ValidateIssuer = true,
 			ValidateAudience = true,
-			ValidIssuer = builder.Configuration["jwt:issuer"],
-			ValidAudience = builder.Configuration["jwt:audience"],
+			ValidIssuer = builder.Configuration["Jwt:Issuer"],
+			ValidAudience = builder.Configuration["Jwt:Audience"],
 			ValidateLifetime = true,
 		};
 
@@ -70,9 +70,9 @@ builder.Services.AddMvc(options => {
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-	options.LoginPath = "/Auth/Login"; // Шлях для редиректу, якщо користувач не авторизований
-	options.AccessDeniedPath = "/Auth/AccessDenied"; // Якщо немає прав доступу (роль не підходить)
-	options.SlidingExpiration = true; // Оновлювати куку при кожному запиті
+	options.LoginPath = "/Auth/Login";
+	options.AccessDeniedPath = "/Auth/AccessDenied";
+	//options.SlidingExpiration = true; // Оновлювати куку при кожному запиті
 });
 
 
@@ -92,6 +92,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 
 app.MapControllerRoute(
 	name: "default",
@@ -99,8 +100,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
 	name: "admin",
-	//pattern: "admin/{controller=Admin}/{action=Index}/{id?}");
-	pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+	pattern: "admin/{controller=Home}/{action=Index}/{id?}");
 
 using (var scope = app.Services.CreateScope()) {
 	var _roleService = scope.ServiceProvider.GetRequiredService<RoleService>();

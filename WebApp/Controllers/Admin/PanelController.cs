@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers.Admin
 {
-	[Area("admin")]
+	//[Area("admin")]
 	[Route("admin/[Controller]")]
 	[Authorize(Roles = "Admin")]
 	public class PanelController : Controller

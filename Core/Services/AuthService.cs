@@ -44,28 +44,28 @@ namespace BusinessLogic.Services
 			if (model.Password.Length < 6)
 				return IdentityResult.Failed(new IdentityError { Description = "Password must be at least 6 characters long" });
 
-			var result = await _userManager.CreateAsync( new User { UserName = model.UserName, Email = model.Email, Role="Admin" }, model.Password);
-			//if (result.Succeeded)
-			//	await _userManager.AddToRoleAsync(await _userManager.FindByEmailAsync(model.Email), "User");
+			var result = await _userManager.CreateAsync( new User { UserName = model.UserName, Email = model.Email, Role="User" }, model.Password);
+			if (result.Succeeded)
+				await _userManager.AddToRoleAsync(await _userManager.FindByEmailAsync(model.Email), "User");
 			return result;
 		}
 
 		private string GenerateJwtToken(User user)
 		{
-			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["jwt:secret"]));
+			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]));
 			var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
 			var claims = new[]
 			{
 				new Claim(JwtRegisteredClaimNames.Sub, user.Id),
 				new Claim(JwtRegisteredClaimNames.Email, user.Email),
-				new Claim(ClaimTypes.Role, "User")
+				new Claim(ClaimTypes.Role, user.Role)
 			};
 
 			var token = new JwtSecurityToken(
-				issuer: _configuration["jwt:issuer"],
+				issuer: _configuration["Jwt:Issuer"],
 				claims: claims,
-				expires: DateTime.UtcNow.AddHours(int.Parse(_configuration["jwt:expireInHours"])),
+				expires: DateTime.UtcNow.AddHours(int.Parse(_configuration["Jwt:ExpireInHours"])),
 				signingCredentials: creds
 			);
 
@@ -79,7 +79,7 @@ namespace BusinessLogic.Services
 				HttpOnly = true,
 				Secure = true,
 				SameSite = SameSiteMode.Strict,
-				Expires = DateTime.UtcNow.AddHours(int.Parse(_configuration["jwt:expireInHours"]))
+				Expires = DateTime.UtcNow.AddHours(int.Parse(_configuration["Jwt:ExpireInHours"]))
 			};
 
 			_httpContextAccessor.HttpContext.Response.Cookies.Append("jwt", token, options);

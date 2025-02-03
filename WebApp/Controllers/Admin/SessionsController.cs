@@ -5,7 +5,7 @@ using WebApp.ViewModels;
 
 namespace WebApp.Controllers.Admin
 {
-	[Area("admin")]
+	//[Area("admin")]
 	[Route("admin/[Controller]")]
 	public class SessionsController : Controller
 	{

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers.Admin
 {
-	[Area("admin")]
+	//[Area("admin")]
 	[Route("admin/[Controller]")]
 	public class ActorsController : Controller
 	{
