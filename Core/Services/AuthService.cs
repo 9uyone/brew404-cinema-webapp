@@ -12,8 +12,6 @@ namespace BusinessLogic.Services
 {
 	public class AuthService
 	{
-		public short TOKEN_EXPIRE_IN_HOURS { get; } = 3;
-
 		private readonly UserManager<User> _userManager;
 		private readonly IConfiguration _configuration;
 		private readonly IHttpContextAccessor _httpContextAccessor;
@@ -54,7 +52,7 @@ namespace BusinessLogic.Services
 
 		private string GenerateJwtToken(User user)
 		{
-			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["jwt:secret"]));
 			var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
 			var claims = new[]
@@ -65,9 +63,9 @@ namespace BusinessLogic.Services
 			};
 
 			var token = new JwtSecurityToken(
-				issuer: _configuration["Jwt:Issuer"],
+				issuer: _configuration["jwt:issuer"],
 				claims: claims,
-				expires: DateTime.UtcNow.AddHours(TOKEN_EXPIRE_IN_HOURS),
+				expires: DateTime.UtcNow.AddHours(int.Parse(_configuration["jwt:expireInHours"])),
 				signingCredentials: creds
 			);
 
@@ -81,7 +79,7 @@ namespace BusinessLogic.Services
 				HttpOnly = true,
 				Secure = true,
 				SameSite = SameSiteMode.Strict,
-				Expires = DateTime.UtcNow.AddHours(TOKEN_EXPIRE_IN_HOURS)
+				Expires = DateTime.UtcNow.AddHours(int.Parse(_configuration["jwt:expireInHours"]))
 			};
 
 			_httpContextAccessor.HttpContext.Response.Cookies.Append("jwt", token, options);

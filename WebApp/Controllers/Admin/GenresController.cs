@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApp.Controllers.Admin
 {
 	[Route("admin/[Controller]")]
+	[Area("admin")]
 	public class GenresController : Controller
 	{
 		private readonly GenreService _genreService;

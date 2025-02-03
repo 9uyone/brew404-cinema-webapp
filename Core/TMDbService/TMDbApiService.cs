@@ -1,9 +1,8 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using BusinessLogic.DTOs;
-using BusinessLogic.Property;
 using BusinessLogic.TMDbService;
-using DotNetEnv;
+using Microsoft.Extensions.Configuration;
 
 namespace BusinessLogic.TMDbServise
 {
@@ -11,12 +10,13 @@ namespace BusinessLogic.TMDbServise
 	{
 		private HttpClient _client;
 		private readonly string _apiKey;
+		IConfiguration _configuration;
 
-		public TMDbApiService()
+		public TMDbApiService(IConfiguration configuration)
 		{
+			_configuration = configuration;
 			_client = new HttpClient();
-			Env.Load(EnvProperty.EnvFullPath);
-			_apiKey = Env.GetString(EnvProperty.TmdbApiKey);
+			_apiKey = _configuration["TmdbApiKey"];
 		}
 
 		public async Task<JsonObject?> GetAsync(string endPoint, string query = "")

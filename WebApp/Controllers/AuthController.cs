@@ -6,7 +6,7 @@ using Toycloud.AspNetCore.Mvc.ModelBinding;
 namespace WebApp.Controllers
 {
 	[ApiController]
-	[Route("api/[controller]/[action]")]
+	[Route("[controller]/[action]")]
 	public class AuthController : Controller
 	{
 		private readonly AuthService _authService;
