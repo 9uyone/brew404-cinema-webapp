@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
+﻿
 namespace BusinessLogic.DTOs
 {
 	public class SessionDTO

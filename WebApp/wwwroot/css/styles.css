@@ -61,6 +61,7 @@ body {
 
 .carousel-item:hover::before {
     opacity: 1;
+
 }
 
 .carousel-caption {
@@ -100,6 +101,7 @@ body {
 
 .carousel-item a:hover {
     text-decoration: none; /* Видаляємо підкреслення при наведенні */
+
 }
 
 /* Розділи прем'єр та серіалів */
