@@ -36,6 +36,15 @@ namespace BusinessLogic.Services
 			return session == null ? null : _mapper.Map<SessionDTO>(session);
 		}
 
+		public async Task<List<SessionDTO>> GetAllSessionsByMovieIdAsync(int movieId)
+		{
+			var activeSessions = await _sessionRepository.Get(
+				filter: s => s.MovieId == movieId,
+				includeProperties: "Movie,Hall");
+
+			return _mapper.Map<List<SessionDTO>>(activeSessions).ToList();
+		}
+
 		public async Task<bool> AddSessionAsync(SessionDTO sessionDTO)
 		{
 			var session = _mapper.Map<Session>(sessionDTO);
