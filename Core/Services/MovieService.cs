@@ -34,6 +34,22 @@ namespace BusinessLogic.Services
 			return _mapper.Map<List<MovieDTO>>(movies);
 		}
 
+		public async Task<IEnumerable<MovieDTO>?> GetMoviesByGenres(List<GenreDTO>? genres)
+		{
+			if (genres == null) return null;
+
+			var genresIds = genres.Select(g => g.Id).ToList();
+
+			//Pomelo MySQL Provider для Entity Framework Core не підтримує перевірку списку значень у запиті (genresId.Contains(g.Id)) на рівні бази даних.
+			//var movies = await _movieRepository.Get(filter:
+			//movie => movie.Genres.Any(g => genresId.Contains(g.Id)));
+
+			var movies = await _movieRepository.Get(includeProperties: "Genres");
+			var filteredMovies = movies.Where(movie => movie.Genres.Any(g => genresIds.Contains(g.Id)));
+
+			return _mapper.Map<List<MovieDTO>>(filteredMovies);
+		}
+
 		public async Task<MovieDTO?> GetMovieByIdAsync(int id)
 		{
 			var movie = await _movieRepository.GetByID(id,
