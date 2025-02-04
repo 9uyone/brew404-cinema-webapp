@@ -3,19 +3,23 @@ using WebApp.Models;
 using System.Diagnostics;
 using BusinessLogic.DTOs;
 using BusinessLogic.Services;
+using WebApp.ViewModels;
 
 namespace WebApp.Controllers
 {
-    public class HomeController : Controller
-    {
+	public class HomeController : Controller
+	{
 		MovieService _movieService;
-		public HomeController(MovieService movieService)
-        {
-			_movieService = movieService;
-        }
+		SessionService _sessionService;
 
-        public async Task<IActionResult> Index()
-        {
+		public HomeController(MovieService movieService, SessionService sessionService)
+		{
+			_movieService = movieService;
+			_sessionService = sessionService;
+		}
+
+		public async Task<IActionResult> Index()
+		{
 			return View(await _movieService.GetAllMoviesAsync());
 		}
 
@@ -27,13 +31,31 @@ namespace WebApp.Controllers
 		public async Task<IActionResult> Details(int id)
 		{
 			MovieDTO? movie = await _movieService.GetMovieByIdAsync(id);
-			return View(movie);
+
+			if (movie == null)
+			{
+				return NotFound();
+			}
+			// active sessions
+			var activeSessions = await _sessionService.GetAllSessionsByMovieIdAsync(movie.Id);
+
+			MovieDetailsViewModel movieDetailsViewModel = new MovieDetailsViewModel
+			{
+				Movie = movie,
+				ActiveSessions = activeSessions
+			};
+
+			return View(movieDetailsViewModel);
 		}
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-    }
+		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+		public IActionResult Error()
+		{
+			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+		}
+
+
+
+	}
+
 }
