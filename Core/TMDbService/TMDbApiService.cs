@@ -1,10 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using BusinessLogic.DTOs;
-using BusinessLogic.TMDbService;
 using Microsoft.Extensions.Configuration;
 
-namespace BusinessLogic.TMDbServise
+namespace BusinessLogic.TMDbService
 {
 	public class TMDbApiService
 	{

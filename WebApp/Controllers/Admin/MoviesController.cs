@@ -1,6 +1,6 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Services;
-using BusinessLogic.TMDbServise;
+using BusinessLogic.TMDbService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers.Admin

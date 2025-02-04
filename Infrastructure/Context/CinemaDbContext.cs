@@ -39,9 +39,7 @@ namespace DataAccess.Context
 		{
 			if(!optionsBuilder.IsConfigured)
 			{
-				//Env.Load(EnvProperty.EnvFullPath);
-				//string connectionString = Env.GetString(EnvProperty.DbConnection);
-				string connectionString = _configuration["jwt:connectionString"];
+				string connectionString = _configuration["ConnectionString"];
 				optionsBuilder.UseMySql(connectionString, new MySqlServerVersion(new Version(10, 3, 39)));
 			}
 		}
