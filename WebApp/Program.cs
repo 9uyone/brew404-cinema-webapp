@@ -60,6 +60,4 @@ app.MapControllerRoute(
 app.MapControllerRoute(
 	name: "admin",
 	pattern: "admin/{controller=Panel}/{action=Index}/{id?}");
-
-
 app.Run();
