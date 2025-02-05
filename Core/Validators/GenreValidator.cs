@@ -8,8 +8,8 @@ namespace BusinessLogic.Validations
 		public GenreValidator()
 		{
 			RuleFor(genre => genre.Name)
-				.NotEmpty().WithMessage("назва жарну не може бути порожнім")
-				.MaximumLength(50).WithMessage("максимальна довжина - 50 символів");
+				.NotEmpty().WithMessage("Назва жарну не може бути порожнім")
+				.MaximumLength(50).WithMessage("Максимальна довжина 50 символів");
 		}
 	}
 }
