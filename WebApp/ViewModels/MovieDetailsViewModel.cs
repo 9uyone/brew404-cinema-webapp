@@ -7,7 +7,8 @@ namespace WebApp.ViewModels
 	{
 		public MovieDTO? Movie { get; set; }
 		public List<SessionDTO>? ActiveSessions { get; set; }
-
+		public List<MovieDTO>? SimilarMovies { get; set; }
+			
 		public Dictionary<DateTime, List<SessionDTO>> GetGroupedSessionsByDate()
 		{
 			if (ActiveSessions == null)

@@ -24,7 +24,7 @@ namespace BusinessLogic.Helpers
 			CreateMap<Hall, HallDTO>().ReverseMap();
 
 			CreateMap<Session, SessionDTO>().ReverseMap();
-
+			CreateMap<Seat, SeatDTO>().ReverseMap();
 
 			/*CreateMap<SessionDTO, Session>()
 				.ForMember(dest => dest.Id, opt => opt.Ignore())

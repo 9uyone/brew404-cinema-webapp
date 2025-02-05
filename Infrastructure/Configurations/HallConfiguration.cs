@@ -13,7 +13,10 @@ namespace DataAccess.Configurations
 			builder.Property(h => h.Name)
 				.IsRequired();
 
-			builder.Property(h => h.TotalSeats)
+			builder.Property(h => h.NumbOfRows)
+				.IsRequired();
+
+			builder.Property(h => h.SeatsPerRow)
 				.IsRequired();
 		}
 	}
