@@ -43,65 +43,6 @@ body {
     transition: filter 0.3s ease; /* ПОМІНЯНО: Додано перехід для затемнення */
 }
 
-.carousel-item {
-    position: relative;
-}
-
-.carousel-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5); /* ПОМІНЯНО: Затемнений фон */
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.carousel-item:hover::before {
-    opacity: 1;
-}
-
-.carousel-caption {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    position: absolute;
-    top: 5%; /* ПОМІНЯНО: Відстань від верху банера */
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    width: 100%; /* Забезпечуємо, що текст не виходить за межі банера */
-}
-
-.carousel-item:hover .carousel-caption {
-    opacity: 1;
-}
-
-.carousel-caption h3 {
-    font-size: 4rem;
-    margin: 0; /* Видаляємо всі відступи */
-    padding: 0; /* Видаляємо всі внутрішні відступи */
-    top: 0%;
-    position: relative;
-}
-
-/* .carousel-caption .btn {
-    font-size: 1.2rem;
-    position: relative;
-    top: 20px; ПОМІНЯНО: Опущено кнопку нижче
-} * DELETED */
-
-.carousel-item a {
-    display: block; /* Робимо посилання блоковим елементом */
-    text-decoration: none; /* Видаляємо підкреслення */
-    color: inherit; /* Успадковуємо колір тексту */
-}
-
-.carousel-item a:hover {
-    text-decoration: none; /* Видаляємо підкреслення при наведенні */
-}
-
 /* Розділи прем'єр та серіалів */
 h1 {
     border-bottom: 2px solid #00d8ff;
@@ -194,33 +135,6 @@ header, footer {
     border-radius: 8px;
 }
 
-.carousel-controls {
-    position: absolute;
-    top: 50%;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    transform: translateY(-50%);
-}
-
-.carousel-controls button {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #ffffff;
-    font-size: 1.5rem;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.carousel-controls button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
-}
 
 .btn-primary, .btn-success {
     padding: 12px 20px;

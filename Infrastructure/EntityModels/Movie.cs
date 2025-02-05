@@ -15,6 +15,7 @@ namespace DataAccess.Models
 		public string? TrailerUrl { get; set; }
 
 		public DateTime ReleaseDate { get; set; }
+		public float VoteAverage { get; set; }
 
 		public ICollection<Genre> Genres { get; set; } = new List<Genre>();
 		public ICollection<Actor> Actors { get; set; } = new List<Actor>();

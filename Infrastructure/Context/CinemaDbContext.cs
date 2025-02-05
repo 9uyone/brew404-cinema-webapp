@@ -1,7 +1,6 @@
 ﻿using DataAccess.Configurations;
 using DataAccess.EntityModels;
 using DataAccess.Models;
-//using DotNetEnv;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +16,9 @@ namespace DataAccess.Context
 		public DbSet<Actor> Actors { get; set; }
 		public DbSet<Session> Sessions { get; set; }
 		public DbSet<Hall> Halls { get; set; }
-
+		public DbSet<Seat> Seats { get; set; }
+		//public DbSet<Ticket> Tickets { get; set; }
+		
 		public CinemaDbContext(DbContextOptions options, IConfiguration configuration) : base(options) {
 			_configuration = configuration;
 		}
@@ -30,6 +31,9 @@ namespace DataAccess.Context
 			modelBuilder.ApplyConfiguration(new ActorConfiguration());
 			modelBuilder.ApplyConfiguration(new SessionConfiguration());
 			modelBuilder.ApplyConfiguration(new HallConfiguration());
+			modelBuilder.ApplyConfiguration(new SeatConfiguration());
+			//modelBuilder.ApplyConfiguration(new TicketConfiguration());
+			
 			modelBuilder.ApplyConfiguration(new UserConfiguration());
 
 			base.OnModelCreating(modelBuilder);

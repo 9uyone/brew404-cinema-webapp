@@ -25,11 +25,12 @@ namespace BusinessLogic.DTOs
 		public string? ReleaseDate { get; set; }
 
 		public List<ActorDTO>? Actors { get; set; }
-		
 
 		[JsonPropertyName("genres")]
 		public List<GenreDTO>? Genres { get; set; }
 
+		[JsonPropertyName("vote_average")]
+		public float VoteAverage { get; set; }
 
 		[JsonPropertyName("runtime")]
 		public int RunTime { get; set; }
