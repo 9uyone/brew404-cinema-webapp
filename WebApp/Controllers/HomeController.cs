@@ -4,8 +4,6 @@ using System.Diagnostics;
 using BusinessLogic.DTOs;
 using BusinessLogic.Services;
 using WebApp.ViewModels;
-using BusinessLogic.TMDbServise;
-using BusinessLogic.TMDbService;
 
 namespace WebApp.Controllers
 {
@@ -56,6 +54,12 @@ namespace WebApp.Controllers
 			};
 
 			return View(movieDetailsViewModel);
+		}
+
+		public async Task<IActionResult> SessionDetails(int id)
+		{
+			SessionDTO? session = await _sessionService.GetSessionByIdAsync(id);
+			return View(session);
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

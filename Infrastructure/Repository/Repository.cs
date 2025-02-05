@@ -44,7 +44,7 @@ namespace DataAccess.Repository
 
 		public async Task<TEntity?> GetByID(int id, string includeProperties = "")
 		{
-			IQueryable<TEntity> query = DbSet.AsNoTracking();
+			IQueryable<TEntity> query = DbSet;
 
 			foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
 			{
