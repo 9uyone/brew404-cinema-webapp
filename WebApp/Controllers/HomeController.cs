@@ -4,8 +4,6 @@ using System.Diagnostics;
 using BusinessLogic.DTOs;
 using BusinessLogic.Services;
 using WebApp.ViewModels;
-using BusinessLogic.TMDbServise;
-using BusinessLogic.TMDbService;
 
 namespace WebApp.Controllers
 {
@@ -13,21 +11,15 @@ namespace WebApp.Controllers
 	{
 		MovieService _movieService;
 		SessionService _sessionService;
-		HallService _hallService;
 
-		public HomeController(MovieService movieService
-			, SessionService sessionService
-			, HallService hallService)
+		public HomeController(MovieService movieService, SessionService sessionService)
 		{
 			_movieService = movieService;
 			_sessionService = sessionService;
-			_hallService = hallService;
 		}
 
 		public async Task<IActionResult> Index()
 		{
-			var tmdbService = new TMDbApiService();
-			Console.WriteLine(await tmdbService.GetAsync(TmdbEndpoints.MoviesEnd(), TmdbEndpoints.MovieQuery("Venom",1)));
 			return View(await _movieService.GetAllMoviesAsync());
 		}
 
