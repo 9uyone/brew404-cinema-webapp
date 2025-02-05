@@ -4,6 +4,7 @@ using DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(CinemaDbContext))]
-    partial class CinemaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250204225642_AddRatingToMovie")]
+    partial class AddRatingToMovie
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,39 +101,12 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("NumbOfRows")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SeatPerRow")
+                    b.Property<int>("TotalSeats")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("Halls");
-                });
-
-            modelBuilder.Entity("DataAccess.EntityModels.Seat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("HallId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Row")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HallId");
-
-                    b.ToTable("Seats");
                 });
 
             modelBuilder.Entity("DataAccess.EntityModels.Session", b =>
@@ -232,17 +208,6 @@ namespace DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DataAccess.EntityModels.Seat", b =>
-                {
-                    b.HasOne("DataAccess.EntityModels.Hall", "Hall")
-                        .WithMany("Seats")
-                        .HasForeignKey("HallId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Hall");
-                });
-
             modelBuilder.Entity("DataAccess.EntityModels.Session", b =>
                 {
                     b.HasOne("DataAccess.EntityModels.Hall", "Hall")
@@ -279,8 +244,6 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.EntityModels.Hall", b =>
                 {
-                    b.Navigation("Seats");
-
                     b.Navigation("Sessions");
                 });
 

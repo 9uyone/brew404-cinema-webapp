@@ -25,13 +25,31 @@ namespace BusinessLogic.Services
 
 		public async Task<HallDTO?> GetHallByIdAsync(int id)
 		{
-			var hall = await _hallRepository.GetByID(id);
+			var hall = await _hallRepository.GetByID(id,
+				includeProperties: "Seats");
 			return hall == null? null :  _mapper.Map<HallDTO?>(hall);
 		}
 
 		public async Task AddHallAsync(HallDTO hallDTO)
 		{
 			var hall = _mapper.Map<Hall>(hallDTO);
+
+			var seats = new List<Seat>();
+			for(int row = 1; row <= hall.NumbOfRows; row++)
+			{
+				for(int number = 1; number <= hall.SeatsPerRow; number++)
+				{
+					seats.Add(new Seat
+					{
+						Row = row,
+						Number = number,
+						HallId = hall.Id
+					});
+				}
+			}
+
+			hall.Seats = seats;
+
 			await _hallRepository.Insert(hall);
 		}
 

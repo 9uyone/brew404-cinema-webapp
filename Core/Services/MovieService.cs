@@ -46,7 +46,6 @@ namespace BusinessLogic.Services
 
 			var movies = await _movieRepository.Get(includeProperties: "Genres");
 			var filteredMovies = movies.Where(movie => movie.Genres.Any(g => genresIds.Contains(g.Id)));
-
 			return _mapper.Map<List<MovieDTO>>(filteredMovies);
 		}
 
