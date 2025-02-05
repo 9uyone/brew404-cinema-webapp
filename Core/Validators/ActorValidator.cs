@@ -9,7 +9,7 @@ namespace BusinessLogic.Validations
 		{
 			RuleFor(actor => actor.Name)
 				.NotEmpty().WithMessage("Ім'я не може бути порожнім")
-				.MaximumLength(50).WithMessage("Максимальна довжина імені - 50 символів");
+				.MaximumLength(50).WithMessage("Максимальна довжина імені 50 символів");
 			 
 			RuleFor(actor => actor.AvatarUrl)
 				.NotEmpty().WithMessage("URL не може бути порожнім")

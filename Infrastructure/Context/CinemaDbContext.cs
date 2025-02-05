@@ -1,14 +1,16 @@
-﻿using BusinessLogic.Property;
-using DataAccess.Configurations;
+﻿using DataAccess.Configurations;
 using DataAccess.EntityModels;
 using DataAccess.Models;
-using DotNetEnv;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace DataAccess.Context
 {
-	public class CinemaDbContext : DbContext
+	public class CinemaDbContext : IdentityDbContext<User>
 	{
+		IConfiguration _configuration;
+
 		public DbSet<Movie> Movies { get; set; }
 		public DbSet<Genre> Genres { get; set; }
 		public DbSet<Actor> Actors { get; set; }
@@ -17,7 +19,9 @@ namespace DataAccess.Context
 		public DbSet<Seat> Seats { get; set; }
 		//public DbSet<Ticket> Tickets { get; set; }
 		
-		public CinemaDbContext(DbContextOptions options) : base(options) { }
+		public CinemaDbContext(DbContextOptions options, IConfiguration configuration) : base(options) {
+			_configuration = configuration;
+		}
 		public CinemaDbContext(): base() {}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,6 +34,8 @@ namespace DataAccess.Context
 			modelBuilder.ApplyConfiguration(new SeatConfiguration());
 			//modelBuilder.ApplyConfiguration(new TicketConfiguration());
 			
+			modelBuilder.ApplyConfiguration(new UserConfiguration());
+
 			base.OnModelCreating(modelBuilder);
 		}
 
@@ -37,8 +43,7 @@ namespace DataAccess.Context
 		{
 			if(!optionsBuilder.IsConfigured)
 			{
-				Env.Load(EnvProperty.EnvFullPath);
-				string connectionString = Env.GetString(EnvProperty.DbConnection);
+				string connectionString = _configuration["ConnectionString"];
 				optionsBuilder.UseMySql(connectionString, new MySqlServerVersion(new Version(10, 3, 39)));
 			}
 		}

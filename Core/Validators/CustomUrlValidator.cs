@@ -6,7 +6,7 @@ namespace BusinessLogic.Validations
 	{
 		public static IRuleBuilderOptions<T, string?> MustBeValidUrl<T>(this IRuleBuilder<T, string?> ruleBuilder)
 		{
-			return ruleBuilder.Must(isUrl).WithMessage("не вірний URL");
+			return ruleBuilder.Must(isUrl).WithMessage("Неправильний URL");
 		}
 
 		private static bool isUrl(string? link)
