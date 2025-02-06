@@ -127,7 +127,6 @@
             <!-- Movie Poster -->
             <div class="col-md-4">
                 <img src="@Model.Movie.ImageUrl" alt="@Model.Movie.Title Movie Poster" class="movie-poster">
-
                 <div class="session-block mt-3">
                     <div class="date-selector">
                         @if (dates.Count > 0)
@@ -153,7 +152,9 @@
                         {
                             @foreach (var session in sessions)
                             {
-                                <div class="session-time">@session.StartTime</div>
+                                <a asp-action="SessionDetails" asp-controller="Home" asp-route-id="@session.Id">
+                                    <div class="session-time">@session.StartTime</div>
+                                </a>
                                 //<div class="session-time">@session.StartTime.ToString("HH:mm")</div>
                             }
                         }
@@ -270,47 +271,7 @@
             document.getElementById('movieCarousel').scrollBy({ left: 200, behavior: 'smooth' });
         });
 
-        // sessions
-        document.addEventListener("DOMContentLoaded", function () {
-            const dates = @Html.Raw(Json.Serialize(dates));
-            const groupedSessions = @Html.Raw(Json.Serialize(groupedSessions));
-            let selectedIndex = 0;
 
-            const prevBtn = document.getElementById("prevDateBtn");
-            const nextBtn = document.getElementById("nextDateBtn");
-            const dateDisplay = document.getElementById("selectedDate");
-            const dayDisplay = document.getElementById("selectedDay");
-            const sessionList = document.getElementById("sessionList");
-
-            function updateSessionList(date) {
-                const data = groupedSessions[date];
-
-                if (data && data.length > 0) {
-                    sessionList.innerHTML = ""; // Clear the previous sessions
-
-                    data.forEach(session => {
-                        const sessionDiv = document.createElement("div");
-                        sessionDiv.classList.add("session-time");
-
-                        const sessionTime = new Date(session.startTime);
-
-                        sessionDiv.textContent = sessionTime.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" });
-
-                        sessionList.appendChild(sessionDiv);
-                    });
-                }
-            }
-
-            function updateDate(index) {
-                if (index >= 0 && index < dates.length) {
-                    selectedIndex = index;
-                    const newDate = new Date(dates[selectedIndex]);
-                    dateDisplay.textContent = newDate.toLocaleDateString("uk-UA", { day: "2-digit", month: "long" });
-                    dayDisplay.textContent = newDate.toLocaleDateString("uk-UA", { weekday: "long" });
-
-                    updateSessionList(dates[selectedIndex]);
-                }
-            }
 
             prevBtn?.addEventListener("click", function () {
                 if (selectedIndex > 0) updateDate(selectedIndex - 1);

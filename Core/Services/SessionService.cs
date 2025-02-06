@@ -32,7 +32,7 @@ namespace BusinessLogic.Services
 
 		public async Task<SessionDTO?> GetSessionByIdAsync(int id)
 		{
-			var session = await _sessionRepository.GetByID(id, includeProperties: "Movie,Hall");
+			var session = await _sessionRepository.GetByID(id, includeProperties: "Movie,Hall.Seats");
 			return session == null ? null : _mapper.Map<SessionDTO>(session);
 		}
 

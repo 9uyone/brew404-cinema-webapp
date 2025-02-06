@@ -52,6 +52,26 @@ namespace WebApp.Controllers
 			return View(movieDetailsViewModel);
 		}
 
+		public async Task<IActionResult> FilteredMovies(MovieFilteredDTO filter)
+		{
+			var movies = await _movieService.GetFilteredMovies(filter);
+			var genres = await _genreService.GetAllGenresAsync();
+
+			var filterMoviesViewModel = new FilterMoviesViewModel()
+			{
+				Movies = movies.ToList(),
+				Genres = genres.ToList()
+			};
+
+			return View(filterMoviesViewModel);
+		}
+
+		public async Task<IActionResult> SessionDetails(int id)
+		{
+			SessionDTO? session = await _sessionService.GetSessionByIdAsync(id);
+			return View(session);
+		}
+
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()
 		{
