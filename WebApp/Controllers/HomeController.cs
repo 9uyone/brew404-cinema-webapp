@@ -11,11 +11,15 @@ namespace WebApp.Controllers
 	{
 		MovieService _movieService;
 		SessionService _sessionService;
+		GenreService _genreService;
 
-		public HomeController(MovieService movieService, SessionService sessionService)
+		public HomeController(MovieService movieService
+			, SessionService sessionService
+			, GenreService genreService)
 		{
 			_movieService = movieService;
 			_sessionService = sessionService;
+			_genreService = genreService;
 		}
 
 		public async Task<IActionResult> Index()
