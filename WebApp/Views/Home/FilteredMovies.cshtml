@@ -1,66 +1,209 @@
 ﻿@model WebApp.ViewModels.FilterMoviesViewModel
 
-<h2>Фільми</h2>
+<style>
+    body {
+        background-color: #121212;
+        color: #ffffff;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<form method="get" action="@Url.Action("FilteredMovies", "Home")">
-    <div class="row">
-        <div class="col-md-3">
-            <label for="GenreIds">Жанри:</label>
-            <select name="GenreIds" multiple class="form-control">
-                @foreach (var genre in Model.Genres)
-                {
-                    <option value="@genre.Id">@genre.Name</option>
-                }
-            </select>
-        </div>
+    .filter-container {
+        background: #1e1e1e;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        margin: 20px 0;
+    }
 
-        <div class="col-md-2">
-            <label for="Year">Рік:</label>
-            <input type="number" name="Year" class="form-control">
-        </div>
+    .filter-section {
+        margin-bottom: 1.5rem;
+    }
 
-        <div class="col-md-2">
-            <label for="SortBy">Сортувати за:</label>
-            <select name="SortBy" class="form-control">
-                <option value="Title">Назва</option>
-                <option value="ReleaseDate">Дата випуску</option>
-            </select>
-        </div>
+    .filter-section label {
+        color: #9ba7b7;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
 
-        <div class="col-md-2">
-            <label>Порядок:</label>
-            <select name="Descending" class="form-control">
-                <option value="false">За зростанням</option>
-                <option value="true">За спаданням</option>
-            </select>
-        </div>
+    .form-control {
+        background-color: #2c2c2c;
+        color: #ffffff;
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 12px;
+        transition: all 0.3s ease;
+    }
 
-        <div class="col-md-12 mt-3">
-            <button type="submit" class="btn btn-primary">Фільтрувати</button>
-        </div>
-    </div>
-</form>
+    .form-control:focus {
+        background-color: #373737;
+        border-color: #0066cc;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.25);
+    }
 
-<div class="container mt-5">
-    <div class="row d-flex justify-content-start">
-        @{
-            foreach(var movie in Model.Movies)
-            {
-                <div class="col-md-4 col-sm-6 col-12 mb-3">
-                    <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="text-decoration-none">
-                        <div class="card" style="position: relative;">
-                            <img src="@movie.ImageUrl" class="card-img-top fixed-size" alt="@movie.Title">
-                            <div class="card-body">
-                                <h5 class="card-title" style="color: white">@movie.Title</h5>
-                                <h5 class="card-title" style="color: lightgrey;">@movie.ReleaseDate</h5>
+    .multiselect-dropdown {
+        min-height: 120px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .multiselect-option {
+        padding: 8px 12px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .multiselect-option:hover {
+        background-color: #0066cc;
+    }
+
+    .filter-button {
+        background: linear-gradient(135deg, #0066cc, #0052a3);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: transform 0.2s;
+    }
+
+    .filter-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .movie-card {
+        background: #1e1e1e;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
+    }
+
+    .movie-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0, 102, 204, 0.3);
+    }
+
+    .card-img {
+        height: 400px;
+        object-fit: cover;
+        border-bottom: 3px solid #0066cc;
+    }
+
+    .rating-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: rgba(0, 102, 204, 0.9);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        backdrop-filter: blur(4px);
+    }
+
+    .movie-year {
+        color: #9ba7b7;
+        font-size: 0.9em;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 50px;
+        color: #666;
+        font-size: 1.2em;
+    }
+</style>
+
+<h2 class="mb-4">Пошук фільмів</h2>
+
+<div class="filter-container">
+    <form method="get" action="@Url.Action("FilteredMovies", "Home")">
+        <div class="row">
+            <!-- Жанри з мультиселектом -->
+            <div class="col-lg-4 col-md-6 filter-section">
+                <label>Жанри</label>
+                <div class="multiselect-dropdown form-control">
+                    @foreach (var genre in Model.Genres)
+                    {
+                        <div class="multiselect-option">
+                            <label class="d-block mb-0">
+                                <input type="checkbox" name="GenreIds" value="@genre.Id">
+                                @genre.Name
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Фільтри -->
+            <div class="col-lg-8 col-md-6">
+                <div class="row">
+                    <div class="col-md-6 filter-section">
+                        <label>Рік виходу</label>
+                        <input type="number" name="Year" class="form-control" 
+                               min="1900" max="@DateTime.Now.Year" 
+                               placeholder="Введіть рік">
+                    </div>
+
+                    <div class="col-md-6 filter-section">
+                        <label>Сортування</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <select name="SortBy" class="form-control">
+                                    <option value="Title">Назва</option>
+                                    <option value="ReleaseDate">Дата</option>
+                                </select>
                             </div>
-                            <h5 class="card-title" style="color: white; position: absolute; bottom: 100px; left: 10px; background-color: rgba(0, 0, 0, 0.6); padding: 5px 10px; border-radius: 5px;">
-                                @movie.VoteAverage ⭐
-                            </h5>
+                            <div class="col-6">
+                                <select name="Descending" class="form-control">
+                                    <option value="false">Зростання</option>
+                                    <option value="true">Спадання</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Кнопка фільтрації -->
+            <div class="col-12 text-end">
+                <button type="submit" class="filter-button btn btn-primary">
+                    <i class="fas fa-filter me-2"></i>Застосувати фільтри
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Список фільмів -->
+<div class="container-fluid mt-4">
+    @if (Model.Movies.Any())
+    {
+        <div class="row g-4">
+            @foreach(var movie in Model.Movies)
+            {
+                <div class="col-xl-3 col-lg-4 col-md-6">
+                    <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="text-decoration-none">
+                        <div class="movie-card h-100">
+                            <div class="rating-badge">
+                                @movie.VoteAverage.ToString("0.0") ⭐
+                            </div>
+                            <img src="@movie.ImageUrl" class="card-img w-100" alt="@movie.Title">
+                            <div class="p-3">
+                                <h5 class="mb-1">@movie.Title</h5>
+                                <p class="movie-year mb-0">@DateTime.Parse(movie.ReleaseDate).Year</p>
+                            </div>
                         </div>
                     </a>
                 </div>
             }
-        }
-    </div>
+        </div>
+    }
+    else
+    {
+        <div class="no-results">
+            <i class="fas fa-film fa-3x mb-3"></i>
+            <p>Фільмів за обраними критеріями не знайдено</p>
+        </div>
+    }
 </div>
