@@ -34,23 +34,22 @@ namespace WebApp.Controllers
 
 		public async Task<IActionResult> Details(int id)
 		{
-			MovieDTO? movie = await _movieService.GetMovieByIdAsync(id);
-
+			var movie = await _movieService.GetMovieByIdAsync(id);
 			if (movie == null)
 			{
 				return NotFound();
 			}
-			// active sessions
-			var activeSessions = await _sessionService.GetAllSessionsByMovieIdAsync(movie.Id);
-			var similar = (await _movieService.GetMoviesByGenres(movie.Genres))
-				.Where(m => m.Id != movie.Id)
-				.ToList();
 
-			MovieDetailsViewModel movieDetailsViewModel = new MovieDetailsViewModel
+			var activeSessionsTask = _sessionService.GetGroupedSessionsAsync(movie.Id);  // Групуємо сеанси
+			var similarMoviesTask = _movieService.GetMoviesByGenres(movie.Genres);
+
+			await Task.WhenAll(activeSessionsTask, similarMoviesTask);
+
+			var movieDetailsViewModel = new MovieDetailsViewModel
 			{
 				Movie = movie,
-				ActiveSessions = activeSessions,
-				SimilarMovies = similar
+				GroupedSessions = activeSessionsTask.Result,  // Повертаємо вже згруповані сеанси
+				SimilarMovies = similarMoviesTask.Result.Where(m => m.Id != movie.Id).ToList()
 			};
 
 			return View(movieDetailsViewModel);

@@ -3,6 +3,7 @@ using BusinessLogic.DTOs;
 using DataAccess.EntityModels;
 using DataAccess.Interfaces;
 using DataAccess.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Services
 {
@@ -43,6 +44,21 @@ namespace BusinessLogic.Services
 				includeProperties: "Movie,Hall");
 
 			return _mapper.Map<List<SessionDTO>>(activeSessions).ToList();
+		}
+
+		public async Task<Dictionary<DateTime, List<SessionDTO>>> GetGroupedSessionsAsync(int movieId)
+		{
+			var sessions = await _sessionRepository.Get(
+				filter: s => s.MovieId == movieId && s.StartTime > DateTime.Now,
+				includeProperties: "Movie,Hall"
+			);
+
+			return sessions
+				.GroupBy(s => s.StartTime.Date)
+				.ToDictionary(
+					g => g.Key,
+					g => g.Select(s => _mapper.Map<SessionDTO>(s)).ToList()
+				);
 		}
 
 		public async Task<bool> AddSessionAsync(SessionDTO sessionDTO)

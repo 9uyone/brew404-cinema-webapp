@@ -118,49 +118,37 @@
     <!-- Main content -->
     <main class="container bg-dark">
         @{
-            var groupedSessions = Model.GetGroupedSessionsByDate();
-            var selectedDate = groupedSessions.Keys.FirstOrDefault(); // Вибір першої доступної дати
-            var dates = groupedSessions.Keys.OrderBy(d => d).ToList();
-            var selectedIndex = 0;
+            var selectedDate = Model.GroupedSessions.Keys.FirstOrDefault();  // Вибір першої доступної дати
+            var groupedSessions = Model.GetSessionsForSelectedDate(selectedDate);  // Отримуємо сеанси для вибраної дати
+            var dates = Model.GroupedSessions.Keys.OrderBy(d => d).ToList();
         }
         <div class="row">
-            <!-- Movie Poster -->
             <div class="col-md-4">
-                <img src="@Model.Movie.ImageUrl" alt="@Model.Movie.Title Movie Poster" class="movie-poster">
-                <div class="session-block mt-3">
-                    <div class="date-selector">
-                        @if (dates.Count > 0)
-                        {
-                            <button class="arrow-btn" id="prevDateBtn" data-index="0"><i class="fas fa-chevron-left"></i></button>
-                            <h3 class="date-display">
-                                <span class="date" id="selectedDate">@selectedDate.ToString("dd MMMM", new CultureInfo("uk-UA"))</span>
-                                <span class="day" id="selectedDay">@selectedDate.ToString("dddd", new CultureInfo("uk-UA"))</span>
-                            </h3>
-                            <button class="arrow-btn" id="nextDateBtn" data-index="0"><i class="fas fa-chevron-right"></i></button>
-                        }
-                        else
-                        {
-                            <h3 class="date-display">
-                                <span>Немає активних сеансів</span>
-                            </h3>
-                        } <!-- 03.02.2025 11:00:00-->
-                    </div>
+                <!-- Картинка фільму -->
+                <img src="@Model.Movie.ImageUrl" alt="@Model.Movie.Title" class="movie-poster">
+            </div>
 
-                    <div class="session-list" id="sessionList">
-                        <!-- отут повинні бути виведені дані про сесії-->
-                        @if (groupedSessions.TryGetValue(selectedDate, out var sessions))
-                        {
-                            @foreach (var session in sessions)
-                            {
-                                <a asp-action="SessionDetails" asp-controller="Home" asp-route-id="@session.Id">
-                                    <div class="session-time">@session.StartTime</div>
-                                </a>
-                                //<div class="session-time">@session.StartTime.ToString("HH:mm")</div>
-                            }
-                        }
-                    </div>
+            <div class="col-md-8">
+                <!-- Назва фільму -->
+                <h1>@Model.Movie.Title</h1>
+
+                <div class="date-selector">
+                    <button class="arrow-btn" id="prevDateBtn"><i class="fas fa-chevron-left"></i></button>
+                    <h3>
+                        <span class="date" id="selectedDate">@selectedDate.ToString("dd MMMM", new CultureInfo("uk-UA"))</span>
+                    </h3>
+                    <button class="arrow-btn" id="nextDateBtn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+
+                <div class="session-list">
+                    <!-- Сеанси для вибраної дати -->
+                    @foreach (var session in groupedSessions)
+                    {
+                        <div class="session-time">@session.StartTime.ToString("HH:mm")</div>
+                    }
                 </div>
             </div>
+        </div>
 
 
             <!-- Movie Details and Trailer -->
@@ -273,16 +261,26 @@
 
 
 
-            prevBtn?.addEventListener("click", function () {
-                if (selectedIndex > 0) updateDate(selectedIndex - 1);
-            });
+        var dates = @Html.Raw(Json.Serialize(Model.GroupedSessions.Keys));  // Список всіх доступних дат
+        var selectedIndex = 0;
 
-            nextBtn?.addEventListener("click", function () {
-                if (selectedIndex < dates.length - 1) updateDate(selectedIndex + 1);
-            });
-
-            updateSessionList(dates[selectedIndex]);
+        // Обробка кнопок для перемикання між датами
+        document.getElementById('prevDateBtn').addEventListener('click', function () {
+            if (selectedIndex > 0) updateDate(selectedIndex - 1);
         });
+
+        document.getElementById('nextDateBtn').addEventListener('click', function () {
+            if (selectedIndex < dates.length - 1) updateDate(selectedIndex + 1);
+        });
+
+        function updateDate(index) {
+            selectedIndex = index;
+            var selectedDate = new Date(dates[selectedIndex]);
+            document.getElementById('selectedDate').innerText = selectedDate.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' });
+
+            // Тут потрібно оновити список сеансів для нової дати
+            // Напишіть код для завантаження сеансів для нової дати
+        }
     </script>
 </body>
 </html>
