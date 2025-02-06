@@ -1,0 +1,66 @@
+﻿@model WebApp.ViewModels.FilterMoviesViewModel
+
+<h2>Фільми</h2>
+
+<form method="get" action="@Url.Action("FilteredMovies", "Home")">
+    <div class="row">
+        <div class="col-md-3">
+            <label for="GenreIds">Жанри:</label>
+            <select name="GenreIds" multiple class="form-control">
+                @foreach (var genre in Model.Genres)
+                {
+                    <option value="@genre.Id">@genre.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label for="Year">Рік:</label>
+            <input type="number" name="Year" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+            <label for="SortBy">Сортувати за:</label>
+            <select name="SortBy" class="form-control">
+                <option value="Title">Назва</option>
+                <option value="ReleaseDate">Дата випуску</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label>Порядок:</label>
+            <select name="Descending" class="form-control">
+                <option value="false">За зростанням</option>
+                <option value="true">За спаданням</option>
+            </select>
+        </div>
+
+        <div class="col-md-12 mt-3">
+            <button type="submit" class="btn btn-primary">Фільтрувати</button>
+        </div>
+    </div>
+</form>
+
+<div class="container mt-5">
+    <div class="row d-flex justify-content-start">
+        @{
+            foreach(var movie in Model.Movies)
+            {
+                <div class="col-md-4 col-sm-6 col-12 mb-3">
+                    <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="text-decoration-none">
+                        <div class="card" style="position: relative;">
+                            <img src="@movie.ImageUrl" class="card-img-top fixed-size" alt="@movie.Title">
+                            <div class="card-body">
+                                <h5 class="card-title" style="color: white">@movie.Title</h5>
+                                <h5 class="card-title" style="color: lightgrey;">@movie.ReleaseDate</h5>
+                            </div>
+                            <h5 class="card-title" style="color: white; position: absolute; bottom: 100px; left: 10px; background-color: rgba(0, 0, 0, 0.6); padding: 5px 10px; border-radius: 5px;">
+                                @movie.VoteAverage ⭐
+                            </h5>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+    </div>
+</div>

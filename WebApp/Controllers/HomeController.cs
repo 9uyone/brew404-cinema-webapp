@@ -11,15 +11,15 @@ namespace WebApp.Controllers
 	{
 		MovieService _movieService;
 		SessionService _sessionService;
-		HallService _hallService;
+		GenreService _genreService;
 
 		public HomeController(MovieService movieService
 			, SessionService sessionService
-			, HallService hallService)
+			, GenreService genreService)
 		{
 			_movieService = movieService;
 			_sessionService = sessionService;
-			_hallService = hallService;
+			_genreService = genreService;
 		}
 
 		public async Task<IActionResult> Index()
@@ -54,6 +54,20 @@ namespace WebApp.Controllers
 			};
 
 			return View(movieDetailsViewModel);
+		}
+
+		public async Task<IActionResult> FilteredMovies(MovieFilteredDTO filter)
+		{
+			var movies = await _movieService.GetFilteredMovies(filter);
+			var genres = await _genreService.GetAllGenresAsync();
+
+			var filterMoviesViewModel = new FilterMoviesViewModel()
+			{
+				Movies = movies.ToList(),
+				Genres = genres.ToList()
+			};
+
+			return View(filterMoviesViewModel);
 		}
 
 		public async Task<IActionResult> SessionDetails(int id)
