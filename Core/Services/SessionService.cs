@@ -39,7 +39,7 @@ namespace BusinessLogic.Services
 			if (filter.MovieId.HasValue)
 				sessionQuery = sessionQuery.Where(session => session.MovieId == filter.MovieId);
 			if (filter.Date.HasValue)
-				sessionQuery = sessionQuery.Where(session => session.StartTime == filter.Date);
+				sessionQuery = sessionQuery.Where(session => session.StartTime.Date == filter.Date);
 
 			sessionQuery = filter.SortBy?.ToLower() switch
 			{
