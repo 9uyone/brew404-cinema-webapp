@@ -1,0 +1,57 @@
+﻿@model WebApp.ViewModels.FilterSessionsViewModel
+
+<h2>Cессії</h2>
+
+<form method="get" action="@Url.Action("FilteredSessions", "Home")">
+    <div class="row">
+        <div class="col-md-3">
+            <label for="MovieId">фільми:</label>
+            <select name="MovieId" multiple class="form-control">
+                @foreach (var movie in Model.Movies)
+                {
+                    <option value="@movie.Id">@movie.Title</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label for="Date">дата:</label>
+            <input type="date" name="Date" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+            <label for="SortBy">Сортувати за:</label>
+            <select name="SortBy" class="form-control">
+                <option value="date">Датою</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label>Порядок:</label>
+            <select name="Descending" class="form-control">
+                <option value="false">За зростанням</option>
+                <option value="true">За спаданням</option>
+            </select>
+        </div>
+
+        <div class="col-md-12 mt-3">
+            <button type="submit" class="btn btn-primary">Фільтрувати</button>
+        </div>
+    </div>
+</form>
+
+<div class="container mt-5">
+    <div class="row d-flex justify-content-start">
+        @{
+            foreach (var session in Model.Sessions)
+            {
+                <div class="col-md-4 col-sm-6 col-12 mb-3">
+                    <a asp-action="SessionDetails" asp-controller="Home" asp-route-id="@session.Id" class="text-decoration-none">
+                        <p>@session.Movie.Title</p>
+                        <p>@session.StartTime-@session.EndTime</p>
+                    </a>
+                </div>
+            }
+        }
+    </div>
+</div>

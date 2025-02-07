@@ -24,7 +24,7 @@ namespace WebApp.Controllers.Admin
 		public async Task<IActionResult> AddHall(HallDTO hall)
 		{
 			if (!ModelState.IsValid)
-				return BadRequest();
+				return BadRequest(ModelState);
 
 			await _hallService.AddHallAsync(hall); 
 
@@ -43,7 +43,7 @@ namespace WebApp.Controllers.Admin
 		public async Task<IActionResult> UpdateHall(HallDTO hall)
 		{
 			if (!ModelState.IsValid)
-				return BadRequest();
+				return BadRequest(ModelState);
 
 			await _hallService.UpdateHallAsync(hall);
 

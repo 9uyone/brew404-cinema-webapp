@@ -59,21 +59,14 @@
                         <div class="mb-3">
                             <label for="hallName" class="form-label">назва для зала</label>
                             <input type="text" class="form-control" id="hallName" name="Name" required />
-                            @if (ViewData.ModelState["Name"]?.Errors.Count > 0)
-                            {
-                                <div class="alert alert-danger mt-2">
-                                    @foreach (var error in ViewData.ModelState["Name"].Errors)
-                                    {
-                                        <p>@error.ErrorMessage</p>
-                                    }
-                                </div>
-                            }
+
                             <label for="hallNumbOfRow" class="form-label">кількість рядів</label>
                             <input type="number" class="form-control" id="hallNumbOfRow" name="NumbOfRows" required />
 
                             <label for="hallSeatPerRow" class="form-label">кількість рядів</label>
                             <input type="number" class="form-control" id="hallSeatPerRow" name="SeatsPerRow" required />
                         </div>
+
                         <button type="submit" class="btn btn-primary">Зберегти</button>
                     </form>
                 </div>

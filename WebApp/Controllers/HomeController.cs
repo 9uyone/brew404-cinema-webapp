@@ -70,6 +70,20 @@ namespace WebApp.Controllers
 			return View(filterMoviesViewModel);
 		}
 
+		public async Task<IActionResult> FilteredSessions(SessionFilterDTO filter)
+		{
+			var sessions = await _sessionService.GetFilteredSessions(filter);
+			var movies = await _movieService.GetAllMoviesAsync();
+
+			var filterSessionViewModel = new FilterSessionsViewModel()
+			{
+				Movies = movies.ToList(),
+				Sessions = sessions.ToList()
+			};
+
+			return View(filterSessionViewModel);
+		}
+
 		public async Task<IActionResult> SessionDetails(int id)
 		{
 			SessionDTO? session = await _sessionService.GetSessionByIdAsync(id);

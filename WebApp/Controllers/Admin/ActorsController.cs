@@ -23,11 +23,14 @@ namespace WebApp.Controllers.Admin
 		public async Task<IActionResult> AddActor(ActorDTO actor)
 		{
 			if (!ModelState.IsValid)
-				return BadRequest(ModelState);
+			{
+				return PartialView("_AddActorPartial", actor);
+			}
 
 			await _actorService.AddActorAsync(actor);
-			return RedirectToAction(nameof(Index));
+			return Json(new { success = true });
 		}
+
 
 		[HttpPost("delete")]
 		public async Task<IActionResult> DeleteActor(int id)

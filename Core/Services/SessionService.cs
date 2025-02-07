@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs;
+using BusinessLogic.Interfaces;
 using DataAccess.EntityModels;
 using DataAccess.Interfaces;
 using DataAccess.Models;
 
 namespace BusinessLogic.Services
 {
-	public class SessionService
+	public class SessionService : ISessionFilter
 	{
 		private readonly IRepository<Session> _sessionRepository;
 		private readonly IRepository<Movie> _moviesRepository;
@@ -28,6 +29,24 @@ namespace BusinessLogic.Services
 		{
 			var sessions = await Task.Run(() => _sessionRepository.Get(includeProperties: "Movie,Hall"));
 			return _mapper.Map<List<SessionDTO>>(sessions);
+		}
+
+		public async Task<IEnumerable<SessionDTO>> GetFilteredSessions(SessionFilterDTO filter)
+		{
+			var sessionQuery = await _sessionRepository.Get(includeProperties: "Movie,Hall.Seats");
+
+			if (filter.MovieId.HasValue)
+				sessionQuery = sessionQuery.Where(session => session.MovieId == filter.MovieId);
+			if (filter.Date.HasValue)
+				sessionQuery = sessionQuery.Where(session => session.StartTime == filter.Date);
+
+			sessionQuery = filter.SortBy?.ToLower() switch
+			{
+				"date" => filter.Descending ? sessionQuery.OrderByDescending(s => s.StartTime) : sessionQuery.OrderBy(s => s.StartTime),
+				_ => sessionQuery
+			};
+
+			return _mapper.Map<List<SessionDTO>>(sessionQuery);
 		}
 
 		public async Task<SessionDTO?> GetSessionByIdAsync(int id)
