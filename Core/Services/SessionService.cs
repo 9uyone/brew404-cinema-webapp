@@ -49,7 +49,7 @@ namespace BusinessLogic.Services
 		public async Task<Dictionary<DateTime, List<SessionDTO>>> GetGroupedSessionsAsync(int movieId)
 		{
 			var sessions = await _sessionRepository.Get(
-				filter: s => s.MovieId == movieId && s.StartTime > DateTime.Now,
+				filter: s => s.MovieId == movieId,
 				includeProperties: "Movie,Hall"
 			);
 

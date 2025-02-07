@@ -40,16 +40,14 @@ namespace WebApp.Controllers
 				return NotFound();
 			}
 
-			var activeSessionsTask = _sessionService.GetGroupedSessionsAsync(movie.Id);  // Групуємо сеанси
-			var similarMoviesTask = _movieService.GetMoviesByGenres(movie.Genres);
-
-			await Task.WhenAll(activeSessionsTask, similarMoviesTask);
+			var activeSessions = await _sessionService.GetGroupedSessionsAsync(movie.Id);
+			var similarMovies = await _movieService.GetMoviesByGenres(movie.Genres);
 
 			var movieDetailsViewModel = new MovieDetailsViewModel
 			{
 				Movie = movie,
-				GroupedSessions = activeSessionsTask.Result,  // Повертаємо вже згруповані сеанси
-				SimilarMovies = similarMoviesTask.Result.Where(m => m.Id != movie.Id).ToList()
+				GroupedSessions = activeSessions,
+				SimilarMovies = similarMovies.Where(m => m.Id != movie.Id).ToList()
 			};
 
 			return View(movieDetailsViewModel);
