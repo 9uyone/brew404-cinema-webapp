@@ -52,6 +52,18 @@ namespace WebApp.Controllers
 
 			return View(movieDetailsViewModel);
 		}
+		//public async Task<IActionResult> GetSessions(DateTime date, int movieId)
+		//{
+		//	var sessions = await _sessionService.GetSessionsByDateAndMovieIdAsync(date, movieId);
+
+		//	// If there are no sessions, return an empty array
+		//	if (sessions == null)
+		//	{
+		//		return Json(new List<SessionDTO>());
+		//	}
+
+		//	return Json(sessions);
+		//}
 
 		public async Task<IActionResult> SessionDetails(int id)
 		{
