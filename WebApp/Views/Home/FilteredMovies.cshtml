@@ -38,21 +38,18 @@
             </button>
             <div class="filter-dropdown">
                 <div class="genres-container">
-                    @if (Model.Genres != null)
+                    @foreach (var genre in Model.Genres)
                     {
-                        @foreach (var genre in Model.Genres)
-                        {
-                            <div class="genre-item">
-                                <input type="checkbox" 
-                                       id="genre-@genre.Id" 
-                                       name="GenreIds" 
-                                       value="@genre.Id" 
-                                       class="genre-checkbox">
-                                <label for="genre-@genre.Id" class="genre-label">
-                                    @genre.Name
-                                </label>
-                            </div>
-                        }
+                        <div class="genre-item">
+                            <input type="checkbox" 
+                                   id="genre-@genre.Id" 
+                                   name="GenreIds" 
+                                   value="@genre.Id" 
+                                   class="genre-checkbox">
+                            <label for="genre-@genre.Id" class="genre-label">
+                                @genre.Name
+                            </label>
+                        </div>
                     }
                 </div>
             </div>
@@ -137,17 +134,6 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingIndicator.style.display = show ? 'flex' : 'none';
     }
 
-    // Функція для отримання жанрів фільму
-    function getMovieGenres(movieElement) {
-        // Отримуємо посилання, яке містить дані про фільм
-        const movieLink = movieElement.querySelector('a');
-        if (!movieLink) return [];
-        
-        // Отримуємо всі класи з data-genres, якщо вони є
-        const genresData = movieLink.getAttribute('data-genres');
-        return genresData ? genresData.split(',').map(id => id.trim()) : [];
-    }
-
     // Функція для фільтрації фільмів
     function filterMovies() {
         const selectedGenres = [...document.querySelectorAll('input[name="GenreIds"]:checked')].map(cb => cb.value);
@@ -167,7 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const card = movieCol.querySelector('.movie-card');
             const title = card.querySelector('.card-title').textContent.toLowerCase();
             const movieYear = card.querySelector('.movie-year').textContent;
-            const movieGenres = getMovieGenres(movieCol);
 
             // Перевірка відповідності пошуковому запиту
             const matchesSearch = searchQuery === '' || title.includes(searchQuery);
@@ -175,12 +160,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Перевірка відповідності року
             const matchesYear = !year || movieYear.includes(year);
 
-            // Перевірка відповідності жанрам
-            const matchesGenres = selectedGenres.length === 0 || 
-                selectedGenres.some(genreId => movieGenres.includes(genreId));
-
             // Оновлення відображення
-            movieCol.style.display = (matchesSearch && matchesYear && matchesGenres) ? '' : 'none';
+            movieCol.style.display = (matchesSearch && matchesYear) ? '' : 'none';
         });
 
         // Сортування фільмів
@@ -220,7 +201,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const selectedCount = document.querySelectorAll('.genre-checkbox:checked').length;
             const genreButton = document.querySelector('[data-filter="genres"] span');
             genreButton.textContent = selectedCount > 0 ? `Жанри (${selectedCount})` : 'Жанри';
-            filterMovies(); // Додаємо виклик фільтрації при зміні жанру
         });
     });
 
