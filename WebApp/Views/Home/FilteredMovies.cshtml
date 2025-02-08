@@ -63,19 +63,17 @@
         <div class="filter-section">
             <button type="button" class="filter-button" data-filter="genres">
                 <span>Жанри</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M6 9l6 6 6-6"/>
-                </svg>
             </button>
             <div class="filter-dropdown">
-                <select name="GenreIds" multiple class="form-control">
-                    @foreach (var genre in Model.Genres)
-                    {
-                        <option value="@genre.Id">@genre.Name</option>
-                    }
-                </select>
+                @foreach (var genre in Model.Genres)
+                {
+                    <label>
+                        <input type="checkbox" name="GenreIds" value="@genre.Id"> @genre.Name
+                    </label>
+                }
             </div>
         </div>
+
 
         <!-- Рік -->
         <div class="filter-section">
@@ -145,43 +143,22 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchInput');
-    const filterIcon = document.getElementById('filter-icon');
-    const filterContainer = document.getElementById('filterContainer');
-    const filterButtons = document.querySelectorAll('#filterContainer .filter-button');
-    const movieResults = document.getElementById('movieResults');
+    const filterButtons = document.querySelectorAll('.filter-button');
+    const filterCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+    const filterInputs = document.querySelectorAll('input[type="number"]');
+    const movieCards = document.querySelectorAll('.movie-card');
 
-    // --- Функція для відкриття/закриття фільтрів ---
-    function toggleDropdown(button) {
-        const dropdown = button.nextElementSibling;
-        if (!dropdown) {
-            console.warn('Dropdown не знайдено для кнопки:', button);
-            return;
-        }
-
-        const isOpen = dropdown.classList.contains('show');
-
-        // Закриваємо всі випадаючі списки
-        document.querySelectorAll('.filter-dropdown').forEach(drop => drop.classList.remove('show'));
-        document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
-
-        // Відкриваємо тільки той, який натиснули
-        if (!isOpen) {
-            dropdown.classList.add('show');
-            button.classList.add('active');
-            console.log(`Відкрито: ${button.getAttribute('data-filter')}`);
-        }
-    }
-
-    // --- Відкриття/закриття фільтрів при натисканні ---
+    // --- Відкривання/закривання фільтрів ---
     filterButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             e.stopPropagation();
-            toggleDropdown(button);
+            const dropdown = button.nextElementSibling;
+            dropdown.classList.toggle('show');
+            button.classList.toggle('active');
         });
     });
 
-    // --- Закриття фільтрів при кліку поза ними ---
+    // Закриття всіх фільтрів при кліку поза ними
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.filter-section')) {
             document.querySelectorAll('.filter-dropdown').forEach(dropdown => dropdown.classList.remove('show'));
@@ -189,26 +166,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // --- Показ/приховування контейнера фільтрів ---
-    if (filterIcon) {
-        filterIcon.addEventListener('click', (e) => {
-            e.stopPropagation();
-            filterContainer.classList.toggle('d-none');
+    // --- Фільтрація фільмів ---
+    function filterMovies() {
+        const selectedGenres = [...document.querySelectorAll('input[name="GenreIds"]:checked')].map(cb => cb.value);
+        const minYear = document.querySelector('input[name="YearMin"]').value;
+        const maxYear = document.querySelector('input[name="YearMax"]').value;
+
+        movieCards.forEach(card => {
+            const movieGenres = card.getAttribute('data-genres').split(',');
+            const movieYear = parseInt(card.getAttribute('data-year'));
+
+            const genreMatch = selectedGenres.length === 0 || movieGenres.some(genre => selectedGenres.includes(genre));
+            const yearMatch = (!minYear || movieYear >= minYear) && (!maxYear || movieYear <= maxYear);
+
+            if (genreMatch && yearMatch) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
         });
     }
 
-    // --- Функція пошуку фільмів ---
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const movieCards = document.querySelectorAll('.movie-card');
-
-            movieCards.forEach(card => {
-                const title = card.querySelector('.card-title').textContent.toLowerCase();
-                card.closest('.col-md-4').style.display = title.includes(searchTerm) ? '' : 'none';
-            });
-        });
-    }
+    // Додаємо обробники подій на чекбокси та інпути
+    filterCheckboxes.forEach(checkbox => checkbox.addEventListener('change', filterMovies));
+    filterInputs.forEach(input => input.addEventListener('input', filterMovies));
 });
+
 
 </script>
