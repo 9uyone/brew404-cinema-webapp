@@ -31,14 +31,14 @@ namespace WebApp.Controllers.Admin
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpDelete]
+		[HttpPost]
 		public async Task<IActionResult> Delete(int id)
 		{
 			await _actorService.DeleteActorAsync(id);
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpPut]
+		[HttpPost]
 		public async Task<IActionResult> Update(ActorDTO actor)
 		{
 			if (!ModelState.IsValid)

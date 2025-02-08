@@ -118,16 +118,14 @@
     <!-- Main content -->
     <main class="container bg-dark">
         @{
-            var groupedSessions = Model.GetGroupedSessionsByDate();
-            var selectedDate = groupedSessions.Keys.FirstOrDefault(); // Вибір першої доступної дати
-            var dates = groupedSessions.Keys.OrderBy(d => d).ToList();
-            var selectedIndex = 0;
+            var selectedDate = Model.GroupedSessions.Keys.FirstOrDefault();  // Вибір першої доступної дати
+            var dateSessions = Model.GetSessionsForSelectedDate(selectedDate);  // Отримуємо сеанси для вибраної дати
+            var dates = Model.GroupedSessions.Keys.OrderBy(d => d).ToList();
         }
         <div class="row">
             <!-- Movie Poster -->
             <div class="col-md-4">
                 <img src="@Model.Movie.ImageUrl" alt="@Model.Movie.Title Movie Poster" class="movie-poster">
-
                 <div class="session-block mt-3">
                     <div class="date-selector">
                         @if (dates.Count > 0)
@@ -144,18 +142,16 @@
                             <h3 class="date-display">
                                 <span>Немає активних сеансів</span>
                             </h3>
-                        } <!-- 03.02.2025 11:00:00-->
+                        }
                     </div>
 
-                    <div class="session-list" id="sessionList">
-                        <!-- отут повинні бути виведені дані про сесії-->
-                        @if (groupedSessions.TryGetValue(selectedDate, out var sessions))
+                    <div class="session-list" id="sessionContainer">
+                        <!-- отут перший вивід сесії-->
+                        @foreach (var session in dateSessions)
                         {
-                            @foreach (var session in sessions)
-                            {
-                                <div class="session-time">@session.StartTime</div>
-                                //<div class="session-time">@session.StartTime.ToString("HH:mm")</div>
-                            }
+                            <a asp-action="SessionDetails" asp-controller="Home" asp-route-id="@session.Id" class="session-link">
+                                <div class="session-time">@session.StartTime.ToString("HH:mm")</div>
+                            </a>
                         }
                     </div>
                 </div>
@@ -181,9 +177,6 @@
                 <h5 class="detail-label">Overview:</h5>
                 <h4>@Model.Movie.Overview</h4>
 
-
-
-
                 <!-- Trailer -->
                 <br /><br />
                 <div class="movie-trailer mt-4 trailer-container">
@@ -205,6 +198,7 @@
                 @foreach (var credit in Model.Movie.Actors)
                 {
                     <div class="card actor-card">
+
                         <img src="@credit.AvatarUrl" class="card-img-top" alt="@credit.Name">
                         <div class="card-body">
                             <h5 class="card-title" style="color: white">@credit.Name</h5>
@@ -270,58 +264,59 @@
             document.getElementById('movieCarousel').scrollBy({ left: 200, behavior: 'smooth' });
         });
 
-        // sessions
-        document.addEventListener("DOMContentLoaded", function () {
-            const dates = @Html.Raw(Json.Serialize(dates));
-            const groupedSessions = @Html.Raw(Json.Serialize(groupedSessions));
-            let selectedIndex = 0;
 
-            const prevBtn = document.getElementById("prevDateBtn");
-            const nextBtn = document.getElementById("nextDateBtn");
-            const dateDisplay = document.getElementById("selectedDate");
-            const dayDisplay = document.getElementById("selectedDay");
-            const sessionList = document.getElementById("sessionList");
+        var groupedSessions = @Html.Raw(Json.Serialize(Model.GroupedSessions)); // Груповані сеанси
+        var dates = @Html.Raw(Json.Serialize(Model.GroupedSessions.Keys));  // Список всіх доступних дат
+        var selectedIndex = 0;
 
-            function updateSessionList(date) {
-                const data = groupedSessions[date];
-
-                if (data && data.length > 0) {
-                    sessionList.innerHTML = ""; // Clear the previous sessions
-
-                    data.forEach(session => {
-                        const sessionDiv = document.createElement("div");
-                        sessionDiv.classList.add("session-time");
-
-                        const sessionTime = new Date(session.startTime);
-
-                        sessionDiv.textContent = sessionTime.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" });
-
-                        sessionList.appendChild(sessionDiv);
-                    });
-                }
+        document.getElementById('prevDateBtn')?.addEventListener('click', function () {
+            if (selectedIndex > 0) {
+                updateDate(selectedIndex - 1);
             }
-
-            function updateDate(index) {
-                if (index >= 0 && index < dates.length) {
-                    selectedIndex = index;
-                    const newDate = new Date(dates[selectedIndex]);
-                    dateDisplay.textContent = newDate.toLocaleDateString("uk-UA", { day: "2-digit", month: "long" });
-                    dayDisplay.textContent = newDate.toLocaleDateString("uk-UA", { weekday: "long" });
-
-                    updateSessionList(dates[selectedIndex]);
-                }
-            }
-
-            prevBtn?.addEventListener("click", function () {
-                if (selectedIndex > 0) updateDate(selectedIndex - 1);
-            });
-
-            nextBtn?.addEventListener("click", function () {
-                if (selectedIndex < dates.length - 1) updateDate(selectedIndex + 1);
-            });
-
-            updateSessionList(dates[selectedIndex]);
         });
+
+        document.getElementById('nextDateBtn')?.addEventListener('click', function () {
+            if (selectedIndex < dates.length - 1) {
+                updateDate(selectedIndex + 1);
+            }
+        });
+
+                function updateDate(index) {
+                    console.log(groupedSessions);
+            selectedIndex = index;
+            var selectedDate = new Date(dates[selectedIndex]);
+
+            document.getElementById('selectedDate').innerText = selectedDate.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' });
+            document.getElementById('selectedDay').innerText = selectedDate.toLocaleDateString('uk-UA', { weekday: 'long' });
+
+            loadSessionsForDate();
+        }
+
+        function loadSessionsForDate() {
+            var formattedDate = dates[selectedIndex];
+
+            var sessions = groupedSessions[formattedDate];  // Отримуємо сесії для дати
+
+            var sessionContainer = document.getElementById('sessionContainer');
+            sessionContainer.innerHTML = '';  // Очищаємо попередні сесії
+
+            if (sessions.length > 0) {
+                sessions.forEach(session => {
+                    var sessionElement = document.createElement('a');
+                    sessionElement.href = `/Home/SessionDetails/${session.id}`;
+                    sessionElement.classList.add('session-link');
+                    sessionElement.innerHTML = `
+                        <div class="session-time">
+                            ${new Date(session.startTime).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
+                        </div>`;
+                    sessionContainer.appendChild(sessionElement);
+                });
+            } else {
+                sessionContainer.innerHTML = '<div class="no-sessions">Немає сеансів для цієї дати</div>';
+            }
+        }
+
+
     </script>
 </body>
 </html>

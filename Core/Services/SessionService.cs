@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs;
+using BusinessLogic.Interfaces;
 using DataAccess.EntityModels;
 using DataAccess.Interfaces;
 using DataAccess.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Services
 {
-	public class SessionService
+	public class SessionService : ISessionFilter
 	{
 		private readonly IRepository<Session> _sessionRepository;
 		private readonly IRepository<Movie> _moviesRepository;
@@ -30,9 +32,27 @@ namespace BusinessLogic.Services
 			return _mapper.Map<List<SessionDTO>>(sessions);
 		}
 
+		public async Task<IEnumerable<SessionDTO>> GetFilteredSessions(SessionFilterDTO filter)
+		{
+			var sessionQuery = await _sessionRepository.Get(includeProperties: "Movie,Hall.Seats");
+
+			if (filter.MovieId.HasValue)
+				sessionQuery = sessionQuery.Where(session => session.MovieId == filter.MovieId);
+			if (filter.Date.HasValue)
+				sessionQuery = sessionQuery.Where(session => session.StartTime.Date == filter.Date);
+
+			sessionQuery = filter.SortBy?.ToLower() switch
+			{
+				"date" => filter.Descending ? sessionQuery.OrderByDescending(s => s.StartTime) : sessionQuery.OrderBy(s => s.StartTime),
+				_ => sessionQuery
+			};
+
+			return _mapper.Map<List<SessionDTO>>(sessionQuery);
+		}
+
 		public async Task<SessionDTO?> GetSessionByIdAsync(int id)
 		{
-			var session = await _sessionRepository.GetByID(id, includeProperties: "Movie,Hall");
+			var session = await _sessionRepository.GetByID(id, includeProperties: "Movie,Hall.Seats");
 			return session == null ? null : _mapper.Map<SessionDTO>(session);
 		}
 
@@ -43,6 +63,21 @@ namespace BusinessLogic.Services
 				includeProperties: "Movie,Hall");
 
 			return _mapper.Map<List<SessionDTO>>(activeSessions).ToList();
+		}
+
+		public async Task<Dictionary<DateTime, List<SessionDTO>>> GetGroupedSessionsAsync(int movieId)
+		{
+			var sessions = await _sessionRepository.Get(
+				filter: s => s.MovieId == movieId,
+				includeProperties: "Movie,Hall"
+			);
+
+			return sessions
+				.GroupBy(s => s.StartTime.Date)
+				.ToDictionary(
+					g => g.Key,
+					g => g.Select(s => _mapper.Map<SessionDTO>(s)).ToList()
+				);
 		}
 
 		public async Task<bool> AddSessionAsync(SessionDTO sessionDTO)

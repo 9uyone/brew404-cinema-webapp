@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs;
+using BusinessLogic.Interfaces;
 using DataAccess.EntityModels;
 using DataAccess.Interfaces;
 using DataAccess.Models;
 
 namespace BusinessLogic.Services
 {
-	public class MovieService
+	public class MovieService : IMovieFilter
 	{
 		private readonly IMapper _mapper;
 		private readonly IRepository<Movie> _movieRepository;
@@ -32,6 +33,31 @@ namespace BusinessLogic.Services
 			);
 
 			return _mapper.Map<List<MovieDTO>>(movies);
+		}
+
+		public async Task<IEnumerable<MovieDTO>> GetFilteredMovies(MovieFilteredDTO filter)
+		{
+			var movieQuery = await _movieRepository.Get(includeProperties: "Genres,Actors");
+
+			if (filter.GenreIds != null && filter.GenreIds.Any())
+				movieQuery = movieQuery.Where(m => m.Genres.Any(g => filter.GenreIds.Contains(g.Id)));
+
+			if(filter.ActorsIds != null && filter.ActorsIds.Any())
+				movieQuery = movieQuery.Where(m => m.Actors.Any(a => filter.ActorsIds.Contains(a.Id)));
+
+			if (filter.Year.HasValue)
+				movieQuery = movieQuery.Where(m => m.ReleaseDate.Year == filter.Year.Value);
+
+
+			movieQuery = filter.SortBy?.ToLower() switch
+			{
+				"title" => filter.Descending ? movieQuery.OrderByDescending(m => m.Title) : movieQuery.OrderBy(m => m.Title),
+				"date" => filter.Descending ? movieQuery.OrderByDescending(m => m.ReleaseDate) : movieQuery.OrderBy(m => m.ReleaseDate),
+				_ => movieQuery
+			};
+
+			return _mapper.Map<List<MovieDTO>>(movieQuery);
+
 		}
 
 		public async Task<IEnumerable<MovieDTO>?> GetMoviesByGenres(List<GenreDTO>? genres)
@@ -80,6 +106,7 @@ namespace BusinessLogic.Services
 			movie.Genres = existingGenres;
 			var combinedActors = existingActors.Concat(newActors).ToList();
 			movie.Actors = combinedActors;
+			movie.VoteAverage = MathF.Round(movie.VoteAverage, 1);
 
 			await _movieRepository.Insert(movie);
 		} 

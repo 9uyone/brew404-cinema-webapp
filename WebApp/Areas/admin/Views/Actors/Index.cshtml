@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/Admin/addmovies.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Admin/addBtn.css" asp-append-version="true" />
-
 </head>
 <body>
     <button type="button" class="btn btn-primary fixed-button" data-bs-toggle="modal" data-bs-target="#ActorModal">
@@ -49,45 +48,21 @@
     </div>
 
     <!-- Модальне вікно для додавання Актора -->
+    <!-- Модальне вікно для додавання актора -->
     <div class="modal fade" id="ActorModal" tabindex="-1" aria-labelledby="actorModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="actorModalLabel">Додати новий жанр</h5>
+                    <h5 class="modal-title" id="actorModalLabel">Додати нового актора</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form id="actorForm" method="post" asp-action="AddActor">
-                        <div class="mb-3">
-                            <label for="actorName" class="form-label">Імя актора</label>
-                            <input type="text" class="form-control" id="actorName" name="Name" required>
-                            @if (ViewData.ModelState["Name"]?.Errors.Count > 0)
-                            {
-                                <div class="alert alert-danger mt-2">
-                                    @foreach (var error in ViewData.ModelState["Name"].Errors)
-                                    {
-                                        <p>@error.ErrorMessage</p>
-                                    }
-                                </div>
-                            }
-                            <label for="actorAvatar" class="form-label">ссила на фото</label>
-                            <input type="text" class="form-control" id="actorAvatar" name="AvatarUrl" required>
-                            @if (ViewData.ModelState["AvatarUrl"]?.Errors.Count > 0)
-                            {
-                                <div class="alert alert-danger mt-2">
-                                    @foreach (var error in ViewData.ModelState["AvatarUrl"].Errors)
-                                    {
-                                        <p>@error.ErrorMessage</p>
-                                    }
-                                </div>
-                            }
-                        </div>
-                        <button type="submit" class="btn btn-primary">Зберегти</button>
-                    </form>
+                <div class="modal-body" id="actorFormContainer">
+                    @await Html.PartialAsync("_AddActorPartial", new ActorDTO())
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- Модальне вікно для оновлення Актора -->
     <div class="modal fade" id="UpdateActorModal" tabindex="-1" aria-labelledby="updateActorModalLabel" aria-hidden="true">
@@ -100,7 +75,6 @@
                 <div class="modal-body">
                     <form id="updateActorForm" method="post" asp-action="UpdateActor">
                         <input type="hidden" id="updateActorId" name="Id">
-
                         <div class="mb-3">
                             <label for="updateActorName" class="form-label">Ім'я актора</label>
                             <input type="text" class="form-control" id="updateActorName" name="Name" required>
@@ -125,7 +99,6 @@
                 var updateModal = new bootstrap.Modal(document.getElementById("UpdateActorModal"));
                 updateModal.show();
         }
-
     </script>
 </body>
 </html>

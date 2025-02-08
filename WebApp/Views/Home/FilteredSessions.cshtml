@@ -1,0 +1,65 @@
+﻿@model WebApp.ViewModels.FilterSessionsViewModel
+
+<h2>Cессії</h2>
+
+<form method="get" action="@Url.Action("FilteredSessions", "Home")">
+    <div class="row">
+        <div class="col-md-3">
+            <label for="MovieId">фільми:</label>
+            <select name="MovieId" multiple class="form-control">
+                @foreach (var movie in Model.Movies)
+                {
+                    <option value="@movie.Id">@movie.Title</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label for="Date">дата:</label>
+            <input type="date" name="Date" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+            <label for="SortBy">Сортувати за:</label>
+            <select name="SortBy" class="form-control">
+                <option value="date">Датою</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label>Порядок:</label>
+            <select name="Descending" class="form-control">
+                <option value="false">За зростанням</option>
+                <option value="true">За спаданням</option>
+            </select>
+        </div>
+
+        <div class="col-md-12 mt-3">
+            <button type="submit" class="btn btn-primary">Фільтрувати</button>
+        </div>
+    </div>
+</form>
+
+<div class="container mt-5">
+    <div class="row">
+        @foreach (var session in Model.Sessions)
+        {
+            <div class="col-12 mb-3">
+                <div class="card shadow-sm p-3">
+                    <div class="d-flex">
+                        <a asp-action="SessionDetails" asp-controller="Home" asp-route-id="@session.Id" class="text-decoration-none">
+                            <img style="height: 200px" src="@session.Movie.ImageUrl" />
+                            <h5 class="mb-1 align-bottom">@session.Movie.Title</h5>
+                            <p class="text-muted mb-0">
+                                Дата: @session.StartTime.ToString("yyyy-MM-dd")
+                            </p>
+                            <p class="text-muted mb-0">
+                                Час: @session.StartTime.ToString("HH:mm") - @session.EndTime.ToString("HH:mm")
+                            </p>
+                       </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

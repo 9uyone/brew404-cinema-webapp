@@ -16,6 +16,5 @@ namespace BusinessLogic
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
         }
-
     }
 }
