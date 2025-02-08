@@ -1,11 +1,12 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Services;
 using BusinessLogic.TMDbService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers.Admin
 {
-	//[Route("admin/[Controller]")]
+	[Authorize(Roles = "Admin")]
 	[Area("admin")]
 	public class MoviesController : Controller {
 		private readonly TMDbApiService _tMDbApiService;
@@ -16,6 +17,11 @@ namespace WebApp.Controllers.Admin
 			_movieService = movieService;
 		}
 
-		// ... rest of the code remains unchanged
+		[HttpGet]
+		public async Task<IActionResult> Index()
+		{
+			Console.WriteLine(DateTime.Now);
+			return View();
+		}
 	}
 }

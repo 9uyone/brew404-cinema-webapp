@@ -1,0 +1,44 @@
+﻿@model BusinessLogic.DTOs.Auth.RegisterDTO
+
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">Реєстрація</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form method="post" asp-controller="Account" asp-action="Register" data-ajax="true">
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email адреса</label>
+                        <input type="email" class="form-control" id="registerEmail" asp-for="Email" required>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label" name="Password">Пароль</label>
+                        <input type="password" class="form-control" id="registerPassword" asp-for="Password" required>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="registerConfirmPassword" class="form-label" name="ConfirmPassword">Підтвердіть пароль</label>
+                        <input type="password" class="form-control" id="registerPassword" asp-for="ConfirmPassword" required>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Ім'я користувача</label>
+                        <input type="text" class="form-control" id="username" name="UserName" asp-for="UserName" required>
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Зареєструватися</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

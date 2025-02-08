@@ -44,4 +44,8 @@
     <ProjectReference Include="..\Infrastructure\DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Areas\admin\" />
+  </ItemGroup>
+
 </Project>

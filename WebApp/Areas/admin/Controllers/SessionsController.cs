@@ -1,12 +1,13 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.ViewModels;
 
 namespace WebApp.Controllers.Admin
 {
-	//[Area("admin")]
-	[Route("admin/[Controller]")]
+	[Authorize(Roles = "Admin")]
+	[Area("admin")]
 	public class SessionsController : Controller
 	{
 		private readonly SessionService _sessionService;
@@ -21,15 +22,14 @@ namespace WebApp.Controllers.Admin
 			_hallService = hallService;
 		}
 
-		[HttpGet("")]
+		[HttpGet]
 		public async Task<IActionResult> Index()
 		{
-			Console.WriteLine(DateTime.Now);
 			return View(await _sessionService.GetAllSessionAsync());
 		}
 
-		[HttpGet("add")]
-		public async Task<IActionResult> AddSession()
+		[HttpGet]
+		public async Task<IActionResult> Add()
 		{
 			var addSessionViewModel = new AddSessionViewModel()
 			{
@@ -37,15 +37,14 @@ namespace WebApp.Controllers.Admin
 				Halls = await _hallService.GetAllHallsAsync()
 			};
 
-			return View(addSessionViewModel);
+			return View("AddSession", addSessionViewModel);
 		}
 
-		[HttpPost("add")]
-		public async Task<IActionResult> AddSession(AddSessionViewModel model)
+		[HttpPost]
+		public async Task<IActionResult> Add(AddSessionViewModel model)
 		{
 			if (model == null || model.MovieId == 0 || model.HallId == 0 || model.StartTime == DateTime.MinValue)
 				return BadRequest("Недійсні дані");
-
 
 			var sessionDTO = new SessionDTO()
 			{
@@ -62,8 +61,8 @@ namespace WebApp.Controllers.Admin
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpPost("delete")]
-		public async Task<IActionResult> DeleteSession(int id)
+		[HttpPost]
+		public async Task<IActionResult> Delete(int id)
 		{
 			await _sessionService.DeleteSessionAsync(id);
 			return RedirectToAction(nameof(Index));

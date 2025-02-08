@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessLogic.DTOs.Auth
 {
+	//[BindProperties]
 	public class RegisterDTO
 	{
-		[Required]
+		//[Required]
 		public string Email { get; set; }
 
-		[Required]
+		//[Required]
 		public string Password { get; set; }
 
-		[Required]
+		//[Required]
 		public string ConfirmPassword { get; set; }
 
-		[Required]
+		//[Required]
 		public string UserName { get; set; }
 	}
 }

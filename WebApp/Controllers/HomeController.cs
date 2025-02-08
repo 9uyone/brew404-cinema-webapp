@@ -5,9 +5,12 @@ using BusinessLogic.DTOs;
 using BusinessLogic.Services;
 using WebApp.ViewModels;
 using BusinessLogic.TMDbService;
+using BusinessLogic.DTOs.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApp.Controllers
 {
+	[AllowAnonymous]
 	public class HomeController : Controller
 	{
 		MovieService _movieService;

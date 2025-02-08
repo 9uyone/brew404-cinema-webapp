@@ -5,9 +5,8 @@ using Microsoft.AspNetCore.Server.HttpSys;
 
 namespace WebApp.Controllers.Admin
 {
-	//[Area("admin")]
 	[Authorize(Roles = "Admin")]
-	[Route("admin/[Controller]")]
+	[Area("admin")]
 	public class PanelController : Controller
 	{
 		public IActionResult Index()

@@ -1,10 +1,11 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers.Admin
 {
-	//[Route("admin/[Controller]")]
+	[Authorize(Roles = "Admin")]
 	[Area("admin")]
 	public class GenresController : Controller
 	{
@@ -21,8 +22,8 @@ namespace WebApp.Controllers.Admin
 			return View(genres);
 		}
 
-		[HttpPost("add")]
-		public async Task<IActionResult> AddGenre(string name)
+		[HttpPost]
+		public async Task<IActionResult> Add(string name)
 		{
 			var genre = new GenreDTO { Name = name };
 			await _genreService.AddGenreAsync(genre);
@@ -30,7 +31,7 @@ namespace WebApp.Controllers.Admin
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpPost("delete")]
+		[HttpDelete]
 		public async Task<IActionResult> DeleteGenre(int id)
 		{
 			await _genreService.DeleteGenreAsync(id);

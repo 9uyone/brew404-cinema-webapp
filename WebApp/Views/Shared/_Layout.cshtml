@@ -1,9 +1,15 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using DataAccess.EntityModels
+@using BusinessLogic.DTOs.Auth
+@using WebApp.ViewModels
+@inject SignInManager<User> signInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AddMovieTest</title>
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
@@ -24,12 +30,15 @@
             <!-- Навігація -->
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav align-items-center">
+                    @if (User.IsInRole("Admin"))
+                    {
                         <li class="nav-item mx-2">
                             <a class="nav-link position-relative hover-effect"
-                               href="/admin/Panel">
+                                href="/admin/Panel">
                                 Aдмін
                             </a>
                         </li>
+                    }
                     <li class="nav-item mx-2">
                         <a class="nav-link position-relative hover-effect" 
                            asp-controller="Home" 
@@ -37,13 +46,27 @@
                             Фільми
                         </a>
                     </li>
-                    <li class="nav-item mx-2">
-                        <button class="btn btn-outline-light px-4 py-2 rounded-pill" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#loginModal">
-                            Увійти
-                        </button>
-                    </li>
+
+					@if (signInManager.IsSignedIn(User))
+					{
+                        <li class="nav-item mx-2">
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-outline-light px-4 py-2 rounded-pill">
+                                    Вийти
+                                </button>
+                            </form>
+                        </li>
+					}
+                    else
+                    {
+                        <li class="nav-item mx-2">
+                            <button class="btn btn-outline-light px-4 py-2 rounded-pill" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#loginModal">
+                                Увійти
+                            </button>
+                        </li>
+                    }
                 </ul>
             </div>
 
@@ -104,87 +127,11 @@
         </div>
     </footer>
 
-    <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Увійти</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email адреса</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Пароль</label>
-                            <input type="password" class="form-control" id="password" required>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary">Увійти</button>
-                            <button type="button" class="btn btn-secondary" id="openRegisterModal">Реєстрація</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Register Modal -->
-    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">Реєстрація</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="mb-3">
-                            <label for="registerEmail" class="form-label">Email адреса</label>
-                            <input type="email" class="form-control" id="registerEmail" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="registerPassword" class="form-label">Пароль</label>
-                            <input type="password" class="form-control" id="registerPassword" required>
-                        </div>
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Зареєструватися</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.getElementById('openRegisterModal').addEventListener('click', function () {
-            // Отримуємо екземпляр loginModal і закриваємо його
-            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-            if (loginModal) {
-                loginModal.hide();
-            }
-
-            // Коли модальне вікно логіну повністю закрилося, відкриваємо вікно реєстрації
-            const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
-            setTimeout(() => {
-                registerModal.show();
-            }, 200); // Додаємо невелику затримку для плавного переходу
-        });
-
-        // Забезпечуємо видалення залишкових backdrop, якщо виникають проблеми
-        document.addEventListener('hidden.bs.modal', function () {
-            const backdrop = document.querySelector('.modal-backdrop');
-            if (backdrop) {
-                backdrop.remove();
-            }
-            document.body.classList.remove('modal-open'); // Видаляємо залишковий клас, якщо він є
-            document.body.style.paddingRight = ''; // Скидаємо padding, якщо Bootstrap додавав його
-        });
-    </script>
-
+	@if (!signInManager.IsSignedIn(User))
+	{
+        <partial name="_LoginModal" model="@new LoginDTO()" />
+        <partial name="_RegModal" model="@new RegisterDTO()" />
+	})
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

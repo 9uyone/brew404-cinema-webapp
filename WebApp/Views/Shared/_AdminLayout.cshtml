@@ -40,7 +40,11 @@
 
         <a href="/Admin/Statistics">Статистика</a>
         <a href="/Admin/Users">Користувачі</a>
-        <a href="/Home">Вийти</a>
+        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+            <button type="submit" class="btn btn-outline-light px-4 py-2 rounded-pill">
+                Вийти
+            </button>
+        </form>
     </div>
 
     <div style="width: 100%">
