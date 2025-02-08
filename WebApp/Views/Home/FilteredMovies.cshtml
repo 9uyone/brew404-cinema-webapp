@@ -8,16 +8,11 @@
 </div>
 
 <!-- Пошук фільмів -->
-<div class="search-container mb-3">
-    <h2 class="mb-4">Пошук фільмів</h2>
-
+<div class="search-container">
     <div id="poda" class="d-flex align-items-center position-relative">
         <!-- Фонові ефекти -->
-        <div class="grid"></div>
         <div class="glow"></div>
         <div class="darkBorderBg"></div>
-        <div class="white"></div>
-        <div class="border"></div>
         
         <!-- Основний інпут -->
         <div id="main" class="w-100 position-relative">
@@ -29,30 +24,7 @@
                     name="searchQuery" 
                     class="input w-100" 
                 />
-                <div id="input-mask"></div>
-                <div id="pink-mask"></div>
             </div>
-            
-            <!-- Кнопка фільтра -->
-            <div class="filterBorder"></div>
-            <button id="filter-icon" class="filter-button" type="button">
-                <svg
-                    preserveAspectRatio="none"
-                    height="24"
-                    width="24"
-                    viewBox="4.8 4.56 14.832 15.408"
-                    fill="none"
-                >
-                    <path
-                        d="M8.16 6.65002H15.83C16.47 6.65002 16.99 7.17002 16.99 7.81002V9.09002C16.99 9.56002 16.7 10.14 16.41 10.43L13.91 12.64C13.56 12.93 13.33 13.51 13.33 13.98V16.48C13.33 16.83 13.1 17.29 12.81 17.47L12 17.98C11.24 18.45 10.2 17.92 10.2 16.99V13.91C10.2 13.5 9.97 12.98 9.73 12.69L7.52 10.36C7.23 10.08 7 9.55002 7 9.20002V7.87002C7 7.17002 7.52 6.65002 8.16 6.65002Z"
-                        stroke="#d6d6e6"
-                        stroke-width="1.2"
-                        stroke-miterlimit="10"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                </svg>
-            </button>
         </div>
     </div>
 </div>
@@ -63,32 +35,42 @@
         <div class="filter-section">
             <button type="button" class="filter-button" data-filter="genres">
                 <span>Жанри</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M6 9l6 6 6-6"/>
-                </svg>
             </button>
             <div class="filter-dropdown">
-                <select name="GenreIds" multiple class="form-control">
-                    @foreach (var genre in Model.Genres)
+                <div class="genres-container">
+                    @if (Model.Genres != null)
                     {
-                        <option value="@genre.Id">@genre.Name</option>
+                        @foreach (var genre in Model.Genres)
+                        {
+                            <div class="genre-item">
+                                <input type="checkbox" 
+                                       id="genre-@genre.Id" 
+                                       name="GenreIds" 
+                                       value="@genre.Id" 
+                                       class="genre-checkbox">
+                                <label for="genre-@genre.Id" class="genre-label">
+                                    @genre.Name
+                                </label>
+                            </div>
+                        }
                     }
-                </select>
+                </div>
             </div>
         </div>
-
         <!-- Рік -->
         <div class="filter-section">
             <button type="button" class="filter-button" data-filter="year">
                 <span>Рік</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M6 9l6 6 6-6"/>
-                </svg>
             </button>
             <div class="filter-dropdown">
-                <input type="number" name="Year" class="form-control" 
-                       min="1900" max="@DateTime.Now.Year" 
-                       placeholder="Введіть рік">
+                <label for="yearInput">Введіть рік</label>
+                <input type="number" 
+                       id="yearInput"
+                       name="Year" 
+                       class="form-control"
+                       min="1900" 
+                       max="2024"
+                       placeholder="Наприклад: 2023">
             </div>
         </div>
 
@@ -96,19 +78,18 @@
         <div class="filter-section">
             <button type="button" class="filter-button" data-filter="sort">
                 <span>Сортування</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M6 9l6 6 6-6"/>
-                </svg>
             </button>
             <div class="filter-dropdown">
                 <div class="mb-2">
-                    <select name="SortBy" class="form-control">
+                    <label for="sortBy">Сортувати за</label>
+                    <select id="sortBy" name="SortBy" class="form-control">
                         <option value="Title">За назвою</option>
                         <option value="ReleaseDate">За датою</option>
                     </select>
                 </div>
                 <div>
-                    <select name="Descending" class="form-control">
+                    <label for="sortOrder">Напрямок</label>
+                    <select id="sortOrder" name="Descending" class="form-control">
                         <option value="false">За зростанням</option>
                         <option value="true">За спаданням</option>
                     </select>
@@ -145,70 +126,153 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-button');
+    const filterCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+    const filterInputs = document.querySelectorAll('input[type="number"]');
     const searchInput = document.getElementById('searchInput');
-    const filterIcon = document.getElementById('filter-icon');
-    const filterContainer = document.getElementById('filterContainer');
-    const filterButtons = document.querySelectorAll('#filterContainer .filter-button');
-    const movieResults = document.getElementById('movieResults');
+    const loadingIndicator = document.querySelector('.loading-indicator');
 
-    // --- Функція для відкриття/закриття фільтрів ---
-    function toggleDropdown(button) {
-        const dropdown = button.nextElementSibling;
-        if (!dropdown) {
-            console.warn('Dropdown не знайдено для кнопки:', button);
-            return;
+    // Функція для відображення/приховування індикатора завантаження
+    function toggleLoading(show) {
+        loadingIndicator.style.display = show ? 'flex' : 'none';
+    }
+
+    // Функція для отримання жанрів фільму
+    function getMovieGenres(movieElement) {
+        // Отримуємо посилання, яке містить дані про фільм
+        const movieLink = movieElement.querySelector('a');
+        if (!movieLink) return [];
+        
+        // Отримуємо всі класи з data-genres, якщо вони є
+        const genresData = movieLink.getAttribute('data-genres');
+        return genresData ? genresData.split(',').map(id => id.trim()) : [];
+    }
+
+    // Функція для фільтрації фільмів
+    function filterMovies() {
+        const selectedGenres = [...document.querySelectorAll('input[name="GenreIds"]:checked')].map(cb => cb.value);
+        const year = document.getElementById('yearInput').value;
+        const searchQuery = searchInput.value.toLowerCase();
+        const sortBy = document.getElementById('sortBy').value;
+        const sortOrder = document.getElementById('sortOrder').value;
+
+        const movieResults = document.getElementById('movieResults');
+        const movies = movieResults.querySelectorAll('.col-md-4');
+
+        // Збираємо всі фільми в масив для сортування
+        let moviesArray = [...movies];
+
+        // Фільтруємо фільми
+        moviesArray.forEach(movieCol => {
+            const card = movieCol.querySelector('.movie-card');
+            const title = card.querySelector('.card-title').textContent.toLowerCase();
+            const movieYear = card.querySelector('.movie-year').textContent;
+            const movieGenres = getMovieGenres(movieCol);
+
+            // Перевірка відповідності пошуковому запиту
+            const matchesSearch = searchQuery === '' || title.includes(searchQuery);
+
+            // Перевірка відповідності року
+            const matchesYear = !year || movieYear.includes(year);
+
+            // Перевірка відповідності жанрам
+            const matchesGenres = selectedGenres.length === 0 || 
+                selectedGenres.some(genreId => movieGenres.includes(genreId));
+
+            // Оновлення відображення
+            movieCol.style.display = (matchesSearch && matchesYear && matchesGenres) ? '' : 'none';
+        });
+
+        // Сортування фільмів
+        if (sortBy && sortOrder) {
+            moviesArray.sort((a, b) => {
+                const aValue = a.querySelector(sortBy === 'Title' ? '.card-title' : '.movie-year').textContent;
+                const bValue = b.querySelector(sortBy === 'Title' ? '.card-title' : '.movie-year').textContent;
+                
+                const comparison = aValue.localeCompare(bValue);
+                return sortOrder === 'true' ? -comparison : comparison;
+            });
+
+            // Застосовуємо новий порядок
+            moviesArray.forEach(movie => movieResults.appendChild(movie));
         }
 
-        const isOpen = dropdown.classList.contains('show');
-
-        // Закриваємо всі випадаючі списки
-        document.querySelectorAll('.filter-dropdown').forEach(drop => drop.classList.remove('show'));
-        document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
-
-        // Відкриваємо тільки той, який натиснули
-        if (!isOpen) {
-            dropdown.classList.add('show');
-            button.classList.add('active');
-            console.log(`Відкрито: ${button.getAttribute('data-filter')}`);
+        // Перевірка на відсутність результатів
+        const hasVisibleMovies = moviesArray.some(movie => movie.style.display !== 'none');
+        let noResultsMessage = document.querySelector('.no-results');
+        
+        if (!hasVisibleMovies) {
+            if (!noResultsMessage) {
+                noResultsMessage = document.createElement('div');
+                noResultsMessage.className = 'no-results';
+                noResultsMessage.textContent = 'Фільмів не знайдено';
+                movieResults.appendChild(noResultsMessage);
+            }
+        } else if (noResultsMessage) {
+            noResultsMessage.remove();
         }
     }
 
-    // --- Відкриття/закриття фільтрів при натисканні ---
+    // Оновлюємо обробник подій для чекбоксів жанрів
+    const genreCheckboxes = document.querySelectorAll('.genre-checkbox');
+    genreCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const selectedCount = document.querySelectorAll('.genre-checkbox:checked').length;
+            const genreButton = document.querySelector('[data-filter="genres"] span');
+            genreButton.textContent = selectedCount > 0 ? `Жанри (${selectedCount})` : 'Жанри';
+            filterMovies(); // Додаємо виклик фільтрації при зміні жанру
+        });
+    });
+
+    // Обробник для поля пошуку з debounce
+    let searchTimeout;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(filterMovies, 300);
+    });
+
+    // Обробники для фільтрів
     filterButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             e.stopPropagation();
-            toggleDropdown(button);
+            const dropdown = button.nextElementSibling;
+            
+            document.querySelectorAll('.filter-dropdown.show').forEach(d => {
+                if (d !== dropdown) {
+                    d.classList.remove('show');
+                    d.previousElementSibling.classList.remove('active');
+                }
+            });
+            
+            dropdown.classList.toggle('show');
+            button.classList.toggle('active');
         });
     });
 
-    // --- Закриття фільтрів при кліку поза ними ---
+    // Закриття дропдаунів при кліку поза ними
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.filter-section')) {
-            document.querySelectorAll('.filter-dropdown').forEach(dropdown => dropdown.classList.remove('show'));
-            document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
+                dropdown.classList.remove('show');
+                if (dropdown.previousElementSibling) {
+                    dropdown.previousElementSibling.classList.remove('active');
+                }
+            });
         }
     });
 
-    // --- Показ/приховування контейнера фільтрів ---
-    if (filterIcon) {
-        filterIcon.addEventListener('click', (e) => {
-            e.stopPropagation();
-            filterContainer.classList.toggle('d-none');
+    // Обробник для форми фільтрації
+    document.getElementById('filterForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        filterMovies();
+        
+        // Закриваємо всі відкриті дропдауни після застосування фільтрів
+        document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
+            dropdown.classList.remove('show');
+            if (dropdown.previousElementSibling) {
+                dropdown.previousElementSibling.classList.remove('active');
+            }
         });
-    }
-
-    // --- Функція пошуку фільмів ---
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const movieCards = document.querySelectorAll('.movie-card');
-
-            movieCards.forEach(card => {
-                const title = card.querySelector('.card-title').textContent.toLowerCase();
-                card.closest('.col-md-4').style.display = title.includes(searchTerm) ? '' : 'none';
-            });
-        });
-    }
+    });
 });
-
 </script>

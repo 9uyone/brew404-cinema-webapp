@@ -1,330 +1,94 @@
-    .grid {
-      height: 100%;
-      width: 100%;
-      background-image: linear-gradient(to right, #0f0f10 1px, transparent 1px),
-        linear-gradient(to bottom, #0f0f10 1px, transparent 1px);
-      background-size: 1rem 1rem;
-      background-position: center center;
-      position: absolute;
-      z-index: -1;
-      filter: blur(1px);
-    }
+.search-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
 
-    .white,
-    .border,
-    .darkBorderBg,
-    .glow {
-      height: 56px;
-      width: 100%;
-      position: absolute;
-      overflow: hidden;
-      z-index: -1;
-      border-radius: 12px;
-      filter: blur(3px);
-    }
+#poda {
+  position: relative;
+  width: 100%;
+  background: rgba(18, 18, 20, 0.95);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
 
-    .input {
-      background-color: #010201;
-      border: none;
-      width: 100%;
-      height: 56px;
-      border-radius: 10px;
-      color: white;
-      padding-inline: 59px;
-      font-size: 18px;
-    }
+#poda:hover, #poda:focus-within {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
 
-    #poda {
-      position: relative;
-      width: 100%;
-    }
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
 
-    .input::placeholder {
-      color: #c0b9c0;
-    }
+.input {
+  width: 100%;
+  height: 48px;
+  background-color: transparent;
+  border: none;
+  color: #ffffff;
+  padding: 0 16px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
 
-    .input:focus {
-      outline: none;
-    }
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
 
-    #main:focus-within > #input-mask {
-      display: none;
-    }
+.input:focus {
+  outline: none;
+}
 
-    #input-mask {
-      pointer-events: none;
-      width: 100px;
-      height: 20px;
-      position: absolute;
-      background: linear-gradient(90deg, transparent, black);
-      top: 18px;
-      left: 70px;
-    }
+/* Subtle gradient background effect */
+.darkBorderBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+      145deg,
+      rgba(30, 30, 35, 0.5),
+      rgba(20, 20, 25, 0.5)
+  );
+  border-radius: 8px;
+  z-index: -1;
+}
 
-    #pink-mask {
-      pointer-events: none;
-      width: 30px;
-      height: 20px;
-      position: absolute;
-      background: #cf30aa;
-      top: 18px;
-      left: 5px;
-      filter: blur(20px);
-      opacity: 0.8;
-    }
+/* Subtle glow effect on focus */
+.glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  background: radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 255, 255, 0.05),
+      transparent 70%
+  );
+  transition: opacity 0.3s ease;
+  z-index: -2;
+}
 
-    .white {
-      height: 54px;
-      border-radius: 10px;
-      filter: blur(2px);
-    }
+#poda:focus-within .glow {
+  opacity: 1;
+}
 
-    .white::before {
-      content: "";
-      z-index: -2;
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(83deg);
-      background-repeat: no-repeat;
-      background-position: 0 0;
-      filter: brightness(1.4);
-      background-image: conic-gradient(
-        rgba(0, 0, 0, 0) 0%,
-        #a099d8,
-        rgba(0, 0, 0, 0) 8%,
-        rgba(0, 0, 0, 0) 50%,
-        #dfa2da,
-        rgba(0, 0, 0, 0) 58%
-      );
-    }
-
-    .border {
-      height: 52px;
-      border-radius: 11px;
-      filter: blur(0.5px);
-    }
-
-    .border::before {
-      content: "";
-      z-index: -2;
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(70deg);
-      filter: brightness(1.3);
-      background-repeat: no-repeat;
-      background-position: 0 0;
-      background-image: conic-gradient(
-        #1c191c,
-        #402fb5 5%,
-        #1c191c 14%,
-        #1c191c 50%,
-        #cf30aa 60%,
-        #1c191c 64%
-      );
-    }
-
-    .darkBorderBg {
-      height: 56px;
-    }
-
-    .darkBorderBg::before {
-      content: "";
-      z-index: -2;
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(82deg);
-      background-repeat: no-repeat;
-      background-position: 0 0;
-      background-image: conic-gradient(
-        rgba(0, 0, 0, 0),
-        #18116a,
-        rgba(0, 0, 0, 0) 10%,
-        rgba(0, 0, 0, 0) 50%,
-        #6e1b60,
-        rgba(0, 0, 0, 0) 60%
-      );
-      transition: all 2s;
-    }
-
-    .glow {
-      overflow: hidden;
-      filter: blur(30px);
-      opacity: 0.4;
-      height: 70px;
-    }
-
-    .glow::before {
-      content: "";
-      z-index: -2;
-      position: absolute;
-      width: 999px;
-      height: 999px;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(60deg);
-      background-repeat: no-repeat;
-      background-position: 0 0;
-      background-image: conic-gradient(
-        #000,
-        #402fb5 5%,
-        #000 38%,
-        #000 50%,
-        #cf30aa 60%,
-        #000 87%
-      );
-    }
-
-    #filter-icon {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
-      height: 40px;
-      width: 38px;
-      isolation: isolate;
-      overflow: hidden;
-      border-radius: 10px;
-      background: linear-gradient(180deg, #161329, black, #1d1b4b);
-      border: 1px solid transparent;
-    }
-
-    .filterBorder {
-      height: 42px;
-      width: 40px;
-      position: absolute;
-      overflow: hidden;
-      top: 7px;
-      right: 7px;
-      border-radius: 10px;
-    }
-
-    .filterBorder::before {
-      content: "";
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(90deg);
-      background-repeat: no-repeat;
-      background-position: 0 0;
-      filter: brightness(1.35);
-      background-image: conic-gradient(
-        rgba(0, 0, 0, 0),
-        #3d3a4f,
-        rgba(0, 0, 0, 0) 50%,
-        rgba(0, 0, 0, 0) 50%,
-        #3d3a4f,
-        rgba(0, 0, 0, 0) 100%
-      );
-      animation: rotate 4s linear infinite;
-    }
-
-    #main {
-      position: relative;
-      width: 100%;
-    }
-
-    @keyframes rotate {
-      100% {
-        transform: translate(-50%, -50%) rotate(450deg);
-      }
-    }
-
-    /* Hover effects */
-    #poda:hover > .darkBorderBg::before {
-      transform: translate(-50%, -50%) rotate(-98deg);
-    }
-    #poda:hover > .glow::before {
-      transform: translate(-50%, -50%) rotate(-120deg);
-    }
-    #poda:hover > .white::before {
-      transform: translate(-50%, -50%) rotate(-97deg);
-    }
-    #poda:hover > .border::before {
-      transform: translate(-50%, -50%) rotate(-110deg);
-    }
-
-    /* Focus effects */
-    #poda:focus-within > .darkBorderBg::before {
-      transform: translate(-50%, -50%) rotate(442deg);
-      transition: all 4s;
-    }
-    #poda:focus-within > .glow::before {
-      transform: translate(-50%, -50%) rotate(420deg);
-      transition: all 4s;
-    }
-    #poda:focus-within > .white::before {
-      transform: translate(-50%, -50%) rotate(443deg);
-      transition: all 4s;
-    }
-    #poda:focus-within > .border::before {
-      transform: translate(-50%, -50%) rotate(430deg);
-      transition: all 4s;
-    }
-  
-
-    .search-container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 0 15px;
-    }
-    
-    #poda {
-        background: rgba(1, 2, 1, 0.8);
-        border-radius: 12px;
-        overflow: hidden;
-    }
-    
-    .input-wrapper {
-        padding: 8px;
-    }
-    
-    .input {
-        height: 56px;
-        padding: 0 20px;
-        padding-right: 60px; /* Місце для кнопки фільтра */
-        background-color: transparent;
-        font-size: 16px;
-    }
-    
-    #filter-icon {
-        position: absolute;
-        top: 50%;
-        right: 16px;
-        transform: translateY(-50%);
-        width: 40px;
-        height: 40px;
-        border: none;
-        background: transparent;
-        cursor: pointer;
-        padding: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .filterBorder {
-        position: absolute;
-        top: 50%;
-        right: 16px;
-        transform: translateY(-50%);
-        width: 40px;
-        height: 40px;
-        pointer-events: none;
-    }
+/* Remove unused elements */
+.grid,
+.white,
+.border,
+#input-mask,
+#pink-mask,
+.filterBorder,
+#filter-icon {
+  display: none;
+}
   /* almost page*/
 
   body {
@@ -414,7 +178,7 @@
 
 /* Стилі для кнопки фільтрації */
 .btn-primary {
-  background: linear-gradient(45deg, #402fb5, #cf30aa);
+  background-color: #6366f1;
   border: none;
   padding: 8px 20px;
   border-radius: 20px;
@@ -538,4 +302,159 @@
     justify-content: center;
     align-items: center;
     z-index: 9999;
+}
+
+/* Стилі для контейнера жанрів */
+.genres-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding: 8px;
+}
+
+/* Кастомний чекбокс */
+.genre-checkbox {
+  display: none;
+}
+
+.genre-label {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(64, 47, 181, 0.1);
+  border: 1px solid rgba(64, 47, 181, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  color: #fff;
+  user-select: none;
+}
+
+.genre-label:before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  border: 2px solid rgba(64, 47, 181, 0.5);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  background: transparent;
+}
+
+.genre-checkbox:checked + .genre-label {
+  background: rgba(64, 47, 181, 0.2);
+  border-color: #402fb5;
+}
+
+.genre-checkbox:checked + .genre-label:before {
+  background: #402fb5;
+  border-color: #402fb5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='18px' height='18px'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+  background-size: 12px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.genre-label:hover {
+  background: rgba(64, 47, 181, 0.15);
+  border-color: rgba(64, 47, 181, 0.5);
+}
+
+/* Загальні стилі для всіх елементів форми */
+.form-control,
+select,
+input[type="number"] {
+    background: #2c2c2c;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    width: 100%;
+    transition: border-color 0.2s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Стилі для активного стану */
+.form-control:focus,
+select:focus,
+input[type="number"]:focus {
+    outline: none;
+    border-color: #402fb5;
+    background: #2c2c2c;
+    color: #fff;
+    box-shadow: 0 0 0 1px rgba(64, 47, 181, 0.2);
+}
+
+/* Стилі для placeholder */
+.form-control::placeholder,
+input[type="number"]::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Стилі для опцій в select */
+select option {
+    background: #2c2c2c;
+    color: #fff;
+    padding: 8px;
+}
+
+/* Стилі для стрілки в select */
+select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    padding-right: 32px;
+}
+
+/* Прибираємо стрілку для number input */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Стилі для disabled стану */
+.form-control:disabled,
+select:disabled,
+input[type="number"]:disabled {
+    background: rgba(44, 44, 44, 0.5);
+    cursor: not-allowed;
+}
+
+/* Стилі для hover стану */
+.form-control:hover:not(:disabled),
+select:hover:not(:disabled),
+input[type="number"]:hover:not(:disabled) {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Специфічні стилі для dropdown контейнера */
+.filter-dropdown {
+    padding: 16px;
+    min-width: 220px;
+}
+
+/* Стилі для групи контролів */
+.filter-dropdown .mb-2 {
+    margin-bottom: 12px;
+}
+
+/* Стилі для міток */
+.filter-dropdown label {
+    display: block;
+    margin-bottom: 6px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+}
+
+.search-container {
+  margin-top: 20px; /* Збільшений відступ */
 }
