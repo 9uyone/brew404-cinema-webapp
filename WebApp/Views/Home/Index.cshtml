@@ -57,10 +57,13 @@
         height: 300px;
         border-radius: 5%;
         }
-        .overlay-img:hover {
-        transform: scale(1.05); /* Легке збільшення */
-        box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.3); /* Підсвічування */
+
+        .carousel-item:hover .overlay-img {
+            transform: scale(1.05); /* Легке збільшення */
+            box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.3); /* Підсвічування */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Плавний ефект */
         }
+
 
         /* Контейнер для тексту */
         .text-content {
@@ -98,23 +101,20 @@
                 var isActiveClass = i == 0 ? "active" : "";
                 var movie = Model[i];
                 <div class="carousel-item @isActiveClass position-relative">
+                    <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="text-decoration-none">
                     <!-- Фонова картинка -->
                     <div class="banner-img" style="background-image: url('@movie.BackgroundUrl');"></div>
 
                     <!-- Контент поверх -->
                     <div class="carousel-caption">
-                        <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id">
                             <img src="@movie.ImageUrl" class="overlay-img" />
-                        </a>
                         <!-- Обгортка для тексту -->
                         <div class="text-content">
-                            <h2>@movie.Title</h2>
+                            <h2 style="color: white">@movie.Title</h2>
 
-                            <!-- Лайки/реакції -->
                             <div class="reactions mt-2">
-                                <span>@movie.VoteAverage ⭐</span>
+                            <span style="color: white">@movie.VoteAverage ⭐</span>
                             </div>
-                            @{var trailerId = movie.TrailerUrl?.Split("=")[1];}
                             <ul style="list-style-type: none; padding: 0; display: flex; flex-wrap: wrap;" class="mt-2">
                                 @{
                                     foreach (var genre in movie.Genres)
@@ -125,9 +125,9 @@
                                     }
                                 }
                             </ul>
-                            <a class="btn btn-danger mt-2" style="max-width: 150px" href="https://www.youtube.com/embed/@trailerId" target="_blank">Watch trailer</a>
                             </div>
                         </div>
+                    </a>
                 </div>
             }
         </div>
