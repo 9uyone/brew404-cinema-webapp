@@ -57,64 +57,70 @@
     </div>
 </div>
 
-<!-- Блок фільтрації -->
-<div class="filter-container" id="filterContainer">
-    <!-- Жанри -->
-    <div class="filter-section">
-        <button type="button" class="filter-button" data-filter="genres">
-            <span>Жанри</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M6 9l6 6 6-6"/>
-            </svg>
-        </button>
-        <div class="filter-dropdown">
-            @foreach (var genre in Model.Genres)
-            {
-                <div class="multiselect-option">
-                    <label>
-                        <input type="checkbox" name="GenreIds" value="@genre.Id">
-                        @genre.Name
-                    </label>
+<form method="get" action="" id="filterForm">
+    <div class="filter-container" id="filterContainer">
+        <!-- Жанри -->
+        <div class="filter-section">
+            <button type="button" class="filter-button" data-filter="genres">
+                <span>Жанри</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </button>
+            <div class="filter-dropdown">
+                <select name="GenreIds" multiple class="form-control">
+                    @foreach (var genre in Model.Genres)
+                    {
+                        <option value="@genre.Id">@genre.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <!-- Рік -->
+        <div class="filter-section">
+            <button type="button" class="filter-button" data-filter="year">
+                <span>Рік</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </button>
+            <div class="filter-dropdown">
+                <input type="number" name="Year" class="form-control" 
+                       min="1900" max="@DateTime.Now.Year" 
+                       placeholder="Введіть рік">
+            </div>
+        </div>
+
+        <!-- Сортування -->
+        <div class="filter-section">
+            <button type="button" class="filter-button" data-filter="sort">
+                <span>Сортування</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </button>
+            <div class="filter-dropdown">
+                <div class="mb-2">
+                    <select name="SortBy" class="form-control">
+                        <option value="Title">За назвою</option>
+                        <option value="ReleaseDate">За датою</option>
+                    </select>
                 </div>
-            }
+                <div>
+                    <select name="Descending" class="form-control">
+                        <option value="false">За зростанням</option>
+                        <option value="true">За спаданням</option>
+                    </select>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <!-- Рік -->
-    <div class="filter-section">
-        <button type="button" class="filter-button" data-filter="year">
-            <span>Рік</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M6 9l6 6 6-6"/>
-            </svg>
-        </button>
-        <div class="filter-dropdown">
-            <input type="number" name="Year" class="form-control" 
-                   min="1900" max="@DateTime.Now.Year" 
-                   placeholder="Введіть рік">
+        <div class="filter-section">
+            <button type="submit" class="btn btn-primary">Фільтрувати</button>
         </div>
     </div>
-
-    <!-- Сортування -->
-    <div class="filter-section">
-        <button type="button" class="filter-button" data-filter="sort">
-            <span>Сортування</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M6 9l6 6 6-6"/>
-            </svg>
-        </button>
-        <div class="filter-dropdown">
-            <select name="SortBy" class="form-control mb-2">
-                <option value="Title">За назвою</option>
-                <option value="ReleaseDate">За датою</option>
-            </select>
-            <select name="Descending" class="form-control">
-                <option value="false">За зростанням</option>
-                <option value="true">За спаданням</option>
-            </select>
-        </div>
-    </div>
-</div>
+</form>
 
 <!-- Список фільмів -->
 <div id="moviesGrid" class="container mt-5">
@@ -142,91 +148,67 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     const filterIcon = document.getElementById('filter-icon');
     const filterContainer = document.getElementById('filterContainer');
-    const filterButtons = document.querySelectorAll('.filter-button');
+    const filterButtons = document.querySelectorAll('#filterContainer .filter-button');
     const movieResults = document.getElementById('movieResults');
 
-    // Filter dropdown toggle
+    // --- Функція для відкриття/закриття фільтрів ---
+    function toggleDropdown(button) {
+        const dropdown = button.nextElementSibling;
+        if (!dropdown) {
+            console.warn('Dropdown не знайдено для кнопки:', button);
+            return;
+        }
+
+        const isOpen = dropdown.classList.contains('show');
+
+        // Закриваємо всі випадаючі списки
+        document.querySelectorAll('.filter-dropdown').forEach(drop => drop.classList.remove('show'));
+        document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
+
+        // Відкриваємо тільки той, який натиснули
+        if (!isOpen) {
+            dropdown.classList.add('show');
+            button.classList.add('active');
+            console.log(`Відкрито: ${button.getAttribute('data-filter')}`);
+        }
+    }
+
+    // --- Відкриття/закриття фільтрів при натисканні ---
     filterButtons.forEach(button => {
         button.addEventListener('click', (e) => {
-            const section = button.closest('.filter-section');
-            const wasOpen = section.classList.contains('open');
-            
-            // Close all open filters
-            document.querySelectorAll('.filter-section').forEach(s => {
-                s.classList.remove('open');
-                s.querySelector('.filter-button').classList.remove('active');
-            });
-            
-            // Open the clicked section if it was not already open
-            if (!wasOpen) {
-                section.classList.add('open');
-                button.classList.add('active');
-            }
+            e.stopPropagation();
+            toggleDropdown(button);
         });
     });
 
-    // Close dropdowns when clicking outside
+    // --- Закриття фільтрів при кліку поза ними ---
     document.addEventListener('click', (e) => {
-        if (!e.target.closest('.filter-section') && !e.target.closest('#filter-icon')) {
-            document.querySelectorAll('.filter-section').forEach(section => {
-                section.classList.remove('open');
-                section.querySelector('.filter-button').classList.remove('active');
-            });
+        if (!e.target.closest('.filter-section')) {
+            document.querySelectorAll('.filter-dropdown').forEach(dropdown => dropdown.classList.remove('show'));
+            document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
         }
     });
 
-    // Toggle filter container visibility
-    filterIcon.addEventListener('click', () => {
-        filterContainer.classList.toggle('d-none');
-    });
-
-    // Search functionality
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        const movieCards = document.querySelectorAll('.movie-card');
-
-        movieCards.forEach(card => {
-            const title = card.querySelector('.card-title').textContent.toLowerCase();
-            if (title.includes(searchTerm)) {
-                card.closest('.col-md-4').style.display = '';
-            } else {
-                card.closest('.col-md-4').style.display = 'none';
-            }
-        });
-    });
-
-    // Collect and apply filters
-    function applyFilters() {
-        const selectedGenres = Array.from(document.querySelectorAll('input[name="GenreIds"]:checked'))
-            .map(checkbox => checkbox.value);
-        const year = document.querySelector('input[name="Year"]').value;
-        const sortBy = document.querySelector('select[name="SortBy"]').value;
-        const descending = document.querySelector('select[name="Descending"]').value === 'true';
-
-        const movieCards = document.querySelectorAll('.movie-card');
-
-        movieCards.forEach(card => {
-            const genres = card.getAttribute('data-genres').split(',');
-            const movieYear = card.getAttribute('data-year');
-
-            // Genre filter
-            const genreMatch = selectedGenres.length === 0 || 
-                selectedGenres.some(genre => genres.includes(genre));
-
-            // Year filter
-            const yearMatch = !year || movieYear === year;
-
-            // Show/hide based on filters
-            card.closest('.col-md-4').style.display = (genreMatch && yearMatch) ? '' : 'none';
+    // --- Показ/приховування контейнера фільтрів ---
+    if (filterIcon) {
+        filterIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterContainer.classList.toggle('d-none');
         });
     }
 
-    // Add event listeners to filter inputs
-    document.querySelectorAll('input[name="GenreIds"]').forEach(checkbox => {
-        checkbox.addEventListener('change', applyFilters);
-    });
-    document.querySelector('input[name="Year"]').addEventListener('input', applyFilters);
-    document.querySelector('select[name="SortBy"]').addEventListener('change', applyFilters);
-    document.querySelector('select[name="Descending"]').addEventListener('change', applyFilters);
+    // --- Функція пошуку фільмів ---
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const movieCards = document.querySelectorAll('.movie-card');
+
+            movieCards.forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                card.closest('.col-md-4').style.display = title.includes(searchTerm) ? '' : 'none';
+            });
+        });
+    }
 });
+
 </script>

@@ -333,58 +333,100 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Оновлені стилі для фільтрів */
 .filter-container {
-    margin: 20px 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
+  margin: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
 }
 
 .filter-section {
-    position: relative;
+  position: relative;
 }
 
 .filter-button {
-    background: rgba(32, 32, 32, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 8px 16px;
-    border-radius: 20px;
-    color: #fff;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  background: rgba(32, 32, 32, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .filter-button:hover {
-    background: rgba(45, 45, 45, 0.95);
+  background: rgba(45, 45, 45, 0.95);
 }
 
 .filter-button.active {
-    background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .filter-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    margin-top: 8px;
-    background: #1e1e1e;
-    border-radius: 12px;
-    padding: 12px;
-    min-width: 200px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    z-index: 100;
-    display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+  background: #1e1e1e;
+  border-radius: 12px;
+  padding: 12px;
+  min-width: 200px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  display: none;
 }
 
-.filter-section.open .filter-dropdown {
-    display: block;
+.filter-dropdown.show {
+  display: block;
 }
 
+/* Стилі для селектів */
+.filter-dropdown select,
+.filter-dropdown input {
+  background: #2c2c2c;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  width: 100%;
+}
+
+.filter-dropdown select[multiple] {
+  min-height: 120px;
+}
+
+.filter-dropdown select option {
+  padding: 8px;
+  background: #2c2c2c;
+}
+
+.filter-dropdown select option:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+
+
+/* Стилі для кнопки фільтрації */
+.btn-primary {
+  background: linear-gradient(45deg, #402fb5, #cf30aa);
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
 .multiselect-option {
     padding: 8px 12px;
     color: #fff;
