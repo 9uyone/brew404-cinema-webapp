@@ -107,6 +107,7 @@ namespace BusinessLogic.Services
 			movie.Genres = existingGenres;
 			var combinedActors = existingActors.Concat(newActors).ToList();
 			movie.Actors = combinedActors;
+			movie.VoteAverage = MathF.Round(movie.VoteAverage, 1);
 
 			await _movieRepository.Insert(movie);
 		} 

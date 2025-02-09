@@ -34,27 +34,36 @@ namespace WebApp.Controllers
 
 		public async Task<IActionResult> Details(int id)
 		{
-			MovieDTO? movie = await _movieService.GetMovieByIdAsync(id);
-
+			var movie = await _movieService.GetMovieByIdAsync(id);
 			if (movie == null)
 			{
 				return NotFound();
 			}
-			// active sessions
-			var activeSessions = await _sessionService.GetAllSessionsByMovieIdAsync(movie.Id);
-			var similar = (await _movieService.GetMoviesByGenres(movie.Genres))
-				.Where(m => m.Id != movie.Id)
-				.ToList();
 
-			MovieDetailsViewModel movieDetailsViewModel = new MovieDetailsViewModel
+			var activeSessions = await _sessionService.GetGroupedSessionsAsync(movie.Id);
+			var similarMovies = await _movieService.GetMoviesByGenres(movie.Genres);
+
+			var movieDetailsViewModel = new MovieDetailsViewModel
 			{
 				Movie = movie,
-				ActiveSessions = activeSessions,
-				SimilarMovies = similar
+				GroupedSessions = activeSessions,
+				SimilarMovies = similarMovies.Where(m => m.Id != movie.Id).ToList()
 			};
 
 			return View(movieDetailsViewModel);
 		}
+		//public async Task<IActionResult> GetSessions(DateTime date, int movieId)
+		//{
+		//	var sessions = await _sessionService.GetSessionsByDateAndMovieIdAsync(date, movieId);
+
+		//	// If there are no sessions, return an empty array
+		//	if (sessions == null)
+		//	{
+		//		return Json(new List<SessionDTO>());
+		//	}
+
+		//	return Json(sessions);
+		//}
 
 		public async Task<IActionResult> FilteredMovies(MovieFilteredDTO filter)
 		{
@@ -68,6 +77,20 @@ namespace WebApp.Controllers
 			};
 
 			return View(filterMoviesViewModel);
+		}
+
+		public async Task<IActionResult> FilteredSessions(SessionFilterDTO filter)
+		{
+			var sessions = await _sessionService.GetFilteredSessions(filter);
+			var movies = await _movieService.GetAllMoviesAsync();
+
+			var filterSessionViewModel = new FilterSessionsViewModel()
+			{
+				Movies = movies.ToList(),
+				Sessions = sessions.ToList()
+			};
+
+			return View(filterSessionViewModel);
 		}
 
 		public async Task<IActionResult> SessionDetails(int id)

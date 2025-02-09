@@ -16,7 +16,6 @@ namespace BusinessLogic.Validations
 				.MaximumLength(500).WithMessage("не більше 500 символів");
 
 			RuleFor(movie => movie.RunTime)
-				.NotNull().WithMessage("Час виконання не може бути порожнім")
 				.GreaterThan(0).WithMessage("Час виконання повинен бути більшим за нуль.");
 
 			RuleFor(movie => movie.ImageUrl)

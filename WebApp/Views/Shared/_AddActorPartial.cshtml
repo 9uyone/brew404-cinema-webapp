@@ -1,0 +1,17 @@
+﻿@model BusinessLogic.DTOs.ActorDTO
+
+<form id="actorForm" method="post" asp-action="AddActor">
+    <div class="mb-3">
+        <label for="actorName" class="form-label">Ім'я актора</label>
+        <input type="text" class="form-control" id="actorName" name="Name" value="@Model?.Name">
+        <span class="text-danger">@Html.ValidationMessageFor(m => m.Name)</span>
+    </div>
+
+    <div class="mb-3">
+        <label for="actorAvatar" class="form-label">Посилання на фото</label>
+        <input type="text" class="form-control" id="actorAvatar" name="AvatarUrl" value="@Model?.AvatarUrl">
+        <span class="text-danger">@Html.ValidationMessageFor(m => m.AvatarUrl)</span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Зберегти</button>
+</form>
