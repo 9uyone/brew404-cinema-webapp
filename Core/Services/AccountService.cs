@@ -21,14 +21,14 @@ namespace BusinessLogic.Services
 			_signInManager = signInManager;
 		}
 
-		public async Task<bool> LoginUserAsync(LoginDTO model)
+		public async Task<SignInResult> LoginUserAsync(LoginDTO model)
 		{
 			var user = await _userManager.FindByEmailAsync(model.Email);
 			if (user == null)
-				return false;
-			
+				return SignInResult.Failed;
+
 			var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
-			return result.Succeeded;
+			return result;
 		}
 
 		public async Task<IdentityResult> RegisterUserAsync(RegisterDTO model)

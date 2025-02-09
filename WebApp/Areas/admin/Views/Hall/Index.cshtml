@@ -1,0 +1,116 @@
+﻿@model System.Collections.Generic.List<BusinessLogic.DTOs.HallDTO>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Зали</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/Admin/addmovies.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Admin/addBtn.css" asp-append-version="true" />
+
+</head>
+<body>
+    <button type="button" class="btn btn-primary fixed-button" data-bs-toggle="modal" data-bs-target="#hallModal">
+        <span class="plus-sign"></span>
+    </button>
+
+    <div class="container mx-5">
+        <br /><br />
+        <h2 class="mb-4 text-center">зали</h2>
+        <div class="list-group mx-auto" style="max-width: 600px;">
+            @foreach (var hall in Model)
+            {
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+
+                    <span class="fs-5">@hall.Name</span>
+                    <span class="fs-5 ms-5">@hall.NumbOfRows x @hall.SeatsPerRow</span>
+                    @{ var total = hall.SeatsPerRow * hall.NumbOfRows; }
+                    <span class="fs-5 ms-5">всього @total місць</span>
+                    <div class="d-flex flex-row ms-auto">
+                        <button type="button" class="btn btn-warning btn-lg me-2"
+                                onclick="openUpdateModal('@hall.Id', '@hall.Name', '@hall.NumbOfRows', '@hall.SeatsPerRow')">
+                            Update
+                        </button>
+
+                        <form asp-action="Delete" asp-route-id="@hall.Id" method="post" data-ajax="true" onsubmit="return confirm('Ви впевнені, що хочете видалити зал @hall.Id?');">
+                            <button type="submit" class="btn btn-danger btn-lg">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Модальне вікно для додавання залу -->
+    <div class="modal fade" id="hallModal" tabindex="-1" aria-labelledby="hallModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="hallModalLabel">Додати новий зал</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="hallForm" method="post" asp-action="Add" data-ajax="true">
+                        <div class="mb-3">
+                            <label for="hallName" class="form-label">Назва залу</label>
+                            <input type="text" class="form-control" id="hallName" name="Name" required />
+
+                            <label for="hallNumbOfRow" class="form-label">Кількість рядів</label>
+                            <input type="number" class="form-control" id="hallNumbOfRow" name="NumbOfRows" required />
+
+                            <label for="hallSeatPerRow" class="form-label">Кількість сидінь</label>
+                            <input type="number" class="form-control" id="hallSeatPerRow" name="SeatsPerRow" required />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Зберегти</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальне вікно для оновлення залу -->
+    <div class="modal fade" id="UpdateHallModal" tabindex="-1" aria-labelledby="updateHallModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateHallModalLabel">Оновити актора</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateHallForm" method="post" asp-action="Update" data-ajax="true">
+                        <input type="hidden" id="updateHallId" name="Id">
+                        <input type="hidden" id="updateHallNumbOfRow" name="NumbOfRows" />
+                        <input type="hidden" id="updateHallSeatPerRow" name="SeatsPerRow" />
+
+                        <div class="mb-3">
+                            <label for="updateHallName" class="form-label">Назва залу</label>
+                            <input type="text" class="form-control" id="updateHallName" name="Name" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Оновити</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+            function openUpdateModal(id, name, numbOfRows, seatsPerRow) {
+                document.getElementById("updateHallId").value = id;
+                document.getElementById("updateHallName").value = name;
+                document.getElementById("updateHallNumbOfRow").value = numbOfRows;
+                document.getElementById("updateHallSeatPerRow").value = seatsPerRow;
+
+                var updateModal = new bootstrap.Modal(document.getElementById("UpdateHallModal"));
+                updateModal.show();
+        }
+
+    </script>
+</body>
+</html>

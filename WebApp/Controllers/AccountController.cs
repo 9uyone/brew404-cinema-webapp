@@ -2,6 +2,7 @@
 using BusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
 using Toycloud.AspNetCore.Mvc.ModelBinding;
+using WebApp.ViewModels;
 
 namespace WebApp.Controllers
 {
@@ -20,31 +21,22 @@ namespace WebApp.Controllers
 		public IActionResult Login(string? returnUrl)
 		{
 			TempData["ReturnUrl"] = returnUrl;
-			return View();
+			//return View();
+			return View("_LoginModal", new LoginDTO());
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Login([FromForm] LoginDTO model)
+		public async Task<IActionResult> Login([FromBodyOrDefault] LoginDTO model)
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
 
 			var result = await _accountService.LoginUserAsync(model);
-			if (!result)
+			if (!result.Succeeded)
 			{
-				ModelState.AddModelError("Login", "Invalid login attempt");
-				return View(model);
+				return BadRequest("Неправильні дані для входу");
 			}
 
-			return string.IsNullOrEmpty(TempData["ReturnUrl"]?.ToString()) 
-				? RedirectToAction("Index", "Home") 
-				: Redirect(TempData["ReturnUrl"].ToString());
-		}
-
-		[HttpGet]
-		public async Task<IActionResult> Logout()
-		{
-			await _accountService.LogoutAsync();
 			return RedirectToAction("Index", "Home");
 		}
 
@@ -53,9 +45,17 @@ namespace WebApp.Controllers
 		{
 			var result = await _accountService.RegisterUserAsync(model);
 
-			if (!result.Succeeded)
-				return BadRequest(result.Errors);
-			return Ok("Registration successful");
+			if (!ModelState.IsValid || !result.Succeeded)
+				return BadRequest(ModelState);
+
+			return RedirectToAction("Index", "Home");
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Logout()
+		{
+			await _accountService.LogoutAsync();
+			return RedirectToAction("Index", "Home");
 		}
 	}
 }

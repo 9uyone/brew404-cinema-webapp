@@ -1,11 +1,12 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers.Admin
 {
-	//[Area("admin")]
-	[Route("admin/[Controller]")]
+	[Authorize(Roles = "Admin")]
+	[Area("admin")]
 	public class ActorsController : Controller
 	{
 		private readonly ActorService _actorService;
@@ -20,8 +21,8 @@ namespace WebApp.Controllers.Admin
 			return View(await _actorService.GetAllActorsAsync());
 		}
 
-		[HttpPost("add")]
-		public async Task<IActionResult> AddActor(ActorDTO actor)
+		[HttpPost]
+		public async Task<IActionResult> Add(ActorDTO actor)
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
@@ -30,15 +31,15 @@ namespace WebApp.Controllers.Admin
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpPost("delete")]
-		public async Task<IActionResult> DeleteActor(int id)
+		[HttpPost]
+		public async Task<IActionResult> Delete(int id)
 		{
 			await _actorService.DeleteActorAsync(id);
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpPost("update")]
-		public async Task<IActionResult> UpdateActor(ActorDTO actor)
+		[HttpPost]
+		public async Task<IActionResult> Update(ActorDTO actor)
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
@@ -46,6 +47,5 @@ namespace WebApp.Controllers.Admin
 			await _actorService.UpdateActorAsync(actor);
 			return RedirectToAction(nameof(Index));
 		}
-
 	}
 }

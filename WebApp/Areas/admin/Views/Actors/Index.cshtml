@@ -6,17 +6,15 @@
     Layout = "_AdminLayout";
 }
 
-<!DOCTYPE html>
-<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список Акторів</title>
+    <title>Список акторів</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/Admin/addmovies.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Admin/addBtn.css" asp-append-version="true" />
-
 </head>
+
 <body>
     <button type="button" class="btn btn-primary fixed-button" data-bs-toggle="modal" data-bs-target="#ActorModal">
         <span class="plus-sign"></span>
@@ -39,7 +37,7 @@
                             Update
                         </button>
 
-                        <form asp-action="DeleteActor" asp-route-id="@actor.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити актора @actor.Name?');">
+                        <form asp-action="Delete" asp-route-id="@actor.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити актора @actor.Name?');">
                             <button type="submit" class="btn btn-danger btn-lg">Delete</button>
                         </form>
                     </div>
@@ -53,37 +51,11 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="actorModalLabel">Додати новий жанр</h5>
+                    <h5 class="modal-title" id="actorModalLabel">Додати нового актора</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form id="actorForm" method="post" asp-action="AddActor">
-                        <div class="mb-3">
-                            <label for="actorName" class="form-label">Імя актора</label>
-                            <input type="text" class="form-control" id="actorName" name="Name" required>
-                            @if (ViewData.ModelState["Name"]?.Errors.Count > 0)
-                            {
-                                <div class="alert alert-danger mt-2">
-                                    @foreach (var error in ViewData.ModelState["Name"].Errors)
-                                    {
-                                        <p>@error.ErrorMessage</p>
-                                    }
-                                </div>
-                            }
-                            <label for="actorAvatar" class="form-label">ссила на фото</label>
-                            <input type="text" class="form-control" id="actorAvatar" name="AvatarUrl" required>
-                            @if (ViewData.ModelState["AvatarUrl"]?.Errors.Count > 0)
-                            {
-                                <div class="alert alert-danger mt-2">
-                                    @foreach (var error in ViewData.ModelState["AvatarUrl"].Errors)
-                                    {
-                                        <p>@error.ErrorMessage</p>
-                                    }
-                                </div>
-                            }
-                        </div>
-                        <button type="submit" class="btn btn-primary">Зберегти</button>
-                    </form>
+                <div class="modal-body" id="actorFormContainer">
+                    @await Html.PartialAsync("_AddActorPartial", new ActorDTO())
                 </div>
             </div>
         </div>
@@ -98,9 +70,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="updateActorForm" method="post" asp-action="UpdateActor">
+                    <form id="updateActorForm" method="post" action="Actors/Update">
                         <input type="hidden" id="updateActorId" name="Id">
-
                         <div class="mb-3">
                             <label for="updateActorName" class="form-label">Ім'я актора</label>
                             <input type="text" class="form-control" id="updateActorName" name="Name" required>
@@ -117,6 +88,7 @@
             </div>
         </div>
     </div>
+
     <script>
             function openUpdateModal(id, name, avatarUrl) {
                 document.getElementById("updateActorId").value = id;
@@ -125,7 +97,5 @@
                 var updateModal = new bootstrap.Modal(document.getElementById("UpdateActorModal"));
                 updateModal.show();
         }
-
     </script>
 </body>
-</html>

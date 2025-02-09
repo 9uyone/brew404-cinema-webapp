@@ -6,8 +6,6 @@
     Layout = "_AdminLayout";
 }
 
-<!DOCTYPE html>
-<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,11 +16,9 @@
 
 </head>
 <body>
-    <form asp-action="AddSession" asp-controller="Sessions" method="get">
-        <button type="submit" class="btn btn-primary fixed-button">
-            <span class="plus-sign"></span>
-        </button>
-    </form>
+	<a href="Sessions/Add" class="btn btn-primary fixed-button">
+		<span class="plus-sign"></span>
+	</a>
 
     <div class="container mx-5">
         <br /><br />
@@ -42,11 +38,7 @@
 
                         <h3 class="me-5">@session.Hall.Name</h3>
 
-                        <form asp-action="UpdateSession" asp-route-id="@session.Id" method="post">
-                            <button type="submit" class="btn btn-warning btn-lg me-2">Update</button>
-                        </form>
-
-                        <form asp-action="DeleteSession" asp-route-id="@session.Id" method="post"
+                        <form action="Sessions/Delete/@session.Id" method="post"
                               onsubmit="return confirm('Ви впевнені, що хочете видалити сеанс @session.Movie.Title?');">
                             <button type="submit" class="btn btn-danger btn-lg">Delete</button>
                         </form>
@@ -57,4 +49,3 @@
     </div>
 
 </body>
-</html>

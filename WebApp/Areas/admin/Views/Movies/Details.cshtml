@@ -19,7 +19,7 @@
         </li>
         <li class="list-group-item">
             <input class="form-check-input" type="checkbox" disabled @(Model.RunTime == 0 ? "" : "checked") />
-            <strong>тривалість:</strong> @(Model.RunTime) хв
+            <strong>Тривалість:</strong> @(Model.RunTime) хв
         </li>
         <li class="list-group-item">
             <input class="form-check-input" type="checkbox" disabled @(string.IsNullOrEmpty(Model.ReleaseDate?.ToString()) ? "" : "checked") />
@@ -35,7 +35,7 @@
                         genresStr += genre.Name + " , ";
                 }
             }
-            <strong>жанри:</strong> @(genresStr)
+            <strong>Жанри:</strong> @(genresStr)
         </li>
         <li class="list-group-item">
             <input class="form-check-input" type="checkbox" disabled @(string.IsNullOrEmpty(Model.ImageUrl) ? "" : "checked") />
@@ -66,7 +66,7 @@
             }
         </li>
     </ul>
-    <form asp-action="AddMovie" method="post">
+    <form asp-action="Add" method="post">
         <input type="hidden" name="id" value="@Model.Id" />
         <div class="container">
             <button type="submit" class="btn btn-primary px-5 mt-3">Save</button>

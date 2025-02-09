@@ -1,13 +1,9 @@
-﻿﻿@using BusinessLogic.DTOs;
-@using System.Collections.Generic;
-
-@model List<MovieDTO>﻿﻿
+﻿@model System.Collections.Generic.List<BusinessLogic.DTOs.MovieDTO>﻿﻿
 
 @{
-    Layout = "_AdminLayout";
+	Layout = "_AdminLayout";
 }
-<!DOCTYPE html>
-<html lang="uk">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,15 +11,12 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/Admin/addmovies.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Admin/addBtn.css" asp-append-version="true" />
-
 </head>
-<body>
 
-   <form asp-action="SearchMovies" asp-controller="Movies" method="get">
-        <button type="submit" class="btn btn-primary fixed-button">
-            <span class="plus-sign"></span>
-        </button>
-    </form>
+<body>
+    <a asp-action="Search" class="btn btn-primary fixed-button">
+        <span class="plus-sign"></span>
+    </a>
 
     <br/><br/>
     <h2 class="mb-4 text-center">Список фільмів</h2>
@@ -41,9 +34,8 @@
                         Update
                     </button>
 
-
-                    <form asp-action="DeleteMovie" asp-route-id="@movie.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити фільм @movie.Title?');">
-                            <button type="submit" class="btn btn-lg btn-danger btn-lg">Delete</button>
+                    <form asp-action="Delete" asp-route-id="@movie.Id" method="post" data-ajax="true" onsubmit="return confirm('Ви впевнені, що хочете видалити фільм @movie.Title?');">
+                        <button type="submit" class="btn btn-lg btn-danger btn-lg">Delete</button>
                     </form>
                 </div>
             </div>
@@ -58,32 +50,32 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="updateMovieForm" method="post" asp-action="UpdateMovie">
+                    <form id="updateMovieForm" method="post" asp-action="Update" data-ajax="true">
                         <input type="hidden" id="UpdateMovieId" name="Id"/>
                         <input type="hidden" id="UpdateMovieRunTime" name="RunTime"/>
                         <input type="hidden" id="UpdateMovieReleaseDate" name="ReleaseDate"/>
 
                         <div class="mb-3">
-                            <label for="updateMovieName" class="form-label">назва фільму</label>
+                            <label for="updateMovieName" class="form-label">Назва фільму</label>
                             <input type="text" class="form-control" id="updateMovieName" name="Title" required/>
                         </div>
 
                         <div class="mb-3">
                             <label for="updateMovieOverview" class="form-label">Опис фільму</label>
-                            <textarea class="form-control" id="updateMovieOverview" name="Overview" rows="4" required></textarea>
+                            <textarea class="form-control" id="updateMovieOverview" name="Overview" rows="4"></textarea>
                         </div>
 
                         <div class="mb-3">
-                            <label for="updateMovieImage" class="form-label">url фото</label>
-                            <input type="text" class="form-control" id="updateMovieImage" name="ImageUrl" required/>
+                            <label for="updateMovieImage" class="form-label">URL фото</label>
+                            <input type="text" class="form-control" id="updateMovieImage" name="ImageUrl"/>
                         </div>
                         <div class="mb-3">
-                            <label for="updateMovieBackgruond" class="form-label">url задній фон</label>
+                            <label for="updateMovieBackgruond" class="form-label">URL тла</label>
                             <input type="text" class="form-control" id="updateMovieBackgruond" name="BackgroundUrl" required/>
                         </div>
                         <div class="mb-3">
-                            <label for="updateMovieTrailer" class="form-label">url трейлер</label>
-                            <input type="text" class="form-control" id="updateMovieTrailer" name="TrailerUrl" required/>
+                            <label for="updateMovieTrailer" class="form-label">URL трейлера</label>
+                            <input type="text" class="form-control" id="updateMovieTrailer" name="TrailerUrl"/>
                         </div>
 
                         <button type="submit" class="btn btn-success">Оновити</button>
@@ -94,23 +86,20 @@
     </div>
 
     <script>
-           function openUpdateModal(id, title, overview, runtime, releaseDate, imageUrl, backgroundUrl, trailerUrl) {
-                console.log("DEBUG:", { id, title, overview, runtime, releaseDate, imageUrl, backgroundUrl, trailerUrl });
+        function openUpdateModal(id, title, overview, runtime, releaseDate, imageUrl, backgroundUrl, trailerUrl) {
 
-                document.getElementById("UpdateMovieId").value = id;
-                document.getElementById("updateMovieName").value = title;
-                document.getElementById("updateMovieOverview").value = overview;
+            document.getElementById("UpdateMovieId").value = id;
+            document.getElementById("updateMovieName").value = title;
+            document.getElementById("updateMovieOverview").value = overview;
 
-                document.getElementById("UpdateMovieRunTime").value = runtime;
-                document.getElementById("UpdateMovieReleaseDate").value = releaseDate;
+            document.getElementById("UpdateMovieRunTime").value = runtime;
+            document.getElementById("UpdateMovieReleaseDate").value = releaseDate;
 
-                document.getElementById("updateMovieImage").value = imageUrl;
-                document.getElementById("updateMovieBackgruond").value = backgroundUrl;
-                document.getElementById("updateMovieTrailer").value = trailerUrl;
-                var updateModal = new bootstrap.Modal(document.getElementById("UpdateMovieModal"));
-                updateModal.show();
-            }
-
+            document.getElementById("updateMovieImage").value = imageUrl;
+            document.getElementById("updateMovieBackgruond").value = backgroundUrl;
+            document.getElementById("updateMovieTrailer").value = trailerUrl;
+            var updateModal = new bootstrap.Modal(document.getElementById("UpdateMovieModal"));
+            updateModal.show();
+        }
     </script>
 </body>
-</html>
