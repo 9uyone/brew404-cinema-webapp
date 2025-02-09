@@ -7,7 +7,6 @@ using WebApp.ViewModels;
 
 namespace WebApp.Controllers
 {
-	[AllowAnonymous]
 	public class HomeController : Controller
 	{
 		MovieService _movieService;

@@ -10,12 +10,16 @@
   <ItemGroup>
     <Compile Remove="Helpers\**" />
     <Compile Remove="Services\**" />
+    <Compile Remove="Views\Areas\**" />
     <Content Remove="Helpers\**" />
     <Content Remove="Services\**" />
+    <Content Remove="Views\Areas\**" />
     <EmbeddedResource Remove="Helpers\**" />
     <EmbeddedResource Remove="Services\**" />
+    <EmbeddedResource Remove="Views\Areas\**" />
     <None Remove="Helpers\**" />
     <None Remove="Services\**" />
+    <None Remove="Views\Areas\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,10 +46,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\BusinessLogic.csproj" />
     <ProjectReference Include="..\Infrastructure\DataAccess.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Areas\admin\" />
   </ItemGroup>
 
 </Project>

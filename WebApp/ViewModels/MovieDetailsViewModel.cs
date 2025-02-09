@@ -1,5 +1,4 @@
 ﻿using BusinessLogic.DTOs;
-using System.Text.RegularExpressions;
 
 namespace WebApp.ViewModels
 {

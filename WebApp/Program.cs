@@ -1,6 +1,7 @@
 using BusinessLogic;
 using BusinessLogic.Helpers;
 using BusinessLogic.Services;
+using BusinessLogic.TMDbService;
 using DataAccess.Context;
 using DataAccess.EntityModels;
 using DataAccess.Interfaces;
@@ -27,6 +28,7 @@ builder.Services.AddScoped<ActorService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddSingleton<TMDbApiService>();
 
 builder.Services.AddIdentity<User, IdentityRole>()
 	.AddEntityFrameworkStores<CinemaDbContext>()

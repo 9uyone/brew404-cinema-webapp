@@ -31,8 +31,8 @@ namespace WebApp.Controllers.Admin
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpDelete]
-		public async Task<IActionResult> DeleteGenre(int id)
+		[HttpPost]
+		public async Task<IActionResult> Delete(int id)
 		{
 			await _genreService.DeleteGenreAsync(id);
 			return RedirectToAction(nameof(Index));

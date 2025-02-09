@@ -30,7 +30,7 @@
             {
                 <div class="list-group-item d-flex justify-content-between align-items-center">
                     <span class="fs-5">@genre.Name</span>
-                    <form asp-action="DeleteGenre" asp-route-id="@genre.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити жанр @genre.Name?');">
+                    <form asp-action="Delete" asp-route-id="@genre.Id" method="post" data-ajax="true" onsubmit="return confirm('Ви впевнені, що хочете видалити жанр @genre.Name?');">
                         <button type="submit" class="btn btn-danger btn-lg">Видалити</button>
                     </form>
                 </div>
@@ -38,7 +38,7 @@
         </div>
     </div>
 
-    <!-- Модальне вікно для додавання жанра -->
+    <!-- Модальне вікно для додавання жанру -->
     <div class="modal fade" id="genreModal" tabindex="-1" aria-labelledby="genreModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -47,9 +47,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="genreForm" method="post" asp-action="AddGenre">
+                    <form id="genreForm" method="post" asp-action="Add" data-ajax="true">
                         <div class="mb-3">
-                            <label for="genreName" class="form-label">Назва жанра</label>
+                            <label for="genreName" class="form-label">Назва жанру</label>
                             <input type="text" class="form-control" id="genreName" name="Name" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Зберегти</button>

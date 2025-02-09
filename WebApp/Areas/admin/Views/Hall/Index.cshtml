@@ -1,4 +1,5 @@
 ﻿@model System.Collections.Generic.List<BusinessLogic.DTOs.HallDTO>
+
 @{
     Layout = "_AdminLayout";
 }
@@ -37,7 +38,7 @@
                             Update
                         </button>
 
-                        <form asp-action="DeleteHall" asp-route-id="@hall.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити зал @hall.Id?');">
+                        <form asp-action="Delete" asp-route-id="@hall.Id" method="post" data-ajax="true" onsubmit="return confirm('Ви впевнені, що хочете видалити зал @hall.Id?');">
                             <button type="submit" class="btn btn-danger btn-lg">Delete</button>
                         </form>
                     </div>
@@ -46,7 +47,7 @@
         </div>
     </div>
 
-    <!-- Модальне вікно для додавання зала -->
+    <!-- Модальне вікно для додавання залу -->
     <div class="modal fade" id="hallModal" tabindex="-1" aria-labelledby="hallModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -55,15 +56,15 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="hallForm" method="post" asp-action="AddHall">
+                    <form id="hallForm" method="post" asp-action="Add" data-ajax="true">
                         <div class="mb-3">
-                            <label for="hallName" class="form-label">назва для зала</label>
+                            <label for="hallName" class="form-label">Назва залу</label>
                             <input type="text" class="form-control" id="hallName" name="Name" required />
 
-                            <label for="hallNumbOfRow" class="form-label">кількість рядів</label>
+                            <label for="hallNumbOfRow" class="form-label">Кількість рядів</label>
                             <input type="number" class="form-control" id="hallNumbOfRow" name="NumbOfRows" required />
 
-                            <label for="hallSeatPerRow" class="form-label">кількість рядів</label>
+                            <label for="hallSeatPerRow" class="form-label">Кількість сидінь</label>
                             <input type="number" class="form-control" id="hallSeatPerRow" name="SeatsPerRow" required />
                         </div>
 
@@ -74,7 +75,7 @@
         </div>
     </div>
 
-    <!-- Модальне вікно для оновлення зала -->
+    <!-- Модальне вікно для оновлення залу -->
     <div class="modal fade" id="UpdateHallModal" tabindex="-1" aria-labelledby="updateHallModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -83,13 +84,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="updateHallForm" method="post" asp-action="UpdateHall">
+                    <form id="updateHallForm" method="post" asp-action="Update" data-ajax="true">
                         <input type="hidden" id="updateHallId" name="Id">
                         <input type="hidden" id="updateHallNumbOfRow" name="NumbOfRows" />
                         <input type="hidden" id="updateHallSeatPerRow" name="SeatsPerRow" />
 
                         <div class="mb-3">
-                            <label for="updateHallName" class="form-label">назва для зала</label>
+                            <label for="updateHallName" class="form-label">Назва залу</label>
                             <input type="text" class="form-control" id="updateHallName" name="Name" required>
                         </div>
 

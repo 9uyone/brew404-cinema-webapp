@@ -8,8 +8,8 @@ namespace BusinessLogic.Validations
 		public HallValidator()
 		{
 			RuleFor(hall => hall.Name)
-				.NotEmpty().WithMessage("не може бути порожнім")
-				.MaximumLength(20).WithMessage("не більше 20 символів");
+				.NotEmpty().WithMessage("Не може бути порожнім")
+				.MaximumLength(20).WithMessage("Не більше 20 символів");
 
 			RuleFor(hall => hall.NumbOfRows)
 				.InclusiveBetween(1, 20).WithMessage("Кількість рядів повинна бути від 1 до 20.");

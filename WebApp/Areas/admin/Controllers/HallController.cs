@@ -1,11 +1,12 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.Intrinsics.Arm;
 
 namespace WebApp.Controllers.Admin
 {
-	[Route("admin/[Controller]")]
+	[Authorize(Roles = "Admin")]
+	[Area("admin")]
 	public class HallController : Controller
 	{
 		private HallService _hallService;
@@ -20,8 +21,8 @@ namespace WebApp.Controllers.Admin
 			return View(await _hallService.GetAllHallsAsync());
 		}
 
-		[HttpPost("add")]
-		public async Task<IActionResult> AddHall(HallDTO hall)
+		[HttpPost]
+		public async Task<IActionResult> Add(HallDTO hall)
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
@@ -31,16 +32,16 @@ namespace WebApp.Controllers.Admin
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpPost("delete")]
-		public async Task<IActionResult> DeleteHall(int Id)
+		[HttpPost]
+		public async Task<IActionResult> Delete(int Id)
 		{
 			await _hallService.DeleteHallAsync(Id);
 
 			return RedirectToAction(nameof(Index));
 		}
 
-		[HttpPost("update")]
-		public async Task<IActionResult> UpdateHall(HallDTO hall)
+		[HttpPost]
+		public async Task<IActionResult> Update(HallDTO hall)
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);

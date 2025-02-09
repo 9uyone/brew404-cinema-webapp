@@ -37,7 +37,7 @@ namespace WebApp.Controllers.Admin
 				Halls = await _hallService.GetAllHallsAsync()
 			};
 
-			return View("AddSession", addSessionViewModel);
+			return View(addSessionViewModel);
 		}
 
 		[HttpPost]

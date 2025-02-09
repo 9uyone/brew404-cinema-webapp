@@ -1,11 +1,11 @@
 ﻿@using WebApp.ViewModels
 @model AddSessionViewModel
 
-<h2>Додати сеанс</h2>
-
 @{
     Layout = "_AdminLayout";
 }
+
+<h2>Додати сеанс</h2>
 
 <form  asp-action="Add" method="post" data-ajax="true">
     <div class="form-group">
@@ -15,7 +15,6 @@
             @foreach (var movie in Model.Movies)
             {
                 <option value="@movie.Id">@movie.Title</option>
-
             }
         </select>
     </div>
