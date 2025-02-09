@@ -41,15 +41,27 @@ const MovieFilter = {
 
         if (sortBy && sortOrder) {
             moviesArray.sort((a, b) => {
-                const aValue = a.querySelector(sortBy === 'Title' ? '.card-title' : '.movie-year').textContent;
-                const bValue = b.querySelector(sortBy === 'Title' ? '.card-title' : '.movie-year').textContent;
-                
-                const comparison = aValue.localeCompare(bValue);
-                return sortOrder === 'true' ? -comparison : comparison;
+                let aValue, bValue;
+
+                if (sortBy === 'Title') {
+                    aValue = a.querySelector('.card-title').textContent.toLowerCase();
+                    bValue = b.querySelector('.card-title').textContent.toLowerCase();
+                    return sortOrder === 'true' ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
+                } else if (sortBy === 'date') {
+                    aValue = parseInt(a.querySelector('.movie-year').textContent) || 0;
+                    bValue = parseInt(b.querySelector('.movie-year').textContent) || 0;
+                } else if (sortBy === 'rating') {
+                    aValue = parseFloat(a.querySelector('.rating-badge').textContent.replace(',', '.').replace(/[^\d.]/g, '')) || 0;
+                    bValue = parseFloat(b.querySelector('.rating-badge').textContent.replace(',', '.').replace(/[^\d.]/g, '')) || 0;
+                }
+
+
+                return sortOrder === 'true' ? bValue - aValue : aValue - bValue;
             });
 
             moviesArray.forEach(movie => movieResults.appendChild(movie));
         }
+
 
         this.updateNoResultsMessage(moviesArray);
     },

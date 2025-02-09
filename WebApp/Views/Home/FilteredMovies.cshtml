@@ -13,17 +13,15 @@
         <!-- Фонові ефекти -->
         <div class="glow"></div>
         <div class="darkBorderBg"></div>
-        
+
         <!-- Основний інпут -->
         <div id="main" class="w-100 position-relative">
             <div class="input-wrapper position-relative">
-                <input 
-                    id="searchInput"
-                    placeholder="Пошук..." 
-                    type="text" 
-                    name="searchQuery" 
-                    class="input w-100" 
-                />
+                <input id="searchInput"
+                       placeholder="Пошук..."
+                       type="text"
+                       name="searchQuery"
+                       class="input w-100" />
             </div>
         </div>
     </div>
@@ -41,10 +39,10 @@
                     @foreach (var genre in Model.Genres)
                     {
                         <div class="genre-item">
-                            <input type="checkbox" 
-                                   id="genre-@genre.Id" 
-                                   name="GenreIds" 
-                                   value="@genre.Id" 
+                            <input type="checkbox"
+                                   id="genre-@genre.Id"
+                                   name="GenreIds"
+                                   value="@genre.Id"
                                    class="genre-checkbox">
                             <label for="genre-@genre.Id" class="genre-label">
                                 @genre.Name
@@ -61,11 +59,11 @@
             </button>
             <div class="filter-dropdown">
                 <label for="yearInput">Введіть рік</label>
-                <input type="number" 
+                <input type="number"
                        id="yearInput"
-                       name="Year" 
+                       name="Year"
                        class="form-control"
-                       min="1900" 
+                       min="1900"
                        max="2024"
                        placeholder="Наприклад: 2023">
             </div>
@@ -78,8 +76,9 @@
             </button>
             <div class="filter-dropdown">
                 <div class="mb-2">
-                    <select name="SortBy" class="form-control">
-                        <option value="title">За назвою</option>
+                    <label for="sortBy">Сортувати за</label>
+                    <select id="sortBy" name="SortBy" class="form-control">
+                        <option value="Title">За назвою</option>
                         <option value="date">За датою</option>
                         <option value="rating">За рейтингом</option>
                     </select>
@@ -103,74 +102,22 @@
 <!-- Список фільмів -->
 <div id="moviesGrid" class="container mt-5">
     <div class="row d-flex justify-content-start" id="movieResults">
-        @foreach(var movie in Model.Movies)
+        @foreach (var movie in Model.Movies)
         {
             <div class="col-md-4 col-sm-6 col-12 mb-3">
-    <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="text-decoration-none">
-        <div class="card movie-card" data-genres="@string.Join(",", movie.Genres.Select(g => g.Id))">
-            <img src="@movie.ImageUrl" class="card-img" alt="@movie.Title">
-            <div class="rating-badge">@movie.VoteAverage ⭐</div>
-            <div class="card-body">
-                <h5 class="card-title">@movie.Title</h5>
-                <p class="movie-year">@movie.ReleaseDate</p>
+                <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="text-decoration-none">
+                    <div class="card movie-card" data-genres="@string.Join(",", movie.Genres.Select(g => g.Id))">
+                        <img src="@movie.ImageUrl" class="card-img" alt="@movie.Title">
+                        <div class="rating-badge">@movie.VoteAverage⭐</div>
+                        <div class="card-body">
+                            <h5 class="card-title">@movie.Title</h5>
+                            <p class="movie-year">@movie.ReleaseDate</p>
+                        </div>
+                    </div>
+                </a>
             </div>
-        </div>
-    </a>
-</div>
         }
     </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const filterButtons = document.querySelectorAll('.filter-button');
-    const filterCheckboxes = document.querySelectorAll('input[type="checkbox"]');
-    const filterInputs = document.querySelectorAll('input[type="number"]');
-    const movieCards = document.querySelectorAll('.movie-card');
-
-    // --- Відкривання/закривання фільтрів ---
-    filterButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const dropdown = button.nextElementSibling;
-            dropdown.classList.toggle('show');
-            button.classList.toggle('active');
-        });
-    });
-
-    // Закриття всіх фільтрів при кліку поза ними
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.filter-section')) {
-            document.querySelectorAll('.filter-dropdown').forEach(dropdown => dropdown.classList.remove('show'));
-            document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
-        }
-    });
-
-    // --- Фільтрація фільмів ---
-    function filterMovies() {
-        const selectedGenres = [...document.querySelectorAll('input[name="GenreIds"]:checked')].map(cb => cb.value);
-        const minYear = document.querySelector('input[name="YearMin"]').value;
-        const maxYear = document.querySelector('input[name="YearMax"]').value;
-
-        movieCards.forEach(card => {
-            const movieGenres = card.getAttribute('data-genres').split(',');
-            const movieYear = parseInt(card.getAttribute('data-year'));
-
-            const genreMatch = selectedGenres.length === 0 || movieGenres.some(genre => selectedGenres.includes(genre));
-            const yearMatch = (!minYear || movieYear >= minYear) && (!maxYear || movieYear <= maxYear);
-
-            if (genreMatch && yearMatch) {
-                card.style.display = '';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    }
-
-    // Додаємо обробники подій на чекбокси та інпути
-    filterCheckboxes.forEach(checkbox => checkbox.addEventListener('change', filterMovies));
-    filterInputs.forEach(input => input.addEventListener('input', filterMovies));
-});
-
-
-</script>
+<script src="~/js/movieFilter.js" asp-append-version="true"></script>
