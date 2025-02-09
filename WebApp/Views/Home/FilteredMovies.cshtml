@@ -1,66 +1,123 @@
 ﻿@model WebApp.ViewModels.FilterMoviesViewModel
 
-<h2>Фільми</h2>
+<link rel="stylesheet" href="@Url.Content("~/css/moviePage.css")">
 
-<form method="get" action="@Url.Action("FilteredMovies", "Home")">
-    <div class="row">
-        <div class="col-md-3">
-            <label for="GenreIds">Жанри:</label>
-            <select name="GenreIds" multiple class="form-control">
-                @foreach (var genre in Model.Genres)
-                {
-                    <option value="@genre.Id">@genre.Name</option>
-                }
-            </select>
+<!-- Loading Indicator -->
+<div class="loading-indicator" style="display: none;">
+    <div class="spinner-border text-primary"></div>
+</div>
+
+<!-- Пошук фільмів -->
+<div class="search-container">
+    <div id="poda" class="d-flex align-items-center position-relative">
+        <!-- Фонові ефекти -->
+        <div class="glow"></div>
+        <div class="darkBorderBg"></div>
+
+        <!-- Основний інпут -->
+        <div id="main" class="w-100 position-relative">
+            <div class="input-wrapper position-relative">
+                <input id="searchInput"
+                       placeholder="Пошук..."
+                       type="text"
+                       name="searchQuery"
+                       class="input w-100" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="get" action="" id="filterForm">
+    <div class="filter-container" id="filterContainer">
+        <!-- Жанри -->
+        <div class="filter-section">
+            <button type="button" class="filter-button" data-filter="genres">
+                <span>Жанри</span>
+            </button>
+            <div class="filter-dropdown">
+                <div class="genres-container">
+                    @foreach (var genre in Model.Genres)
+                    {
+                        <div class="genre-item">
+                            <input type="checkbox"
+                                   id="genre-@genre.Id"
+                                   name="GenreIds"
+                                   value="@genre.Id"
+                                   class="genre-checkbox">
+                            <label for="genre-@genre.Id" class="genre-label">
+                                @genre.Name
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <!-- Рік -->
+        <div class="filter-section">
+            <button type="button" class="filter-button" data-filter="year">
+                <span>Рік</span>
+            </button>
+            <div class="filter-dropdown">
+                <label for="yearInput">Введіть рік</label>
+                <input type="number"
+                       id="yearInput"
+                       name="Year"
+                       class="form-control"
+                       min="1900"
+                       max="2024"
+                       placeholder="Наприклад: 2023">
+            </div>
         </div>
 
-        <div class="col-md-2">
-            <label for="Year">Рік:</label>
-            <input type="number" name="Year" class="form-control">
+        <!-- Сортування -->
+        <div class="filter-section">
+            <button type="button" class="filter-button" data-filter="sort">
+                <span>Сортування</span>
+            </button>
+            <div class="filter-dropdown">
+                <div class="mb-2">
+                    <label for="sortBy">Сортувати за</label>
+                    <select id="sortBy" name="SortBy" class="form-control">
+                        <option value="Title">За назвою</option>
+                        <option value="date">За датою</option>
+                        <option value="rating">За рейтингом</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="sortOrder">Напрямок</label>
+                    <select id="sortOrder" name="Descending" class="form-control">
+                        <option value="false">За зростанням</option>
+                        <option value="true">За спаданням</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
-        <div class="col-md-2">
-            <label for="SortBy">Сортувати за:</label>
-            <select name="SortBy" class="form-control">
-                <option value="title">Назва</option>
-                <option value="date">Дата випуску</option>
-            </select>
-        </div>
-
-        <div class="col-md-2">
-            <label>Порядок:</label>
-            <select name="Descending" class="form-control">
-                <option value="false">За зростанням</option>
-                <option value="true">За спаданням</option>
-            </select>
-        </div>
-
-        <div class="col-md-12 mt-3">
+        <div class="filter-section">
             <button type="submit" class="btn btn-primary">Фільтрувати</button>
         </div>
     </div>
 </form>
 
-<div class="container mt-5">
-    <div class="row d-flex justify-content-start">
-        @{
-            foreach(var movie in Model.Movies)
-            {
-                <div class="col-md-4 col-sm-6 col-12 mb-3">
-                    <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="text-decoration-none">
-                        <div class="card" style="position: relative;">
-                            <img src="@movie.ImageUrl" class="card-img-top fixed-size" alt="@movie.Title">
-                            <div class="card-body">
-                                <h5 class="card-title" style="color: white">@movie.Title</h5>
-                                <h5 class="card-title" style="color: lightgrey;">@movie.ReleaseDate</h5>
-                            </div>
-                            <h5 class="card-title" style="color: white; position: absolute; bottom: 100px; left: 10px; background-color: rgba(0, 0, 0, 0.6); padding: 5px 10px; border-radius: 5px;">
-                                @movie.VoteAverage ⭐
-                            </h5>
+<!-- Список фільмів -->
+<div id="moviesGrid" class="container mt-5">
+    <div class="row d-flex justify-content-start" id="movieResults">
+        @foreach (var movie in Model.Movies)
+        {
+            <div class="col-md-4 col-sm-6 col-12 mb-3">
+                <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="text-decoration-none">
+                    <div class="card movie-card" data-genres="@string.Join(",", movie.Genres.Select(g => g.Id))">
+                        <img src="@movie.ImageUrl" class="card-img" alt="@movie.Title">
+                        <div class="rating-badge">@movie.VoteAverage⭐</div>
+                        <div class="card-body">
+                            <h5 class="card-title">@movie.Title</h5>
+                            <p class="movie-year">@movie.ReleaseDate</p>
                         </div>
-                    </a>
-                </div>
-            }
+                    </div>
+                </a>
+            </div>
         }
     </div>
 </div>
+
+<script src="~/js/movieFilter.js" asp-append-version="true"></script>

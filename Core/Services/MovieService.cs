@@ -53,6 +53,7 @@ namespace BusinessLogic.Services
 			{
 				"title" => filter.Descending ? movieQuery.OrderByDescending(m => m.Title) : movieQuery.OrderBy(m => m.Title),
 				"date" => filter.Descending ? movieQuery.OrderByDescending(m => m.ReleaseDate) : movieQuery.OrderBy(m => m.ReleaseDate),
+				"rating" => filter.Descending ? movieQuery.OrderByDescending(m => m.VoteAverage) : movieQuery.OrderBy(m => m.VoteAverage),
 				_ => movieQuery
 			};
 

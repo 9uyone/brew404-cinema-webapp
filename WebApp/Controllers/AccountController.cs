@@ -32,6 +32,7 @@ namespace WebApp.Controllers
 				return BadRequest(ModelState);
 
 			var result = await _accountService.LoginUserAsync(model);
+
 			if (!result.Succeeded)
 			{
 				return BadRequest("Неправильні дані для входу");
@@ -44,9 +45,14 @@ namespace WebApp.Controllers
 		public async Task<IActionResult> Register([FromBodyOrDefault] RegisterDTO model)
 		{
 			var result = await _accountService.RegisterUserAsync(model);
-
-			if (!ModelState.IsValid || !result.Succeeded)
+			
+			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
+
+			if (!result.Succeeded)
+			{
+				return BadRequest(result.Errors.Select(result => result.Description));
+			}
 
 			return RedirectToAction("Index", "Home");
 		}
