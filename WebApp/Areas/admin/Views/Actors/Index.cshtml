@@ -70,7 +70,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="updateActorForm" method="post" action="Actors/Update">
+                    <form id="updateActorForm" method="post" asp-action="Update" data-ajax="true">
                         <input type="hidden" id="updateActorId" name="Id">
                         <div class="mb-3">
                             <label for="updateActorName" class="form-label">Ім'я актора</label>
