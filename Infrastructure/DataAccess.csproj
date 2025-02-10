@@ -9,12 +9,15 @@
   <ItemGroup>
     <Compile Remove="Data\**" />
     <Compile Remove="Entities\**" />
+    <Compile Remove="EntityModels\Roles\**" />
     <Compile Remove="Repositories\**" />
     <EmbeddedResource Remove="Data\**" />
     <EmbeddedResource Remove="Entities\**" />
+    <EmbeddedResource Remove="EntityModels\Roles\**" />
     <EmbeddedResource Remove="Repositories\**" />
     <None Remove="Data\**" />
     <None Remove="Entities\**" />
+    <None Remove="EntityModels\Roles\**" />
     <None Remove="Repositories\**" />
   </ItemGroup>
 
@@ -36,10 +39,6 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.1" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.1" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0-preview.2.efcore.9.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="EntityModels\Roles\" />
   </ItemGroup>
 
 </Project>

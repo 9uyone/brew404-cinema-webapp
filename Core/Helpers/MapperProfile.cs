@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs;
+using BusinessLogic.DTOs.Auth;
 using DataAccess.EntityModels;
 using DataAccess.Models;
 
@@ -10,14 +11,14 @@ namespace BusinessLogic.Helpers
 		public MapperProfile()
 		{
 			CreateMap<Movie, MovieDTO>()
-				.ForMember(dest => dest.ReleaseDate, opt => opt.MapFrom(src => src.ReleaseDate.ToString("yyyy-MM-dd")))
-				.ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres))
-				.ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.Actors));
-		
+				.ForMember(dest => dest.ReleaseDate, opt => opt.MapFrom(src => src.ReleaseDate.ToString("yyyy-MM-dd")));
+				//.ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres))
+				//.ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.Actors));
+
 			CreateMap<MovieDTO, Movie>()
-				.ForMember(dest => dest.ReleaseDate, opt => opt.MapFrom(src => ParseReleaseDate(src.ReleaseDate)))
-				.ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres))
-				.ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.Actors));
+				.ForMember(dest => dest.ReleaseDate, opt => opt.MapFrom(src => ParseReleaseDate(src.ReleaseDate)));
+				//.ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres))
+				//.ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.Actors));
 		
 			CreateMap<Genre, GenreDTO>().ReverseMap();
 			CreateMap<Actor, ActorDTO>().ReverseMap();
@@ -31,6 +32,8 @@ namespace BusinessLogic.Helpers
 				.ForMember(dest => dest.Movie, opt => opt.Ignore())
 				.ForMember(dest => dest.Hall, opt => opt.Ignore());*/
 
+			CreateMap<RegisterDTO, User>()
+				.ForMember(dest => dest.Role, opt => opt.MapFrom(src => "User"));
 		}
 		
 		private static DateTime ParseReleaseDate(string? releaseDate)
