@@ -4,7 +4,7 @@ using BusinessLogic.Interfaces;
 using DataAccess.EntityModels;
 using DataAccess.Interfaces;
 using DataAccess.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace BusinessLogic.Services
 {
@@ -26,15 +26,20 @@ namespace BusinessLogic.Services
 			_moviesRepository = moviesRepository;
 		}
 
-		public async Task<IEnumerable<SessionDTO>> GetAllSessionAsync()
+		public async Task<IEnumerable<SessionDTO>> GetAllSessionAsync(bool onlyFutureSessions = false)
 		{
 			var sessions = await Task.Run(() => _sessionRepository.Get(includeProperties: "Movie,Hall"));
+			if(onlyFutureSessions)
+				sessions = sessions.Where(s => s.EndTime > DateTime.Now);
 			return _mapper.Map<List<SessionDTO>>(sessions);
 		}
 
-		public async Task<IEnumerable<SessionDTO>> GetFilteredSessions(SessionFilterDTO filter)
+		public async Task<IEnumerable<SessionDTO>> GetFilteredSessions(SessionFilterDTO filter, bool onlyFutureSessions = false)
 		{
 			var sessionQuery = await _sessionRepository.Get(includeProperties: "Movie,Hall.Seats");
+
+			if(onlyFutureSessions)
+				sessionQuery = sessionQuery.Where(s => s.EndTime > DateTime.Now);
 
 			if (filter.MovieId.HasValue)
 				sessionQuery = sessionQuery.Where(session => session.MovieId == filter.MovieId);
@@ -56,21 +61,27 @@ namespace BusinessLogic.Services
 			return session == null ? null : _mapper.Map<SessionDTO>(session);
 		}
 
-		public async Task<List<SessionDTO>> GetAllSessionsByMovieIdAsync(int movieId)
+		public async Task<List<SessionDTO>> GetAllSessionsByMovieIdAsync(int movieId, bool onlyFutureSessions = false)
 		{
 			var activeSessions = await _sessionRepository.Get(
 				filter: s => s.MovieId == movieId,
 				includeProperties: "Movie,Hall");
 
+			if (onlyFutureSessions)
+				activeSessions = activeSessions.Where(s => s.EndTime > DateTime.Now);
+
 			return _mapper.Map<List<SessionDTO>>(activeSessions).ToList();
 		}
 
-		public async Task<Dictionary<DateTime, List<SessionDTO>>> GetGroupedSessionsAsync(int movieId)
+		public async Task<Dictionary<DateTime, List<SessionDTO>>> GetGroupedSessionsAsync(int movieId, bool onlyFutureSessions = false)
 		{
 			var sessions = await _sessionRepository.Get(
 				filter: s => s.MovieId == movieId,
 				includeProperties: "Movie,Hall"
 			);
+
+			if (onlyFutureSessions)
+				sessions = sessions.Where(s => s.EndTime > DateTime.Now);
 
 			return sessions
 				.GroupBy(s => s.StartTime.Date)

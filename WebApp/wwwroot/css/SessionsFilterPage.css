@@ -1,0 +1,80 @@
+﻿.filter-dropdown.active {
+    display: block;
+}
+
+.extra {
+    width: auto;
+    padding: 10px 15px;
+    background: #6e05ab;
+    font-weight: 500;
+    color: white;
+    border: 3px solid #6e05ab;
+    border-radius: 25px;
+    box-shadow: 0 0 0 #6e05ab;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.star {
+    position: absolute;
+    width: 0;
+    height: auto;
+    filter: drop-shadow(0 0 0 #fffdef);
+    z-index: -1;
+    transition: all 0.5s cubic-bezier(0.05, 0.83, 0.43, 0.96);
+}
+
+.extra:hover {
+    background: transparent;
+    box-shadow: 0 0 25px #6e05ab;
+    transform: scale(1.1);
+}
+
+.extra:hover .star-1 {
+    top: -80%;
+    left: -30%;
+    width: 25px;
+    filter: drop-shadow(0 0 10px #fffdef);
+}
+
+.extra:hover .star-2 {
+    top: -25%;
+    left: 10%;
+    width: 15px;
+    filter: drop-shadow(0 0 10px #fffdef);
+}
+
+.extra:hover .star-3 {
+    top: 55%;
+    left: 25%;
+    width: 5px;
+    filter: drop-shadow(0 0 10px #fffdef);
+}
+
+
+.extra:hover .star-4 {
+    top: 30%;
+    left: 80%;
+    width: 8px;
+    filter: drop-shadow(0 0 10px #fffdef);
+}
+
+
+.extra:hover .star-5 {
+    top: 25%;
+    left: 115%;
+    width: 15px;
+    filter: drop-shadow(0 0 10px #fffdef);
+}
+
+
+.extra:hover .star-6 {
+    top: 5%;
+    left: 60%;
+    width: 5px;
+    filter: drop-shadow(0 0 10px #fffdef);
+}
+
+.fil0 {
+    fill: #fffdef;
+}
