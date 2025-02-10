@@ -4,7 +4,7 @@
         url: $(this).attr('action'),
         method: 'POST',
         data: $(this).serialize(),
-        success: function (response) {
+        success: function (response, status, xhr) {
             window.location.reload();
         },
         error: function (response) {
