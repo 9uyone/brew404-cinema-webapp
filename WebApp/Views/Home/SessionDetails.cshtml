@@ -1,5 +1,69 @@
-﻿@model BusinessLogic.DTOs.SessionDTO
+﻿@using System.Globalization
+@using DataAccess.EntityModels
+@using WebApp.ViewModels
+@model BusinessLogic.DTOs.SessionDTO
 
-<p>@Model.Movie.Title</p>
-<p>@Model.Hall.Name</p>
-<p>@Model.Hall.Seats.Count()</p>
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.Movie.Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/SessionDetailsStyles.css">
+</head>
+<body>
+    <div class="movie-container">
+        <div class="movie-info">
+            <img src="@Model.Movie.ImageUrl" alt="@Model.Movie.Title" class="movie-poster">
+            <div class="movie-details">
+                <h1>
+                    @Model.Movie.Title
+                    <span class="age-rating">@Model.Movie.VoteAverage ⭐</span>
+                    <span class="quality-3d">@Model.Hall.Name</span>
+                    <span class="quality-4k">4K</span>
+                </h1>
+                <p><strong>Genres:</strong> @string.Join(", ", Model.Movie.Genres.Select(g => g.Name))</p> @*ПОНЯТТЯ НЕМАЮ ЧОГО НЕ ПРАЦЮЄ *@
+                <p><strong>Release Date:</strong> @Model.Movie.ReleaseDate</p>
+                <p><strong>Runtime:</strong> @Model.Movie.RunTime</p>
+                <p><strong>Overview:</strong> @Model.Movie.Overview</p>
+            </div>
+        </div>
+
+        <div class="screening-info">
+            <span>П'ятниця, 07.02.2025</span>
+            <span>@Model.StartTime.ToString("HH:mm")
+            </span>
+            <span>Львів, ТРЦ Форум</span>
+            <span>Зал №2</span>
+        </div>
+
+        <div class="price-options">
+            <span class="price-tag blue">190 грн</span>
+            <span class="price-tag green">420 грн</span>
+            <span class="price-tag gray">Продані</span>
+        </div>
+
+        <div class="seating-area">
+            <div class="seats-section">
+                <div class="screen"></div>
+                <div class="seats-container" id="seatsContainer"></div>
+                <div class="vip-container" id="vipContainer"></div>
+            </div>
+            <div class="booking-panel">
+                <h3>Ваше бронювання</h3>
+                <div id="bookingDetails">
+                    <!-- Деталі бронювання будуть додаватися сюди -->
+                </div>
+                <div class="total-price">
+                    <span>Всього до сплати:</span>
+                    <span id="totalPrice">0 грн</span>
+                </div>
+                <button class="buy-button">Купити</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/SessionDetailsScript.js"></script>
+</body>
+</html>
