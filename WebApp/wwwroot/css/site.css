@@ -14,7 +14,7 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+	margin-bottom: 60px;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {

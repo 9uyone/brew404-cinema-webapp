@@ -38,7 +38,7 @@
 
                         <h3 class="me-5">@session.Hall.Name</h3>
 
-                        <form action="Sessions/Delete/@session.Id" method="post"
+                        <form asp-action="Delete" asp-route-id="@session.Id" method="post"
                               onsubmit="return confirm('Ви впевнені, що хочете видалити сеанс @session.Movie.Title?');">
                             <button type="submit" class="btn btn-danger btn-lg">Delete</button>
                         </form>

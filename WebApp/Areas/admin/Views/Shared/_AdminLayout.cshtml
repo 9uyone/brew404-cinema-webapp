@@ -1,23 +1,23 @@
-﻿<html>
-<head>
+﻿<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AdminPanel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/Admin/sidebar.css">
+	<!--<link rel="stylesheet" href="~/css/styles.css"> -->
 </head>
 <body>
     <div class="sidebar">
         <div class="admin-profile">
             <img src="https://i.ibb.co/pjyQMk7G/IMG-9011.jpg"
-                 alt="Логотип" class="admin-photo rounded-circle">
+                    alt="Логотип" class="admin-photo rounded-circle">
             <div class="admin-info">
                 <h4 class="admin-name">@User.Identity?.Name</h4>
                 <p class="admin-status">Online</p>
             </div>
         </div>
-        <a asp-controller="Panel">Головна</a>
-        <a asp-controller="Sessions">Керування сеансами</a>
+        <a asp-controller="Panel" asp-action="Index">Головна</a>
+        <a asp-controller="Sessions" asp-action="Index">Керування сеансами</a>
 
         <div class="accordion" id="accordionExample">
             <div class="accordion-item">
@@ -28,9 +28,9 @@
                 </h2>
                 <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
-                        <a asp-controller="Movies">Керування фільмами</a>
-                        <a asp-controller="Genres">Керування жанрами</a>
-                        <a asp-controller="Actors">Керування акторами</a>
+                        <a asp-controller="Movies" asp-action="Index">Керування фільмами</a>
+                        <a asp-controller="Genres" asp-action="Index">Керування жанрами</a>
+                        <a asp-controller="Actors" asp-action="Index">Керування акторами</a>
                     </div>
                 </div>
             </div>
@@ -40,7 +40,7 @@
         <a asp-controller="Statistics">Статистика</a>
         <a asp-controller="Users">Користувачі</a>
 
-        <form asp-area="" asp-controller="Home" method="get" class="d-inline">
+        <form asp-area="" asp-controller="Home" asp-action="Index" method="get" class="d-inline">
             <button type="submit" class="btn btn-outline-light rounded-pill px-4 py-2 mt-3">
                 На сайт
             </button>
@@ -57,4 +57,3 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js"></script>
 </body>
-</html>
