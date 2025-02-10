@@ -20,17 +20,17 @@ namespace BusinessLogic.Validations
 
 			RuleFor(movie => movie.ImageUrl)
 				.NotEmpty().WithMessage("Не може бути порожнім")
-				.MustBeValidUrl()
+				.MustBeValidUrl().WithMessage("Неправильний URL для фото")
 				.When(movie => !string.IsNullOrEmpty(movie.ImageUrl));
 
 			RuleFor(movie => movie.BackgroundUrl)
 				.NotEmpty().WithMessage("Не може бути порожнім")
-				.MustBeValidUrl()
+				.MustBeValidUrl().WithMessage("Неправильний URL для тла")
 				.When(movie => !string.IsNullOrEmpty(movie.BackgroundUrl));
 
 			RuleFor(movie => movie.TrailerUrl)
 				.NotEmpty().WithMessage("Не може бути порожнім")
-				.MustBeValidUrl()
+				.MustBeValidUrl().WithMessage("Неправильний URL для трейлера")
 				.When(movie => !string.IsNullOrEmpty(movie.TrailerUrl));
 
 			RuleFor(moie => moie.ReleaseDate)

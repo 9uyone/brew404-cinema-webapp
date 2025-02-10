@@ -26,7 +26,8 @@ namespace WebApp.Controllers.Admin
 		public async Task<IActionResult> Add(string name)
 		{
 			var genre = new GenreDTO { Name = name };
-			if (!ModelState.IsValid)
+
+			if (!TryValidateModel(genre))
 				return BadRequest(ModelState);
 
 			await _genreService.AddGenreAsync(genre);
