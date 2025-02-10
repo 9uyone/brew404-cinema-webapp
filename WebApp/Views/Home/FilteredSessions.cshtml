@@ -23,6 +23,40 @@
     .session-details p {
         margin-bottom: 0.5rem;
     }
+
+    #movies-dropdown
+    {
+        width: 300px;
+    }
+    .filter-dropdown select {
+        width: 100%; /* Ширина на 100% батьківського елемента */
+        max-width: 300px; /* Максимальна ширина для обмеження */
+    }
+
+    /* Стилізуємо саму лінію прокрутки */
+    ::-webkit-scrollbar {
+        width: 12px; /* Ширина вертикальної лінії прокрутки */
+        height: 12px; /* Висота горизонтальної лінії прокрутки */
+    }
+
+    /* Стилізуємо саму лінію прокрутки при наведенні */
+    ::-webkit-scrollbar:hover {
+        background-color: #888; /* Колір фону при наведенні */
+    }
+
+    /* Стилізуємо "повзунок" (thumb) прокрутки */
+    ::-webkit-scrollbar-thumb {
+        background-color: #555; /* Колір самого повзунка */
+        border-radius: 10px; /* Заокруглення країв */
+        border: 3px solid #fff; /* Додатковий контур навколо повзунка */
+    }
+
+    /* Стилізуємо область, де рухається повзунок */
+    ::-webkit-scrollbar-track {
+        background-color: #f1f1f1; /* Колір фону для області прокрутки */
+        border-radius: 10px; /* Заокруглені кути області прокрутки */
+    }
+
 </style>
 
 <form method="get" action="@Url.Action("FilteredSessions", "Home")">
@@ -33,7 +67,7 @@
             <button type="button" class="filter-button">
                 <span>вибрати фільм</span>
             </button>
-            <div class="filter-dropdown">
+            <div class="filter-dropdown" id="movies-dropdown">
                 <select name="MovieId" multiple class="form-control movie-">
                     @foreach (var movie in Model.Movies)
                     {
@@ -64,6 +98,7 @@
                             <option value="false">За зростанням</option>
                             <option value="true">За спаданням</option>
                         </select>
+
                     </div>
                 </div>
             </div>
@@ -71,7 +106,7 @@
         <div>
             <button type="submit" class="btn btn-primary">Фільтрувати</button>
         </div>
-            <button class="extra">
+            <button class="extra" id="todaySessionsButton">
                 сеанси сьогодні
                 <div class="star star-1">
                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -141,14 +176,15 @@
                     <div class="card session-card">
                         <img src="@session.Movie.ImageUrl" class="card-img-top session-img" alt="@session.Movie.Title" />
                         <div class="card-body session-details">
-                            <h5 class="card-title text-white">@session.Movie.Title</h5>
-                            <p class="card-text text-white">
-                                @session.StartTime.ToString("yyyy-MM-dd")
-                            </p>
+                            <h4 class="card-title text-white mb-3">@session.Movie.Title</h4>
+                            <h5 class="card-text text-white">
+                                @session.StartTime.ToString("d MMMM", new System.Globalization.CultureInfo("uk-UA"))
+                            </h5>
                             <p class="card-text">
-                                <h5 class="text-danger">@session.StartTime.ToString("HH:mm") - @session.EndTime.ToString("HH:mm")</h5>
-                                <h5 class="text-muted">@session.Hall.Name</h5>
+                                <span class="text-danger" style="font-size: 18px">@session.StartTime.ToString("HH:mm") - @session.EndTime.ToString("HH:mm")</span>
+                                <span class="text-muted" style="font-size: 18px"> @session.Hall.Name</span>
                             </p>
+
                         </div>
                     </div>
                 </a>
@@ -205,6 +241,23 @@
                 sortDropdown.classList.remove("active");
             }
         });
+    });
+
+    document.getElementById('todaySessionsButton').addEventListener('click', function() {
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0]; // Форматуємо дату як "yyyy-MM-dd"
+
+        // Встановлюємо поточну дату в поле "Date"
+        document.querySelector('input[name="Date"]').value = formattedDate;
+
+        // Відправляємо форму
+        document.querySelector('form').submit();
+    });
+
+        document.querySelector('form').addEventListener('submit', function() {
+        const sortBy = document.getElementById('sortBy').value;
+        const sortOrder = document.getElementById('sortOrder').value;
+        console.log(`Sort By: ${sortBy}, Descending: ${sortOrder}`);
     });
 </script>
 

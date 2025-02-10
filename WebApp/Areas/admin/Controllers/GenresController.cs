@@ -26,8 +26,10 @@ namespace WebApp.Controllers.Admin
 		public async Task<IActionResult> Add(string name)
 		{
 			var genre = new GenreDTO { Name = name };
-			await _genreService.AddGenreAsync(genre);
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
 
+			await _genreService.AddGenreAsync(genre);
 			return RedirectToAction(nameof(Index));
 		}
 
