@@ -33,28 +33,21 @@
         max-width: 300px; /* Максимальна ширина для обмеження */
     }
 
-    /* Стилізуємо саму лінію прокрутки */
-    ::-webkit-scrollbar {
-        width: 12px; /* Ширина вертикальної лінії прокрутки */
-        height: 12px; /* Висота горизонтальної лінії прокрутки */
+    /* Стилі прокрутки тільки для #movies-dropdown */
+    #movies-dropdown::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
     }
 
-    /* Стилізуємо саму лінію прокрутки при наведенні */
-    ::-webkit-scrollbar:hover {
-        background-color: #888; /* Колір фону при наведенні */
+    #movies-dropdown::-webkit-scrollbar-thumb {
+        background-color: #555;
+        border-radius: 10px;
+        border: 3px solid #fff;
     }
 
-    /* Стилізуємо "повзунок" (thumb) прокрутки */
-    ::-webkit-scrollbar-thumb {
-        background-color: #555; /* Колір самого повзунка */
-        border-radius: 10px; /* Заокруглення країв */
-        border: 3px solid #fff; /* Додатковий контур навколо повзунка */
-    }
-
-    /* Стилізуємо область, де рухається повзунок */
-    ::-webkit-scrollbar-track {
-        background-color: #f1f1f1; /* Колір фону для області прокрутки */
-        border-radius: 10px; /* Заокруглені кути області прокрутки */
+    #movies-dropdown::-webkit-scrollbar-track {
+        background-color: #f1f1f1;
+        border-radius: 10px;
     }
 
 </style>
