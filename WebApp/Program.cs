@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<CinemaDbContext>(options =>
 	options.UseMySql(
 		builder.Configuration["ConnectionString"],
-		new MySqlServerVersion(new Version(10, 3, 39))
+		new MariaDbServerVersion(new Version(10, 3, 39))
 	));
 
 // Add services
