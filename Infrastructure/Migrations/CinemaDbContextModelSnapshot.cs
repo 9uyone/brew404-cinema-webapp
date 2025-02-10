@@ -98,12 +98,39 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("TotalSeats")
+                    b.Property<int>("NumbOfRows")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeatPerRow")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("Halls");
+                });
+
+            modelBuilder.Entity("DataAccess.EntityModels.Seat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("HallId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Row")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HallId");
+
+                    b.ToTable("Seats");
                 });
 
             modelBuilder.Entity("DataAccess.EntityModels.Session", b =>
@@ -167,6 +194,9 @@ namespace DataAccess.Migrations
                     b.Property<string>("TrailerUrl")
                         .HasColumnType("longtext");
 
+                    b.Property<float>("VoteAverage")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
                     b.ToTable("Movies");
@@ -200,6 +230,17 @@ namespace DataAccess.Migrations
                         .HasForeignKey("MoviesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DataAccess.EntityModels.Seat", b =>
+                {
+                    b.HasOne("DataAccess.EntityModels.Hall", "Hall")
+                        .WithMany("Seats")
+                        .HasForeignKey("HallId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hall");
                 });
 
             modelBuilder.Entity("DataAccess.EntityModels.Session", b =>
@@ -238,6 +279,8 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.EntityModels.Hall", b =>
                 {
+                    b.Navigation("Seats");
+
                     b.Navigation("Sessions");
                 });
 

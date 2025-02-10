@@ -10,7 +10,9 @@ namespace BusinessLogic.DTOs
 		[JsonPropertyName("name")]
 		public string? Name { get; set; }
 
-		[JsonPropertyName("total_seats")]
-		public int TotalSeats { get; set; }
+		public int NumbOfRows { get; set; }
+		public int SeatsPerRow { get; set; }
+
+		public List<SeatDTO>? Seats { get; set; }
 	}
 }

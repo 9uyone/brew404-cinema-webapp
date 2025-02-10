@@ -1,0 +1,131 @@
+﻿@using System.Collections.Generic;
+@using BusinessLogic.DTOs;
+@model List<ActorDTO>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список Акторів</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/Admin/addmovies.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Admin/addBtn.css" asp-append-version="true" />
+
+</head>
+<body>
+    <button type="button" class="btn btn-primary fixed-button" data-bs-toggle="modal" data-bs-target="#ActorModal">
+        <span class="plus-sign"></span>
+    </button>
+
+    <div class="container mx-5">
+        <br /><br />
+        <h2 class="mb-4 text-center">Список Акторів</h2>
+        <div class="list-group mx-auto" style="max-width: 600px;">
+            @foreach (var actor in Model)
+            {
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+
+                    <img src="@actor.AvatarUrl" class="img-fluid rounded-2" style="width: 100px; height: auto; margin-right: 15px;" alt="Фото @actor.Name">
+                    <span class="fs-5">@actor.Name</span>
+
+                    <div class="d-flex flex-row ms-auto">
+                        <button type="button" class="btn btn-warning btn-lg me-2"
+                                onclick="openUpdateModal('@actor.Id', '@actor.Name', '@actor.AvatarUrl')">
+                            Update
+                        </button>
+
+                        <form asp-action="DeleteActor" asp-route-id="@actor.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити актора @actor.Name?');">
+                            <button type="submit" class="btn btn-danger btn-lg">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Модальне вікно для додавання Актора -->
+    <div class="modal fade" id="ActorModal" tabindex="-1" aria-labelledby="actorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="actorModalLabel">Додати новий жанр</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="actorForm" method="post" asp-action="AddActor">
+                        <div class="mb-3">
+                            <label for="actorName" class="form-label">Імя актора</label>
+                            <input type="text" class="form-control" id="actorName" name="Name" required>
+                            @if (ViewData.ModelState["Name"]?.Errors.Count > 0)
+                            {
+                                <div class="alert alert-danger mt-2">
+                                    @foreach (var error in ViewData.ModelState["Name"].Errors)
+                                    {
+                                        <p>@error.ErrorMessage</p>
+                                    }
+                                </div>
+                            }
+                            <label for="actorAvatar" class="form-label">ссила на фото</label>
+                            <input type="text" class="form-control" id="actorAvatar" name="AvatarUrl" required>
+                            @if (ViewData.ModelState["AvatarUrl"]?.Errors.Count > 0)
+                            {
+                                <div class="alert alert-danger mt-2">
+                                    @foreach (var error in ViewData.ModelState["AvatarUrl"].Errors)
+                                    {
+                                        <p>@error.ErrorMessage</p>
+                                    }
+                                </div>
+                            }
+                        </div>
+                        <button type="submit" class="btn btn-primary">Зберегти</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальне вікно для оновлення Актора -->
+    <div class="modal fade" id="UpdateActorModal" tabindex="-1" aria-labelledby="updateActorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateActorModalLabel">Оновити актора</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateActorForm" method="post" asp-action="UpdateActor">
+                        <input type="hidden" id="updateActorId" name="Id">
+
+                        <div class="mb-3">
+                            <label for="updateActorName" class="form-label">Ім'я актора</label>
+                            <input type="text" class="form-control" id="updateActorName" name="Name" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="updateActorAvatar" class="form-label">Посилання на фото</label>
+                            <input type="text" class="form-control" id="updateActorAvatar" name="AvatarUrl" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Оновити</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+            function openUpdateModal(id, name, avatarUrl) {
+                document.getElementById("updateActorId").value = id;
+                document.getElementById("updateActorName").value = name;
+                document.getElementById("updateActorAvatar").value = avatarUrl;
+                var updateModal = new bootstrap.Modal(document.getElementById("UpdateActorModal"));
+                updateModal.show();
+        }
+
+    </script>
+</body>
+</html>

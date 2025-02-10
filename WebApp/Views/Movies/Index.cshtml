@@ -1,0 +1,116 @@
+﻿﻿@using BusinessLogic.DTOs;
+@using System.Collections.Generic;
+
+@model List<MovieDTO>﻿﻿
+
+@{
+    Layout = "_AdminLayout";
+}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список фільмів</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/Admin/addmovies.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Admin/addBtn.css" asp-append-version="true" />
+
+</head>
+<body>
+
+   <form asp-action="SearchMovies" asp-controller="Movies" method="get">
+        <button type="submit" class="btn btn-primary fixed-button">
+            <span class="plus-sign"></span>
+        </button>
+    </form>
+
+    <br/><br/>
+    <h2 class="mb-4 text-center">Список фільмів</h2>
+    <div class="list-group mx-auto" style="max-width: 1000px">
+        @foreach (var movie in Model)
+        {
+            <div class="list-group-item d-flex align-items-center">
+
+                <img src="@movie.ImageUrl" alt="@movie.Title" class="movie-image rounded-4" style="max-height: 200px"/>
+                <h3 class="movie-title ms-2">@movie.Title</h3>
+
+                <div class="d-flex flex-row ms-auto">
+                    <button type="button" class="btn btn-warning btn-lg me-2"
+                        onclick='openUpdateModal("@movie.Id", "@movie.Title", "@movie.Overview","@movie.RunTime","@movie.ReleaseDate", "@movie.ImageUrl", "@movie.BackgroundUrl", "@movie.TrailerUrl")'>
+                        Update
+                    </button>
+
+
+                    <form asp-action="DeleteMovie" asp-route-id="@movie.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити фільм @movie.Title?');">
+                            <button type="submit" class="btn btn-lg btn-danger btn-lg">Delete</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="modal fade" id="UpdateMovieModal" tabindex="-1" aria-labelledby="updateMovieModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Оновити фільм</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateMovieForm" method="post" asp-action="UpdateMovie">
+                        <input type="hidden" id="UpdateMovieId" name="Id"/>
+                        <input type="hidden" id="UpdateMovieRunTime" name="RunTime"/>
+                        <input type="hidden" id="UpdateMovieReleaseDate" name="ReleaseDate"/>
+
+                        <div class="mb-3">
+                            <label for="updateMovieName" class="form-label">назва фільму</label>
+                            <input type="text" class="form-control" id="updateMovieName" name="Title" required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="updateMovieOverview" class="form-label">Опис фільму</label>
+                            <textarea class="form-control" id="updateMovieOverview" name="Overview" rows="4" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="updateMovieImage" class="form-label">url фото</label>
+                            <input type="text" class="form-control" id="updateMovieImage" name="ImageUrl" required/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateMovieBackgruond" class="form-label">url задній фон</label>
+                            <input type="text" class="form-control" id="updateMovieBackgruond" name="BackgroundUrl" required/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateMovieTrailer" class="form-label">url трейлер</label>
+                            <input type="text" class="form-control" id="updateMovieTrailer" name="TrailerUrl" required/>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Оновити</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+           function openUpdateModal(id, title, overview, runtime, releaseDate, imageUrl, backgroundUrl, trailerUrl) {
+                console.log("DEBUG:", { id, title, overview, runtime, releaseDate, imageUrl, backgroundUrl, trailerUrl });
+
+                document.getElementById("UpdateMovieId").value = id;
+                document.getElementById("updateMovieName").value = title;
+                document.getElementById("updateMovieOverview").value = overview;
+
+                document.getElementById("UpdateMovieRunTime").value = runtime;
+                document.getElementById("UpdateMovieReleaseDate").value = releaseDate;
+
+                document.getElementById("updateMovieImage").value = imageUrl;
+                document.getElementById("updateMovieBackgruond").value = backgroundUrl;
+                document.getElementById("updateMovieTrailer").value = trailerUrl;
+                var updateModal = new bootstrap.Modal(document.getElementById("UpdateMovieModal"));
+                updateModal.show();
+            }
+
+    </script>
+</body>
+</html>

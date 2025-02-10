@@ -1,5 +1,6 @@
-﻿@using BusinessLogic.DTOs;
-@model MovieDTO
+﻿﻿@using System.Globalization
+@using WebApp.ViewModels
+@model MovieDetailsViewModel
 
 <html lang="en">
 <head>
@@ -11,9 +12,11 @@
     <title>Cinema - Movie Details</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         /* Контейнер каруселі */
-        .actor-carousel {
+        .actor-carousel,
+        .movie-carousel {
         flex-wrap: nowrap; /* Запобігає переходу на новий рядок */
         gap: 15px; /* Відступ між картками */
         scroll-behavior: smooth; /* Плавний скрол */
@@ -22,19 +25,26 @@
         }
 
         /* Картка актора */
-        .actor-card {
+        .actor-card,
+        .movie-card {
         flex: 0 0 150px; /* Фіксована ширина картки */
         border-radius: 15px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         transition: transform 0.2s ease;
         }
+        .movie-card {
+        width: 250px;
+        height: 250px;
+        }
 
-        .actor-card:hover {
+        .actor-card:hover,
+        .movie-card:hover {
         transform: scale(1.05); /* Легка анімація при наведенні */
         }
 
         /* Зображення актора */
-        .actor-card img {
+        .actor-card img,
+        .movie-card img {
         border-top-left-radius: 15px;
         border-top-right-radius: 15px;
         height: 200px; /* Фіксована висота зображення */
@@ -42,43 +52,64 @@
         }
 
         /* Тіло картки */
-        .actor-card .card-body {
+        .actor-card .card-body,
+        .movie-card .card-body {
         text-align: center;
         padding: 10px;
         }
 
-        .video-container {
-        position: relative;
-        padding-bottom: 56.25%; /* Це забезпечить пропорції 16:9 */
-        height: 0;
-        overflow: hidden;
-        max-width: 100%;
+        body {
+        background-image: url('@Model.Movie.BackgroundUrl');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
         }
 
-        .video-container iframe {
+        .main {
+            
+        }
+
+        .session-highlight.disabled {
+        opacity: 0.6; /* Змінюємо прозорість */
+        pointer-events: none; /* Забороняємо кліки */
+        cursor: default; /* Змінюємо курсор на звичайний */
+        }
+
+        body::before {
+        content: "";
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%; /* Встановлює ширину на 100% */
-        height: 600px; /* Задайте висоту за бажанням */
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6); /* 0.6 — рівень затемнення */
+        z-index: -1; /* Щоб фон був позаду контенту */
         }
 
-        body {
-            background-image: url('@("https://image.tmdb.org/t/p/w1280" + Model.BackgroundUrl)');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }  
+        /* Новий стиль для сесій */
+        .session-block {
+        background: rgba(40,40,40,0.9);
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 30px;
+        }
 
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); /* 0.6 — рівень затемнення */
-            z-index: -1; /* Щоб фон був позаду контенту */
+        .cinema-name {
+        color: #ffc107;
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+        }
+
+        .session-time {
+        color: white;
+        font-size: 1.1rem;
+        margin: 8px 0;
+        cursor: pointer;
+        transition: 0.3s;
+        }
+
+        .session-time:hover {
+        color: #28a745;
         }
     </style>
 
@@ -86,51 +117,77 @@
 <body>
     <!-- Main content -->
     <main class="container bg-dark">
+        @{
+            var selectedDate = Model.GroupedSessions.Keys.FirstOrDefault();  // Вибір першої доступної дати
+            var dateSessions = Model.GetSessionsForSelectedDate(selectedDate);  // Отримуємо сеанси для вибраної дати
+            var dates = Model.GroupedSessions.Keys.OrderBy(d => d).ToList();
+        }
         <div class="row">
             <!-- Movie Poster -->
-                        <div class="col-md-4">
-                @{var str = "https://image.tmdb.org/t/p/w1280" + Model.ImageUrl;
-                    <img src="@str" alt="@Model.Title Movie Poster" class="movie-poster">
-                }
-            </div
+            <div class="col-md-4">
+                <img src="@Model.Movie.ImageUrl" alt="@Model.Movie.Title Movie Poster" class="movie-poster">
+                <div class="session-block mt-3">
+                    <div class="date-selector">
+                        @if (dates.Count > 0)
+                        {
+                            <button class="arrow-btn" id="prevDateBtn" data-index="0"><i class="fas fa-chevron-left"></i></button>
+                            <h3 class="date-display">
+                                <span class="date" id="selectedDate">@selectedDate.ToString("dd MMMM", new CultureInfo("uk-UA"))</span>
+                                <span class="day" id="selectedDay">@selectedDate.ToString("dddd", new CultureInfo("uk-UA"))</span>
+                            </h3>
+                            <button class="arrow-btn" id="nextDateBtn" data-index="0"><i class="fas fa-chevron-right"></i></button>
+                        }
+                        else
+                        {
+                            <h3 class="date-display">
+                                <span>Немає активних сеансів</span>
+                            </h3>
+                        }
+                    </div>
 
-            <!-- Movie Details -->
+                    <div class="session-list" id="sessionContainer">
+                        <!-- отут перший вивід сесії-->
+                        @foreach (var session in dateSessions)
+                        {
+                            <a asp-action="SessionDetails" asp-controller="Home" asp-route-id="@session.Id" class="session-link">
+                                <div class="session-time">@session.StartTime.ToString("HH:mm")</div>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Movie Details and Trailer -->
             <div class="col-md-8">
-                <h1>@Model.Title</h1>
-
-                <br/><br/><br/>
-                <h5 style="color: darkgrey">Release Date:</h5> 
-                <h4>@Model.ReleaseDate</h4>
-
-                <br/>
-                <h5 style="color: darkgrey">Runtime:</h5>
-                <h4>@Model.RunTime min</h4>
-
-                <!-- Genres -->
-                <br/>
-                <h5 style="color: darkgrey">Genres:</h5>
-                <h4>@String.Join(", ", Model.Genres.Select(g => g.Name))</h4>
-
-                <!-- Movie Overview -->
-                <br/>
-                <h5 style="color: darkgrey">Overview:</h5>
-                <h4>@Model.Overview</h4>
+                <div style="display: flex; align-items: center;">
+                    <h1>@Model.Movie.Title</h1>
+                    <h3 class="ms-5">@Model.Movie.VoteAverage ⭐</h3>
+                </div>
+                <br /><br /><br />
+                <h5 class="detail-label">Release Date:</h5>
+                <h4>@Model.Movie.ReleaseDate</h4>
+                <br />
+                <h5 class="detail-label">Runtime:</h5>
+                <h4>@Model.Movie.RunTime min</h4>
+                <br />
+                <h5 class="detail-label">Genres:</h5>
+                <h4>@String.Join(", ", Model.Movie.Genres.Select(g => g.Name))</h4>
+                <br />
+                <h5 class="detail-label">Overview:</h5>
+                <h4>@Model.Movie.Overview</h4>
 
                 <!-- Trailer -->
-                <br/>
-                <br/>
-                <div class="movie-trailer mt-4">
+                <br /><br />
+                <div class="movie-trailer mt-4 trailer-container">
                     <h5>Watch Trailer:</h5>
                     @{
-                         var trailerId = Model.TrailerUrl?.Split("=")[1];
-                     }
-                     <div class="video-container">
-                         <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/@trailerId" allowfullscreen></iframe>
-                     </div>
+                        var trailerId = Model.Movie.TrailerUrl?.Split("=")[1];
+                    }
+                    <div class="video-container">
+                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/@trailerId" allowfullscreen></iframe>
+                    </div>
                 </div>
-
-                <!-- Buy Tickets Button -->
-                <button class="btn btn-success mt-4">Buy Tickets</button>
             </div>
         </div>
 
@@ -138,11 +195,11 @@
         <div class="container mt-5">
             <h2 class="mb-4">Actors</h2>
             <div id="actorCarousel" class="actor-carousel d-flex overflow-hidden position-relative">
-                @foreach (var credit in Model.Actors)
+                @foreach (var credit in Model.Movie.Actors)
                 {
-                    var avatar = "https://image.tmdb.org/t/p/w500" + @credit.AvatarUrl;
                     <div class="card actor-card">
-                        <img src="@avatar" class="card-img-top" alt="@credit.Name">
+
+                        <img src="@credit.AvatarUrl" class="card-img-top" alt="@credit.Name">
                         <div class="card-body">
                             <h5 class="card-title" style="color: white">@credit.Name</h5>
                             <p class="card-title" style="color: white">@credit.Character</p>
@@ -157,63 +214,46 @@
         </div>
 
         <!-- Recommendations Section -->
-        <section class="mt-5">
-            <h3>You May Also Like</h3>
-            <div class="d-flex overflow-auto">
-                
+        <div class="container mt-5">
+            <h2 class="mb-4">You may also like</h2>
+            <div id="movieCarousel" class="movie-carousel d-flex overflow-hidden position-relative">
+                @foreach (var movie in Model.SimilarMovies)
+                {
+                    var title = movie.Title.Substring(0, Math.Min(movie.Title.Length, 15));
+                    title = (title.Length < movie.Title.Length) ? title + "..." : title;
+                    <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="text-decoration-none">
+                        <div class="card movie-card" style="position: relative;">
+                            <img src="@movie.ImageUrl" class="card-img-top" alt="@movie.Title">
+                            <div class="movie-body">
+                                <h4 class="card-title p-2 text-center" style="color: white">@title</h4>
+                            </div>
+                            <h5 class="card-title" style="color: white; position: absolute; bottom: 45px; left: 10px; background-color: rgba(0, 0, 0, 0.6); padding: 5px 10px; border-radius: 5px;">
+                                @movie.VoteAverage ⭐
+                            </h5>
+                        </div>
+                    </a>
+                }
             </div>
-        </section>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <button id="mscrollLeft" class="btn btn-outline-primary">←</button>
+                <button id="mscrollRight" class="btn btn-outline-primary">→</button>
+            </div>
+        </div>
     </main>
 
-
     <!-- Footer -->
-    <footer class="bg-dark text-light py-3">
+    @* <footer class="bg-dark text-light py-3">
         <div class="container text-center">
             <p>&copy; 2025 Cinema. All rights reserved.</p>
         </div>
-    </footer>
+    </footer> *@
 
-    <script>
-        document.getElementById('scrollLeft').addEventListener('click', function () {
-            document.getElementById('actorCarousel').scrollBy({ left: -200, behavior: 'smooth' });
-        });
-
-        document.getElementById('scrollRight').addEventListener('click', function () {
-            document.getElementById('actorCarousel').scrollBy({ left: 200, behavior: 'smooth' });
-        });
+    <script id="groupedSessions" type="application/json">
+        @Html.Raw(Json.Serialize(Model.GroupedSessions))
     </script>
-
-    @* <script>
-        const track = document.getElementById('recommendationTrack');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const cardWidth = 220; // Width of each card including gap
-        const totalCards = track.children.length;
-        let currentIndex = 0;
-
-        function updateTrackPosition() {
-            const offset = -currentIndex * cardWidth;
-            track.style.transform = `translateX(${offset}px)`;
-        }
-
-        function goToNext() {
-            currentIndex = (currentIndex + 1) % totalCards;
-            updateTrackPosition();
-        }
-
-        function goToPrev() {
-            currentIndex = (currentIndex - 1 + totalCards) % totalCards;
-            updateTrackPosition();
-        }
-
-        nextBtn.addEventListener('click', goToNext);
-        prevBtn.addEventListener('click', goToPrev);
-
-        // Duplicate the first and last elements for smooth cycling
-        const firstClone = track.children[0].cloneNode(true);
-        const lastClone = track.children[totalCards - 1].cloneNode(true);
-        track.appendChild(firstClone);
-        track.insertBefore(lastClone, track.children[0]);
-    </script> *@
+    <script id="dates" type="application/json">
+        @Html.Raw(Json.Serialize(Model.GroupedSessions.Keys))
+    </script>
+    <script src="~/js/Home/Details/movie-details.js"></script>
 </body>
 </html>

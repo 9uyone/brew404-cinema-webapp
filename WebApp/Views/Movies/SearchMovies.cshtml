@@ -1,4 +1,9 @@
-﻿@{
+﻿﻿@using BusinessLogic.DTOs;
+@using System.Collections.Generic;
+
+@model List<MovieDTO>﻿
+
+@{
     Layout = "_AdminLayout";
 }
 <head>
@@ -8,7 +13,7 @@
 </head>
 
 <div class="search-container">
-    <form method="get" action="@Url.Action("Search", "Admin")">
+    <form method="get" action="@Url.Action("Search", "Movies")">
         <div class="input-group px-5">
             <input type="text" class="form-control" placeholder="Пошук фільму" name="query" value="@Context.Request.Query["query"]">
             <button class="btn btn-outline-secondary" type="submit">Пошук</button>
@@ -29,7 +34,7 @@
                             <img src="@str" class="card-img-top fixed-size" alt="@movie.Title">
                             <div class="card-body">
                                 <h5 class="card-title">@movie.Title<br>@movie.ReleaseDate</h5>
-                                <a asp-action="MovieDetails" asp-controller="Admin" asp-route-id="@movie.Id" class="btn btn-primary">Details</a>
+                                <a asp-action="MovieDetails" asp-controller="Movies" asp-route-id="@movie.Id" class="btn btn-primary">Details</a>
                             </div>
                         </div>
                     </div>
@@ -42,4 +47,3 @@
         <p>Фільми не знайдено.</p>
     }
 </div>
-
