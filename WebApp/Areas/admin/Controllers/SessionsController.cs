@@ -1,7 +1,10 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Services;
+using BusinessLogic.Validations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol;
+using System.ComponentModel.DataAnnotations;
 using WebApp.ViewModels;
 
 namespace WebApp.Controllers.Admin
@@ -52,6 +55,9 @@ namespace WebApp.Controllers.Admin
 				HallId = model.HallId,
 				StartTime = model.StartTime
 			};
+
+			if (TryValidateModel(sessionDTO) == false)
+				return BadRequest(ModelState);
 
 			bool isAdded = await _sessionService.AddSessionAsync(sessionDTO);
 
