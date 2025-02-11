@@ -2,102 +2,112 @@
 
 <link rel="stylesheet" href="@Url.Content("~/css/moviePage.css")">
 
+<style>
+    .filter-row {
+        display: flex;
+        align-items: center; /* Вирівнювання по центру */
+        flex-wrap: nowrap; /* Забороняє перенос рядків */
+        gap: 10px; /* Відстань між елементами */
+    }
+</style>
+
 <!-- Loading Indicator -->
 <div class="loading-indicator" style="display: none;">
     <div class="spinner-border text-primary"></div>
 </div>
 
-<!-- Пошук фільмів -->
-<div class="search-container">
-    <div id="poda" class="d-flex align-items-center position-relative">
-        <!-- Фонові ефекти -->
-        <div class="glow"></div>
-        <div class="darkBorderBg"></div>
 
-        <!-- Основний інпут -->
-        <div id="main" class="w-100 position-relative">
-            <div class="input-wrapper position-relative">
-                <input id="searchInput"
-                       placeholder="Пошук..."
-                       type="text"
-                       name="searchQuery"
-                       class="input w-100" />
+
+<!-- Пошук фільмів -->
+<div class="row filter-row">
+
+    <form method="get" action="" id="filterForm">
+        <div class="filter-container" id="filterContainer">
+            <!-- Жанри -->
+            <div class="filter-section">
+                <button type="button" class="filter-button" data-filter="genres">
+                    <span>Жанри</span>
+                </button>
+                <div class="filter-dropdown">
+                    <div class="genres-container">
+                        @foreach (var genre in Model.Genres)
+                        {
+                            <div class="genre-item">
+                                <input type="checkbox"
+                                       id="genre-@genre.Id"
+                                       name="GenreIds"
+                                       value="@genre.Id"
+                                       class="genre-checkbox">
+                                <label for="genre-@genre.Id" class="genre-label">
+                                    @genre.Name
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <!-- Рік -->
+            <div class="filter-section">
+                <button type="button" class="filter-button" data-filter="year">
+                    <span>Рік</span>
+                </button>
+                <div class="filter-dropdown">
+                    <label for="yearInput">Введіть рік</label>
+                    <input type="number"
+                           id="yearInput"
+                           name="Year"
+                           class="form-control"
+                           min="1900"
+                           max="2024"
+                           placeholder="Наприклад: 2023">
+                </div>
+            </div>
+
+            <!-- Сортування -->
+            <div class="filter-section">
+                <button type="button" class="filter-button" data-filter="sort">
+                    <span>Сортування</span>
+                </button>
+                <div class="filter-dropdown">
+                    <div class="mb-2">
+                        <label for="sortBy">Сортувати за</label>
+                        <select id="sortBy" name="SortBy" class="form-control">
+                            <option value="Title">За назвою</option>
+                            <option value="date">За датою</option>
+                            <option value="rating">За рейтингом</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="sortOrder">Напрямок</label>
+                        <select id="sortOrder" name="Descending" class="form-control">
+                            <option value="false">За зростанням</option>
+                            <option value="true">За спаданням</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="search-container">
+        <div id="poda" class="d-flex align-items-center position-relative">
+            <!-- Фонові ефекти -->
+            <div class="glow"></div>
+            <div class="darkBorderBg"></div>
+
+            <!-- Основний інпут -->
+            <div id="main" class="w-100 position-relative">
+                <div class="input-wrapper position-relative">
+                    <input id="searchInput"
+                           placeholder="Пошук..."
+                           type="text"
+                           name="searchQuery"
+                           class="input w-100" />
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<form method="get" action="" id="filterForm">
-    <div class="filter-container" id="filterContainer">
-        <!-- Жанри -->
-        <div class="filter-section">
-            <button type="button" class="filter-button" data-filter="genres">
-                <span>Жанри</span>
-            </button>
-            <div class="filter-dropdown">
-                <div class="genres-container">
-                    @foreach (var genre in Model.Genres)
-                    {
-                        <div class="genre-item">
-                            <input type="checkbox"
-                                   id="genre-@genre.Id"
-                                   name="GenreIds"
-                                   value="@genre.Id"
-                                   class="genre-checkbox">
-                            <label for="genre-@genre.Id" class="genre-label">
-                                @genre.Name
-                            </label>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-        <!-- Рік -->
-        <div class="filter-section">
-            <button type="button" class="filter-button" data-filter="year">
-                <span>Рік</span>
-            </button>
-            <div class="filter-dropdown">
-                <label for="yearInput">Введіть рік</label>
-                <input type="number"
-                       id="yearInput"
-                       name="Year"
-                       class="form-control"
-                       min="1900"
-                       max="2024"
-                       placeholder="Наприклад: 2023">
-            </div>
-        </div>
-
-        <!-- Сортування -->
-        <div class="filter-section">
-            <button type="button" class="filter-button" data-filter="sort">
-                <span>Сортування</span>
-            </button>
-            <div class="filter-dropdown">
-                <div class="mb-2">
-                    <label for="sortBy">Сортувати за</label>
-                    <select id="sortBy" name="SortBy" class="form-control">
-                        <option value="Title">За назвою</option>
-                        <option value="date">За датою</option>
-                        <option value="rating">За рейтингом</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="sortOrder">Напрямок</label>
-                    <select id="sortOrder" name="Descending" class="form-control">
-                        <option value="false">За зростанням</option>
-                        <option value="true">За спаданням</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="filter-section">
-            <button type="submit" class="btn btn-primary">Фільтрувати</button>
-        </div>
-    </div>
-</form>
 
 <!-- Список фільмів -->
 <div id="moviesGrid" class="container mt-5">

@@ -13,7 +13,7 @@ namespace BusinessLogic.Validations
 			 
 			RuleFor(actor => actor.AvatarUrl)
 				.NotEmpty().WithMessage("URL не може бути порожнім")
-				.MustBeValidUrl()
+				.MustBeValidUrl().WithMessage("Неправильний URL для аватара")
 				.When(actor => !string.IsNullOrEmpty(actor.AvatarUrl));
 		}
 	}

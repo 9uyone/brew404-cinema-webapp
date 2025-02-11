@@ -55,7 +55,19 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="actorFormContainer">
-                    @await Html.PartialAsync("_AddActorPartial", new ActorDTO())
+                    <form id="actorForm" method="post" asp-action="Add" data-ajax="true">
+                        <div class="mb-3">
+                            <label for="actorName" class="form-label">Ім'я актора</label>
+                            <input type="text" class="form-control" id="actorName" name="Name">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="actorAvatar" class="form-label">Посилання на фото</label>
+                            <input type="text" class="form-control" id="actorAvatar" name="AvatarUrl">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Зберегти</button>
+                    </form>
                 </div>
             </div>
         </div>

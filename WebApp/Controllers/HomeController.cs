@@ -40,7 +40,7 @@ namespace WebApp.Controllers
 				return NotFound();
 			}
 
-			var activeSessions = await _sessionService.GetGroupedSessionsAsync(movie.Id);
+			var activeSessions = await _sessionService.GetGroupedSessionsAsync(movie.Id, onlyFutureSessions: true);
 			var similarMovies = await _movieService.GetMoviesByGenres(movie.Genres);
 
 			var movieDetailsViewModel = new MovieDetailsViewModel
@@ -81,7 +81,7 @@ namespace WebApp.Controllers
 
 		public async Task<IActionResult> FilteredSessions(SessionFilterDTO filter)
 		{
-			var sessions = await _sessionService.GetFilteredSessions(filter);
+			var sessions = await _sessionService.GetFilteredSessions(filter, onlyFutureSessions: true);
 			var movies = await _movieService.GetAllMoviesAsync();
 
 			var filterSessionViewModel = new FilterSessionsViewModel()

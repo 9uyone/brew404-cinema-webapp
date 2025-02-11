@@ -4,6 +4,8 @@ using BusinessLogic.Interfaces;
 using DataAccess.EntityModels;
 using DataAccess.Interfaces;
 using DataAccess.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BusinessLogic.Services
 {
@@ -19,10 +21,10 @@ namespace BusinessLogic.Services
 			, IRepository<Genre> genreRepository
 			, IRepository<Actor> actorRepository)
 		{
-			_mapper = mapper;
-			_movieRepository = movieRepository;
-			_genreRepository = genreRepository;
-			_actorRepository = actorRepository;
+			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+			_movieRepository = movieRepository ?? throw new ArgumentNullException(nameof(movieRepository));
+			_genreRepository = genreRepository ?? throw new ArgumentNullException(nameof(genreRepository));
+			_actorRepository = actorRepository ?? throw new ArgumentNullException(nameof(actorRepository));
 		}
 
 		public async Task<IEnumerable<MovieDTO>> GetAllMoviesAsync()
@@ -30,7 +32,7 @@ namespace BusinessLogic.Services
 			var movies = await _movieRepository.Get(
 				includeProperties: "Actors,Genres",
 				orderBy: q => q.OrderBy(m => m.ReleaseDate)
-			);
+			) ?? new List<Movie>();
 
 			return _mapper.Map<List<MovieDTO>>(movies);
 		}
@@ -67,10 +69,6 @@ namespace BusinessLogic.Services
 
 			var genresIds = genres.Select(g => g.Id).ToList();
 
-			//Pomelo MySQL Provider для Entity Framework Core не підтримує перевірку списку значень у запиті (genresId.Contains(g.Id)) на рівні бази даних.
-			//var movies = await _movieRepository.Get(filter:
-			//movie => movie.Genres.Any(g => genresId.Contains(g.Id)));
-
 			var movies = await _movieRepository.Get(includeProperties: "Genres");
 			var filteredMovies = movies.Where(movie => movie.Genres.Any(g => genresIds.Contains(g.Id)));
 			return _mapper.Map<List<MovieDTO>>(filteredMovies);
@@ -79,9 +77,8 @@ namespace BusinessLogic.Services
 		public async Task<MovieDTO?> GetMovieByIdAsync(int id)
 		{
 			var movie = await _movieRepository.GetByID(id,
-				includeProperties: "Actors,Genres");			
-			if (movie == null) return null;
-
+				includeProperties: "Actors,Genres");	
+			
 			return _mapper.Map<MovieDTO>(movie);
 		}	
 
@@ -98,13 +95,14 @@ namespace BusinessLogic.Services
 
 			var genreIds = movieDTO.Genres?.Select(g => g.Id).ToList() ?? new List<int>();
 			var existingGenres = await GetExistingItems(_genreRepository, genreIds);
-			//var newGenres = movieDTO.Genres?.Where(g => !existingGenres.Any(e => e.Id == g.Id)).ToList() ?? new List<Genre>();
+			var newGenres = _mapper.Map<List<Genre>>(movie.Genres?.Where(g => !existingGenres.Any(e => e.Id == g.Id)).ToList());
 
 			var actorIds = movieDTO.Actors?.Select(a => a.Id).ToList() ?? new List<int>();
 			var existingActors = await GetExistingItems(_actorRepository, actorIds);
 			var newActors = _mapper.Map<List<Actor>>(movie.Actors?.Where(a => !existingActors.Any(ex => ex.Id == a.Id)).ToList());
 
-			movie.Genres = existingGenres;
+			var combineGenres = existingGenres.Concat(newGenres).ToList();
+			movie.Genres = combineGenres;
 			var combinedActors = existingActors.Concat(newActors).ToList();
 			movie.Actors = combinedActors;
 			movie.VoteAverage = MathF.Round(movie.VoteAverage, 1);

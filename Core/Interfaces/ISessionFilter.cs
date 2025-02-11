@@ -4,6 +4,6 @@ namespace BusinessLogic.Interfaces
 {
 	public interface ISessionFilter
 	{
-		Task<IEnumerable<SessionDTO>> GetFilteredSessions(SessionFilterDTO filter);
+		Task<IEnumerable<SessionDTO>> GetFilteredSessions(SessionFilterDTO filter, bool onlyFutureSessions);
 	}
 }
