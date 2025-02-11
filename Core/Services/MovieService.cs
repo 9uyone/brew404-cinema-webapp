@@ -4,7 +4,6 @@ using BusinessLogic.Interfaces;
 using DataAccess.EntityModels;
 using DataAccess.Interfaces;
 using DataAccess.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Services
 {
@@ -38,29 +37,28 @@ namespace BusinessLogic.Services
 
 		public async Task<IEnumerable<MovieDTO>> GetFilteredMovies(MovieFilteredDTO filter)
 		{
-			var query = _movieRepository.Query();
+			var movieQuery = await _movieRepository.Get(includeProperties: "Genres,Actors");
 
-			query = query
-				.Include(m => m.Genres)
-				.Include(m => m.Actors);
+			if (filter.GenreIds != null && filter.GenreIds.Any())
+				movieQuery = movieQuery.Where(m => m.Genres.Any(g => filter.GenreIds.Contains(g.Id)));
 
-			if (filter.GenreIds is { Count: > 0 })
-				query = query.Where(m => m.Genres.Any(g => filter.GenreIds.Contains(g.Id)));
+			if(filter.ActorsIds != null && filter.ActorsIds.Any())
+				movieQuery = movieQuery.Where(m => m.Actors.Any(a => filter.ActorsIds.Contains(a.Id)));
 
-			if (filter.ActorsIds is { Count: > 0 })
-				query = query.Where(m => m.Actors.Any(a => filter.ActorsIds.Contains(a.Id)));
+			if (filter.Year.HasValue)
+				movieQuery = movieQuery.Where(m => m.ReleaseDate.Year == filter.Year.Value);
 
-			query = filter.SortBy?.ToLower() switch
+
+			movieQuery = filter.SortBy?.ToLower() switch
 			{
-				"title" => filter.Descending ? query.OrderByDescending(m => m.Title) : query.OrderBy(m => m.Title),
-				"date" => filter.Descending ? query.OrderByDescending(m => m.ReleaseDate) : query.OrderBy(m => m.ReleaseDate),
-				"rating" => filter.Descending ? query.OrderByDescending(m => m.VoteAverage) : query.OrderBy(m => m.VoteAverage),
-				_ => query
+				"title" => filter.Descending ? movieQuery.OrderByDescending(m => m.Title) : movieQuery.OrderBy(m => m.Title),
+				"date" => filter.Descending ? movieQuery.OrderByDescending(m => m.ReleaseDate) : movieQuery.OrderBy(m => m.ReleaseDate),
+				"rating" => filter.Descending ? movieQuery.OrderByDescending(m => m.VoteAverage) : movieQuery.OrderBy(m => m.VoteAverage),
+				_ => movieQuery
 			};
 
-			var moviesList = await query.ToListAsync();
+			return _mapper.Map<List<MovieDTO>>(movieQuery);
 
-			return _mapper.Map<List<MovieDTO>>(moviesList);
 		}
 
 		public async Task<IEnumerable<MovieDTO>?> GetMoviesByGenres(List<GenreDTO>? genres)
@@ -68,10 +66,6 @@ namespace BusinessLogic.Services
 			if (genres == null) return null;
 
 			var genresIds = genres.Select(g => g.Id).ToList();
-
-			//Pomelo MySQL Provider для Entity Framework Core не підтримує перевірку списку значень у запиті (genresId.Contains(g.Id)) на рівні бази даних.
-			//var movies = await _movieRepository.Get(filter:
-			//movie => movie.Genres.Any(g => genresId.Contains(g.Id)));
 
 			var movies = await _movieRepository.Get(includeProperties: "Genres");
 			var filteredMovies = movies.Where(movie => movie.Genres.Any(g => genresIds.Contains(g.Id)));
