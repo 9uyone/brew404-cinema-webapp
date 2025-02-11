@@ -13,30 +13,36 @@ namespace BusinessLogic.Services
 		public ActorService(IMapper mapper,
 			IRepository<Actor> repository)
 		{
-			_mapper = mapper;
-			_actorRepository = repository;
+			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+			_actorRepository = repository ?? throw new ArgumentNullException(nameof(repository));
 		}
 
 		public async Task<IEnumerable<ActorDTO>> GetAllActorsAsync()
 		{
-			var actors = await Task.Run(() => _actorRepository.Get(orderBy: q => q.OrderBy(g => g.Name)));
+			var actors = await _actorRepository.Get() ?? new List<Actor>();
 			return _mapper.Map<List<ActorDTO>>(actors);
 		}
 
 		public async Task<ActorDTO?> GetActorByIdAsync(int id)
 		{
 			var actor = await _actorRepository.GetByID(id);
-			return actor == null ? null : _mapper.Map<ActorDTO?>(actor);
+			return actor is null ? null : _mapper.Map<ActorDTO>(actor);
 		}
 
 		public async Task AddActorAsync(ActorDTO actorDTO)
 		{
+			if (actorDTO is null)
+				throw new ArgumentNullException(nameof(actorDTO));
+
 			var actor = _mapper.Map<Actor>(actorDTO);
 			await _actorRepository.Insert(actor);
 		}
 
 		public async Task UpdateActorAsync(ActorDTO actorDTO)
 		{
+			if (actorDTO is null)
+				throw new ArgumentNullException(nameof(actorDTO));
+
 			var actor = _mapper.Map<Actor>(actorDTO);
 			await _actorRepository.Update(actor);
 		}

@@ -16,5 +16,7 @@ namespace DataAccess.Interfaces
 		Task Update(TEntity entity);
 		Task Update(TEntity entity, List<string> propertiesToUpdate);
 		Task Delete(int id);
+
+		IQueryable<TEntity> Query();
     }
 }

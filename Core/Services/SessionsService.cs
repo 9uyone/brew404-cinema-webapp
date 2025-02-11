@@ -5,6 +5,7 @@ using DataAccess.EntityModels;
 using DataAccess.Interfaces;
 using DataAccess.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Services
 {
@@ -28,7 +29,7 @@ namespace BusinessLogic.Services
 
 		public async Task<IEnumerable<SessionDTO>> GetAllSessionAsync(bool onlyFutureSessions = false)
 		{
-			var sessions = await Task.Run(() => _sessionRepository.Get(includeProperties: "Movie,Hall"));
+			var sessions = await _sessionRepository.Get(includeProperties: "Movie,Hall") ?? new List<Session>();
 			if(onlyFutureSessions)
 				sessions = sessions.Where(s => s.EndTime > DateTime.Now);
 			return _mapper.Map<List<SessionDTO>>(sessions);
@@ -36,29 +37,35 @@ namespace BusinessLogic.Services
 
 		public async Task<IEnumerable<SessionDTO>> GetFilteredSessions(SessionFilterDTO filter, bool onlyFutureSessions = false)
 		{
-			var sessionQuery = await _sessionRepository.Get(includeProperties: "Movie,Hall.Seats");
+			var query = _sessionRepository.Query();
 
-			if(onlyFutureSessions)
-				sessionQuery = sessionQuery.Where(s => s.EndTime > DateTime.Now);
+			query = query
+				.Include(s => s.Movie)
+				.Include(s => s.Hall);
+
+			if (onlyFutureSessions)
+				query = query.Where(s => s.EndTime > DateTime.Now);
 
 			if (filter.MovieId.HasValue)
-				sessionQuery = sessionQuery.Where(session => session.MovieId == filter.MovieId);
-			if (filter.Date.HasValue)
-				sessionQuery = sessionQuery.Where(session => session.StartTime.Date == filter.Date);
+				query = query.Where(s => s.MovieId == filter.MovieId);
 
-			sessionQuery = filter.SortBy?.ToLower() switch
+			if (filter.Date.HasValue)
+				query = query.Where(s => s.StartTime == filter.Date);
+
+			query = filter.SortBy?.ToLower() switch
 			{
-				"date" => filter.Descending ? sessionQuery.OrderByDescending(s => s.StartTime) : sessionQuery.OrderBy(s => s.StartTime),
-				_ => sessionQuery
+				"date" => filter.Descending ? query.OrderByDescending(s => s.StartTime) : query.OrderBy(s => s.StartTime),
+				_ => query
 			};
 
-			return _mapper.Map<List<SessionDTO>>(sessionQuery);
+			var sessionList = await query.ToListAsync();
+			return _mapper.Map<List<SessionDTO>>(sessionList);
 		}
 
 		public async Task<SessionDTO?> GetSessionByIdAsync(int id)
 		{
 			var session = await _sessionRepository.GetByID(id, includeProperties: "Movie,Hall.Seats");
-			return session == null ? null : _mapper.Map<SessionDTO>(session);
+			return session is null ? null : _mapper.Map<SessionDTO>(session);
 		}
 
 		public async Task<List<SessionDTO>> GetAllSessionsByMovieIdAsync(int movieId, bool onlyFutureSessions = false)

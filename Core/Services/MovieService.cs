@@ -4,6 +4,7 @@ using BusinessLogic.Interfaces;
 using DataAccess.EntityModels;
 using DataAccess.Interfaces;
 using DataAccess.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Services
 {
@@ -19,10 +20,10 @@ namespace BusinessLogic.Services
 			, IRepository<Genre> genreRepository
 			, IRepository<Actor> actorRepository)
 		{
-			_mapper = mapper;
-			_movieRepository = movieRepository;
-			_genreRepository = genreRepository;
-			_actorRepository = actorRepository;
+			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+			_movieRepository = movieRepository ?? throw new ArgumentNullException(nameof(movieRepository));
+			_genreRepository = genreRepository ?? throw new ArgumentNullException(nameof(genreRepository));
+			_actorRepository = actorRepository ?? throw new ArgumentNullException(nameof(actorRepository));
 		}
 
 		public async Task<IEnumerable<MovieDTO>> GetAllMoviesAsync()
@@ -30,35 +31,36 @@ namespace BusinessLogic.Services
 			var movies = await _movieRepository.Get(
 				includeProperties: "Actors,Genres",
 				orderBy: q => q.OrderBy(m => m.ReleaseDate)
-			);
+			) ?? new List<Movie>();
 
 			return _mapper.Map<List<MovieDTO>>(movies);
 		}
 
 		public async Task<IEnumerable<MovieDTO>> GetFilteredMovies(MovieFilteredDTO filter)
 		{
-			var movieQuery = await _movieRepository.Get(includeProperties: "Genres,Actors");
+			var query = _movieRepository.Query();
 
-			if (filter.GenreIds != null && filter.GenreIds.Any())
-				movieQuery = movieQuery.Where(m => m.Genres.Any(g => filter.GenreIds.Contains(g.Id)));
+			query = query
+				.Include(m => m.Genres)
+				.Include(m => m.Actors);
 
-			if(filter.ActorsIds != null && filter.ActorsIds.Any())
-				movieQuery = movieQuery.Where(m => m.Actors.Any(a => filter.ActorsIds.Contains(a.Id)));
+			if (filter.GenreIds is { Count: > 0 })
+				query = query.Where(m => m.Genres.Any(g => filter.GenreIds.Contains(g.Id)));
 
-			if (filter.Year.HasValue)
-				movieQuery = movieQuery.Where(m => m.ReleaseDate.Year == filter.Year.Value);
+			if (filter.ActorsIds is { Count: > 0 })
+				query = query.Where(m => m.Actors.Any(a => filter.ActorsIds.Contains(a.Id)));
 
-
-			movieQuery = filter.SortBy?.ToLower() switch
+			query = filter.SortBy?.ToLower() switch
 			{
-				"title" => filter.Descending ? movieQuery.OrderByDescending(m => m.Title) : movieQuery.OrderBy(m => m.Title),
-				"date" => filter.Descending ? movieQuery.OrderByDescending(m => m.ReleaseDate) : movieQuery.OrderBy(m => m.ReleaseDate),
-				"rating" => filter.Descending ? movieQuery.OrderByDescending(m => m.VoteAverage) : movieQuery.OrderBy(m => m.VoteAverage),
-				_ => movieQuery
+				"title" => filter.Descending ? query.OrderByDescending(m => m.Title) : query.OrderBy(m => m.Title),
+				"date" => filter.Descending ? query.OrderByDescending(m => m.ReleaseDate) : query.OrderBy(m => m.ReleaseDate),
+				"rating" => filter.Descending ? query.OrderByDescending(m => m.VoteAverage) : query.OrderBy(m => m.VoteAverage),
+				_ => query
 			};
 
-			return _mapper.Map<List<MovieDTO>>(movieQuery);
+			var moviesList = await query.ToListAsync();
 
+			return _mapper.Map<List<MovieDTO>>(moviesList);
 		}
 
 		public async Task<IEnumerable<MovieDTO>?> GetMoviesByGenres(List<GenreDTO>? genres)
@@ -79,9 +81,8 @@ namespace BusinessLogic.Services
 		public async Task<MovieDTO?> GetMovieByIdAsync(int id)
 		{
 			var movie = await _movieRepository.GetByID(id,
-				includeProperties: "Actors,Genres");			
-			if (movie == null) return null;
-
+				includeProperties: "Actors,Genres");	
+			
 			return _mapper.Map<MovieDTO>(movie);
 		}	
 
