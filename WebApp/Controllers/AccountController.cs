@@ -63,5 +63,15 @@ namespace WebApp.Controllers
 			await _accountService.LogoutAsync();
 			return RedirectToAction("Index", "Home");
 		}
+
+		public IActionResult Profile()
+		{
+			ProfileViewModel model = new ProfileViewModel()
+			{
+				Name = User.Identity.Name
+			};
+
+			return View(model);
+		}
 	}
 }

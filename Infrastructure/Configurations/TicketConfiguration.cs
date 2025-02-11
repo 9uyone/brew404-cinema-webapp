@@ -23,10 +23,10 @@ namespace DataAccess.Configurations
 				.HasForeignKey(t => t.SessionId)
 				.OnDelete(DeleteBehavior.Cascade);
 
-			/*builder.HasOne(t => t.User)
+			builder.HasOne(t => t.User)
 				.WithMany()
-				.HasForenKey(t => t.UserId)
-				.onDelete(DeleteBehavior.Cascade);*/
+				.HasForeignKey(t => t.UserId)
+				.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

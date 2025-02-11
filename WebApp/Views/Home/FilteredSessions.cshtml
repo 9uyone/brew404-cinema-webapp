@@ -1,41 +1,161 @@
 ﻿@model WebApp.ViewModels.FilterSessionsViewModel
 
-<h2>Cессії</h2>
+<link rel="stylesheet" href="@Url.Content("~/css/moviePage.css")">
+<link rel="stylesheet" href="~/css/SessionsFilterPage.css" />
+
+<style>
+    .session-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+    .session-img {
+        height: 250px;
+        object-fit: cover;
+    }
+
+    .session-details {
+        padding: 1rem;
+    }
+
+    .session-details p {
+        margin-bottom: 0.5rem;
+    }
+
+    #movies-dropdown
+    {
+        width: 300px;
+    }
+    .filter-dropdown select {
+        width: 100%; /* Ширина на 100% батьківського елемента */
+        max-width: 300px; /* Максимальна ширина для обмеження */
+    }
+
+    /* Стилі прокрутки тільки для #movies-dropdown */
+    #movies-dropdown::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    #movies-dropdown::-webkit-scrollbar-thumb {
+        background-color: #555;
+        border-radius: 10px;
+        border: 3px solid #fff;
+    }
+
+    #movies-dropdown::-webkit-scrollbar-track {
+        background-color: #f1f1f1;
+        border-radius: 10px;
+    }
+
+</style>
 
 <form method="get" action="@Url.Action("FilteredSessions", "Home")">
     <div class="row">
-        <div class="col-md-3">
-            <label for="MovieId">фільми:</label>
-            <select name="MovieId" multiple class="form-control">
-                @foreach (var movie in Model.Movies)
-                {
-                    <option value="@movie.Id">@movie.Title</option>
-                }
-            </select>
+        <div class="filter-container mt-3" id="filterContainer">
+
+        <div class="filter-section">
+            <button type="button" class="filter-button">
+                <span>вибрати фільм</span>
+            </button>
+            <div class="filter-dropdown" id="movies-dropdown">
+                <select name="MovieId" multiple class="form-control movie-">
+                    @foreach (var movie in Model.Movies)
+                    {
+                        <option value="@movie.Id" class="movie-label">@movie.Title</option>
+                    }
+                </select>
+            </div>
         </div>
 
-        <div class="col-md-2">
-            <label for="Date">дата:</label>
-            <input type="date" name="Date" class="form-control">
-        </div>
+            <div class="filter-section">
+                <input type="date" name="Date" class="filter-button">
+            </div>
 
-        <div class="col-md-2">
-            <label for="SortBy">Сортувати за:</label>
-            <select name="SortBy" class="form-control">
-                <option value="date">Датою</option>
-            </select>
-        </div>
+            <div class="filter-section">
+                <button type="button" class="filter-button" data-filter="sort">
+                    <span>Сортування</span>
+                </button>
+                <div class="filter-dropdown">
+                    <div class="mb-2">
+                        <label for="sortBy">Сортувати за</label>
+                        <select id="sortBy" name="SortBy" class="form-control">
+                            <option value="date">За датою</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="sortOrder">Напрямок</label>
+                        <select id="sortOrder" name="Descending" class="form-control">
+                            <option value="false">За зростанням</option>
+                            <option value="true">За спаданням</option>
+                        </select>
 
-        <div class="col-md-2">
-            <label>Порядок:</label>
-            <select name="Descending" class="form-control">
-                <option value="false">За зростанням</option>
-                <option value="true">За спаданням</option>
-            </select>
-        </div>
+                    </div>
+                </div>
+            </div>
 
-        <div class="col-md-12 mt-3">
+        <div>
             <button type="submit" class="btn btn-primary">Фільтрувати</button>
+        </div>
+            <button class="extra" id="todaySessionsButton">
+                сеанси сьогодні
+                <div class="star star-1">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 784.11 815.53">
+                        <path class="fil0"
+                              d="M392.05 0c-20.9,210.08 -184.06,
+                       378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,
+                       407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,
+                       -29.38 -371.16,-197.69 -392.06,-407.78z" />
+                    </svg>
+                </div>
+                <div class="star star-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 784.11 815.53">
+                        <path class="fil0"
+                              d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,
+                       407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,
+                       -210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,
+                       -197.69 -392.06,-407.78z" />
+                    </svg>
+                </div>
+                <div class="star star-3">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 784.11 815.53">
+                        <path class="fil0"
+                              d="M392.05 0c-20.9,210.08 -184.06,
+                       378.41 -392.05,407.78 207.96,29.37 371.12,197.68
+                       392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,
+                       -407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" />
+                    </svg>
+                </div>
+                <div class="star star-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 784.11 815.53">
+                        <path class="fil0"
+                              d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,
+                       29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37
+                       392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" />
+                    </svg>
+                </div>
+                <div class="star star-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 784.11 815.53">
+                        <path class="fil0"
+                              d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,
+                       29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37
+                       392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" />
+                    </svg>
+                </div>
+                <div class="star star-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 784.11 815.53">
+                        <path class="fil0"
+                              d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,
+                       29.37 371.12,197.68 392.05,407.74 20.93,
+                       -210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,
+                       -197.69 -392.06,-407.78z" />
+                    </svg>
+                </div>
+            </button>
         </div>
     </div>
 </form>
@@ -44,22 +164,94 @@
     <div class="row">
         @foreach (var session in Model.Sessions)
         {
-            <div class="col-12 mb-3">
-                <div class="card shadow-sm p-3">
-                    <div class="d-flex">
-                        <a asp-action="SessionDetails" asp-controller="Home" asp-route-id="@session.Id" class="text-decoration-none">
-                            <img style="height: 200px" src="@session.Movie.ImageUrl" />
-                            <h5 class="mb-1 align-bottom">@session.Movie.Title</h5>
-                            <p class="text-muted mb-0">
-                                Дата: @session.StartTime.ToString("yyyy-MM-dd")
+            <div class="col-12 col-md-6 col-lg-4 mb-4">
+                <a asp-action="SessionDetails" asp-controller="Home" asp-route-id="@session.Id" class="text-decoration-none">
+                    <div class="card session-card">
+                        <img src="@session.Movie.ImageUrl" class="card-img-top session-img" alt="@session.Movie.Title" />
+                        <div class="card-body session-details">
+                            <h4 class="card-title text-white mb-3">@session.Movie.Title</h4>
+                            <h5 class="card-text text-white">
+                                @session.StartTime.ToString("d MMMM", new System.Globalization.CultureInfo("uk-UA"))
+                            </h5>
+                            <p class="card-text">
+                                <span class="text-danger" style="font-size: 18px">@session.StartTime.ToString("HH:mm") - @session.EndTime.ToString("HH:mm")</span>
+                                <span class="text-muted" style="font-size: 18px"> @session.Hall.Name</span>
                             </p>
-                            <p class="text-muted mb-0">
-                                Час: @session.StartTime.ToString("HH:mm") - @session.EndTime.ToString("HH:mm")
-                            </p>
-                       </a>
+
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         }
     </div>
 </div>
+
+
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const filterButtons = document.querySelectorAll(".filter-button");
+
+        filterButtons.forEach(button => {
+            const dropdown = button.nextElementSibling;
+            const select = dropdown.querySelector("select");
+            const buttonText = button.querySelector("span");
+
+            button.addEventListener("click", function (event) {
+                event.stopPropagation();
+                dropdown.classList.toggle("active");
+            });
+
+            select.addEventListener("change", function () {
+                const selectedOptions = Array.from(select.selectedOptions).map(option => option.text);
+
+                if (selectedOptions.length > 0) {
+                    buttonText.textContent = selectedOptions.join(", ");
+                    dropdown.classList.remove("active")
+                } else {
+                    buttonText.textContent = "вибрати фільм";
+                }
+            });
+
+            document.addEventListener("click", function (event) {
+                if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.remove("active");
+                }
+            });
+        });
+    });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        const sortButton = document.querySelector(".filter-button[data-filter='sort']");
+        const sortDropdown = sortButton.nextElementSibling;
+
+        sortButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+            sortDropdown.classList.toggle("active");
+        });
+
+        document.addEventListener("click", function (event) {
+            if (!sortButton.contains(event.target) && !sortDropdown.contains(event.target)) {
+                sortDropdown.classList.remove("active");
+            }
+        });
+    });
+
+    document.getElementById('todaySessionsButton').addEventListener('click', function() {
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0]; // Форматуємо дату як "yyyy-MM-dd"
+
+        // Встановлюємо поточну дату в поле "Date"
+        document.querySelector('input[name="Date"]').value = formattedDate;
+
+        // Відправляємо форму
+        document.querySelector('form').submit();
+    });
+
+        document.querySelector('form').addEventListener('submit', function() {
+        const sortBy = document.getElementById('sortBy').value;
+        const sortOrder = document.getElementById('sortOrder').value;
+        console.log(`Sort By: ${sortBy}, Descending: ${sortOrder}`);
+    });
+</script>
+
+
