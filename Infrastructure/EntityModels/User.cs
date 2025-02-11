@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DataAccess.EntityModels
 {
-	public class User : IdentityUser
+	public class User : IdentityUser, IEntity
 	{
-		string Id { get; set; }
+		int IEntity.Id { get; set; }
+		//string Id { get; set; }
 
 		public string Role { get; set; }
 
