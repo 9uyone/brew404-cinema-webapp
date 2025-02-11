@@ -4,6 +4,8 @@ using BusinessLogic.Interfaces;
 using DataAccess.EntityModels;
 using DataAccess.Interfaces;
 using DataAccess.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BusinessLogic.Services
 {
@@ -93,13 +95,14 @@ namespace BusinessLogic.Services
 
 			var genreIds = movieDTO.Genres?.Select(g => g.Id).ToList() ?? new List<int>();
 			var existingGenres = await GetExistingItems(_genreRepository, genreIds);
-			//var newGenres = movieDTO.Genres?.Where(g => !existingGenres.Any(e => e.Id == g.Id)).ToList() ?? new List<Genre>();
+			var newGenres = _mapper.Map<List<Genre>>(movie.Genres?.Where(g => !existingGenres.Any(e => e.Id == g.Id)).ToList());
 
 			var actorIds = movieDTO.Actors?.Select(a => a.Id).ToList() ?? new List<int>();
 			var existingActors = await GetExistingItems(_actorRepository, actorIds);
 			var newActors = _mapper.Map<List<Actor>>(movie.Actors?.Where(a => !existingActors.Any(ex => ex.Id == a.Id)).ToList());
 
-			movie.Genres = existingGenres;
+			var combineGenres = existingGenres.Concat(newGenres).ToList();
+			movie.Genres = combineGenres;
 			var combinedActors = existingActors.Concat(newActors).ToList();
 			movie.Actors = combinedActors;
 			movie.VoteAverage = MathF.Round(movie.VoteAverage, 1);

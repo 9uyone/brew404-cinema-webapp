@@ -30,7 +30,7 @@
             {
                 <div class="list-group-item d-flex justify-content-between align-items-center">
                     <span class="fs-5">@genre.Name</span>
-                    <form asp-action="Delete" asp-route-id="@genre.Id" method="post" data-ajax="true" onsubmit="return confirm('Ви впевнені, що хочете видалити жанр @genre.Name?');">
+                    <form asp-action="Delete" asp-route-id="@genre.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити жанр @genre.Name?');">
                         <button type="submit" class="btn btn-danger btn-lg">Видалити</button>
                     </form>
                 </div>

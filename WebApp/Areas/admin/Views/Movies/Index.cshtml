@@ -34,7 +34,7 @@
                         Update
                     </button>
 
-                    <form asp-action="Delete" asp-route-id="@movie.Id" method="post" data-ajax="true" onsubmit="return confirm('Ви впевнені, що хочете видалити фільм @movie.Title?');">
+                    <form asp-action="Delete" asp-route-id="@movie.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити фільм @movie.Title?');">
                         <button type="submit" class="btn btn-lg btn-danger btn-lg">Delete</button>
                     </form>
                 </div>

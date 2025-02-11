@@ -50,7 +50,7 @@ namespace BusinessLogic.Services
 				query = query.Where(s => s.MovieId == filter.MovieId);
 
 			if (filter.Date.HasValue)
-				query = query.Where(s => s.StartTime == filter.Date);
+				query = query.Where(s => s.StartTime.Date == filter.Date);
 
 			query = filter.SortBy?.ToLower() switch
 			{

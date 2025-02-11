@@ -38,7 +38,7 @@
                             Update
                         </button>
 
-                        <form asp-action="Delete" asp-route-id="@hall.Id" method="post" data-ajax="true" onsubmit="return confirm('Ви впевнені, що хочете видалити зал @hall.Id?');">
+                        <form asp-action="Delete" asp-route-id="@hall.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити зал @hall.Id?');">
                             <button type="submit" class="btn btn-danger btn-lg">Delete</button>
                         </form>
                     </div>
