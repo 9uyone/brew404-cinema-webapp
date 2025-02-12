@@ -86,5 +86,15 @@ namespace BusinessLogic.Services
 
 			return _mapper.Map<List<TicketDTO>>(tickets);
 		}
+
+		public async Task<IEnumerable<int>> GetOccupiedSeatsAsync(int sessionId)
+		{
+			var tickets = await _ticketRepository.Get(
+				filter: t => t.SessionId == sessionId,
+				includeProperties: "Seat"
+				);
+
+			return tickets.Select(t => t.SeatId).Distinct(); // 
+		}
 	}
 }

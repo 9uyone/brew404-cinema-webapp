@@ -18,33 +18,61 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.appendChild(tooltip);
     let tooltipTimeout;
 
+    const sessionId = @Model.Id;
+
+    async function fetchOccupiedSeats() {
+        const sessionId = 1;  // Тут вкажи актуальний sessionId
+        try {
+            const response = await fetch(`/api/tickets/occupiedSeats/${sessionId}`);
+            if (!response.ok) {
+                throw new Error(`Помилка запиту: ${response.statusText}`);
+            }
+            return await response.json();  // Повертає масив зайнятих місць, наприклад: ["1-1", "2-3", "VIP 1-2"]
+        } catch (error) {
+            console.error("Не вдалося отримати зайняті місця:", error);
+            return [];
+        }
+    }
+
+    const occupiedSeats = await fetchOccupiedSeats();
+
+    // Створення місця
     function createSeat(row, seatNumber, isVip) {
         const seat = document.createElement("div");
+        const seatId = `${row}-${seatNumber}`;
         seat.className = isVip ? "seat seat-vip" : "seat seat-available";
         seat.dataset.row = row;
         seat.dataset.seat = seatNumber;
         seat.dataset.price = isVip ? 420 : 190;
 
+        if (occupiedSeats.includes(seatId)) {
+            seat.classList.add("seat-occured");
+            seat.title = "Місце зайняте";
+            return seat;
+        } // тут я вказав, якщо він зайнятий, то я додаю клас зайнятий 
+
+        // Додавання події для вибору місця
         seat.addEventListener("click", function () {
-            const seatId = `${row}-${seatNumber}`;
             const price = parseInt(seat.dataset.price);
 
             if (selectedSeats.has(seatId)) {
                 selectedSeats.delete(seatId);
-                seat.classList.toggle(isVip ? "seat-selected-vip" : "seat-selected");
+                seat.classList.remove(isVip ? "seat-selected-vip" : "seat-selected");
             } else {
                 selectedSeats.set(seatId, { type: isVip ? "Диван" : "Стандартний", price });
-                seat.classList.toggle(isVip ? "seat-selected-vip" : "seat-selected");
+                seat.classList.add(isVip ? "seat-selected-vip" : "seat-selected");
             }
             updateBooking();
         });
 
+        // Tooltip при наведенні
         seat.addEventListener("mouseenter", (event) => showTooltip(event, seat));
         seat.addEventListener("mouseleave", hideTooltip);
 
         return seat;
     }
 
+    // Оновлення деталей бронювання
     function updateBooking() {
         bookingDetails.innerHTML = "";
         totalPrice = 0;
@@ -60,6 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
         totalPriceElement.textContent = `${totalPrice} грн`;
     }
 
+    // Показати tooltip
     function showTooltip(event, seat) {
         clearTimeout(tooltipTimeout);
         tooltipTimeout = setTimeout(() => {
@@ -71,12 +100,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 100);
     }
 
+    // Приховати tooltip
     function hideTooltip() {
         clearTimeout(tooltipTimeout);
         tooltip.style.visibility = "hidden";
         tooltip.style.opacity = "0";
     }
 
+    // Генерація стандартних місць
     seatsContainer.style.display = "grid";
     seatsContainer.style.gridTemplateColumns = `repeat(${seatsPerRow}, 1fr)`;
     seatsContainer.style.gap = "8px";
@@ -87,6 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Генерація VIP місць
     vipContainer.style.display = "grid";
     vipContainer.style.gridTemplateColumns = `repeat(${VIPseatsPerRow}, 1fr)`;
     vipContainer.style.gap = "8px";
