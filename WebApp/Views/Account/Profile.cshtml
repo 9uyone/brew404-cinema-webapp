@@ -1,3 +1,208 @@
-﻿@model WebApp.ViewModels.ProfileViewModel
+﻿<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Персональний кабінет</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-<p>@Model.Name</p>
+        body {
+            background-color: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 20px;
+        }
+
+        .sidebar {
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #1a1f37;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar img {
+            width: 24px;
+            height: 24px;
+            opacity: 0.7;
+        }
+
+        .nav-btn {
+            background: #1a1f37;
+            border: none;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.3s;
+            opacity: 0.7;
+        }
+
+        .nav-btn.active {
+            opacity: 1;
+            background: #242b4a;
+        }
+
+        .nav-btn:hover {
+            opacity: 1;
+        }
+
+        .content {
+            flex: 1;
+            background: #1a1f37;
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .edit-btn {
+            background: #242b4a;
+            border: none;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .data-item {
+            background: #242b4a;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .data-label {
+            opacity: 0.7;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .ticket-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .ticket {
+            background: #242b4a;
+            padding: 15px;
+            border-radius: 8px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .logout {
+            margin-top: auto;
+            background: #242b4a;
+            border: none;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .logout:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="profile-section">
+                <div class="avatar">
+                    <img src="/api/placeholder/24/24" alt="avatar icon">
+                </div>
+                <h2>David</h2>
+            </div>
+            <button class="nav-btn active">Персональні дані</button>
+            <button class="nav-btn">Активні квитки</button>
+            <button class="nav-btn">Історія покупок</button>
+            <button class="logout">Вихід</button>
+        </aside>
+        
+        <main class="content">
+            <div class="content-header">
+                <h1>Персональні дані</h1>
+                <button class="edit-btn">Редагувати</button>
+            </div>
+            
+            <div class="data-grid">
+                <div class="data-item">
+                    <div class="data-label">Ім'я</div>
+                    <div class="data-value">David</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Пошта</div>
+                    <div class="data-value">kacurdavid@gmail.com</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Дата народження</div>
+                    <div class="data-value">4 квітня 2005</div>
+                </div>
+                <div class="data-item">
+                    <div class="data-label">Номер телефону</div>
+                    <div class="data-value">+380 (93) 748 89 50</div>
+                </div>
+            </div>
+
+            <div class="ticket-grid" style="display: none;">
+                <div class="ticket">
+                    <div>фільм дата та час сесії</div>
+                    <div>місце</div>
+                    <div>ціна</div>
+                </div>
+                <div class="ticket">
+                    <div>фільм дата та час сесії</div>
+                    <div>місце</div>
+                    <div>ціна</div>
+                </div>
+                <div class="ticket">
+                    <div>фільм дата та час сесії</div>
+                    <div>місце</div>
+                    <div>ціна</div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
