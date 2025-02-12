@@ -52,18 +52,6 @@ namespace WebApp.Controllers
 
 			return View(movieDetailsViewModel);
 		}
-		//public async Task<IActionResult> GetSessions(DateTime date, int movieId)
-		//{
-		//	var sessions = await _sessionService.GetSessionsByDateAndMovieIdAsync(date, movieId);
-
-		//	// If there are no sessions, return an empty array
-		//	if (sessions == null)
-		//	{
-		//		return Json(new List<SessionDTO>());
-		//	}
-
-		//	return Json(sessions);
-		//}
 
 		public async Task<IActionResult> FilteredMovies(MovieFilteredDTO filter)
 		{
@@ -84,14 +72,23 @@ namespace WebApp.Controllers
 			var sessions = await _sessionService.GetFilteredSessions(filter, onlyFutureSessions: true);
 			var movies = await _movieService.GetAllMoviesAsync();
 
+			var groupedSessions = sessions?
+				.GroupBy(s => s.Movie)?
+				.ToDictionary(
+					g => g.Key, // фільм
+					g => g.ToList() // список сеансів для фільму
+				);
+
+			// Створюємо FilterSessionsViewModel
 			var filterSessionViewModel = new FilterSessionsViewModel()
 			{
-				Movies = movies.ToList(),
-				Sessions = sessions.ToList()
+				Movies = movies.ToList(), // Просто передаємо фільми, без Distinct
+				GroupedSessions = groupedSessions
 			};
 
 			return View(filterSessionViewModel);
 		}
+
 
 		public async Task<IActionResult> SessionDetails(int id)
 		{
