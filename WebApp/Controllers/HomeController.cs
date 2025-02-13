@@ -12,14 +12,17 @@ namespace WebApp.Controllers
 		MovieService _movieService;
 		SessionService _sessionService;
 		GenreService _genreService;
+		TicketService _ticketService;
 
 		public HomeController(MovieService movieService
 			, SessionService sessionService
-			, GenreService genreService)
+			, GenreService genreService
+			, TicketService ticketService)
 		{
 			_movieService = movieService;
 			_sessionService = sessionService;
 			_genreService = genreService;
+			_ticketService = ticketService;
 		}
 
 		public async Task<IActionResult> Index()
@@ -96,7 +99,12 @@ namespace WebApp.Controllers
 		public async Task<IActionResult> SessionDetails(int id)
 		{
 			SessionDTO? session = await _sessionService.GetSessionByIdAsync(id);
-			return View(session);
+			var occupiedSeats = await _ticketService.GetOccupiedSeatsAsync(id);
+
+			return View(new SessionDetailsViewModel { 
+				Session = session, 
+				OccupiedSeats = occupiedSeats
+			});
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

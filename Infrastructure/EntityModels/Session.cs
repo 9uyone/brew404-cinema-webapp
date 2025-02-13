@@ -14,5 +14,7 @@ namespace DataAccess.EntityModels
 
 		public int HallId { get; set; }
 		public Hall? Hall { get; set; }
+
+		//public int Price{ get; set; }
 	}
 }

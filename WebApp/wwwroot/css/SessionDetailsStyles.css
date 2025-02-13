@@ -119,13 +119,13 @@ body {
     border-radius: 50% / 0 0 100% 100%;
 }
 
-.seats-container {
+/*.seats-container {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 8px;
     margin-bottom: 20px;
     width: max-content;
-}
+}*/
 
 .seat {
     width: 24px;
@@ -133,14 +133,16 @@ body {
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s ease;
-}
-
-.seat-available {
     background-color: #00a0e9;
 }
 
 .seat-selected {
     background-color: #ff6b01;
+}
+
+.seat-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 
 .vip-container {
