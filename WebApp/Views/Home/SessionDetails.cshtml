@@ -30,6 +30,9 @@
 </head>
 
 <body>
+    @{
+        var selectedDate = Model.SelectedSeats;  // Вибір першої доступної дати
+    }
     <div class="movie-container">
         <div class="movie-info">
             <img src="@Model.Session.Movie.ImageUrl" alt="@Model.Session.Movie.Title" class="movie-poster">
@@ -73,7 +76,8 @@
                             if (Model.OccupiedSeats.Contains(new Tuple<int, int>(i, j)))
                             {
                                 <div class="seat seat-disabled" id="seat-@i-@j"></div>
-                            } else
+                            }
+                            else
                             {
                                 <div class="seat" id="seat-@i-@j" onclick=" toggleSeat(event, @i, @j);"></div>
                             }
@@ -102,15 +106,16 @@
         <form method="post" asp-controller="Tickets" asp-action="CreateTicket">
             <input type="hidden" name="UserId" value="@((await userManager.FindByNameAsync(User.Identity.Name)).Id)" />
             <input type="hidden" name="SessionId" value="@Model.Session.Id" />
-            <input type="hidden" id="selectedSeatsInput" name="SelectedSeats"/>
+            <input type="hidden" id="selectedSeatsInput" name="SelectedSeats" />
             <button class="buy-button">Купити</button>
         </form>
+        <button class="buy-button" onclick="getSelectedSeats();">Купити</button>
     </div>
 
     <!--<script src="~/js/SessionDetailsScript.js"></script>-->
     <script>
 		let selectedSeats = new Map();
-		let totalPrice = 0;
+		const price = 100;
 
         function toggleSeat (event, row, col) {
             var seat = event.target;
@@ -132,14 +137,19 @@
             totalPrice = 0;
 
             selectedSeats.forEach(({ type, price }, seatId) => {
+                console.log(seatId);
                 const detail = document.createElement("div");
                 detail.className = "booking-details";
                 detail.innerHTML = `<span>${type} (${seatId})</span><span>${price} грн</span>`;
                 bookingDetails.appendChild(detail);
-                //totalPrice += price;                
+                totalPrice += price;                
             });
 
             totalPriceElement.textContent = `${totalPrice} грн`;
+        }
+
+        function getSelectedSeats() {
+            console.log(selectedSeats);
         }
     </script>
 </body>

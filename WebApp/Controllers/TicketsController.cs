@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Services;
+using DataAccess.EntityModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Toycloud.AspNetCore.Mvc.ModelBinding;
@@ -41,5 +42,14 @@ namespace WebApp.Controllers
 
 			return Ok("Ticket created successffully.");
 		}
+
+		[HttpPost]
+		public async Task<IActionResult> CreateTicketsForSeatsByElements([FromBodyOrDefault] int sessionId, string UserId, List<Tuple<int, int>> RowsCols )
+		{
+			var occupiedSeats = await _ticketService.GetOccupiedSeatsAsync(sessionId);
+
+			return null;
+		}
+
 	}
 }
