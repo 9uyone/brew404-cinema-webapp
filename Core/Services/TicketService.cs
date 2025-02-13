@@ -64,7 +64,7 @@ namespace BusinessLogic.Services
 				}
 
 				// Перевіряємо чи є вже квитки для цих місць
-				var sessionId = tickets.First().SessionId;
+				/*var sessionId = tickets.First().SessionId;
 				var seatIds = tickets.Select(t => t.SeatId).ToList();
 
 				var existingTickets = await _ticketRepository.Get(
@@ -75,7 +75,7 @@ namespace BusinessLogic.Services
 				if (existingTickets.Any())
 				{
 					return false;
-				}
+				}*/
 
 				// Встановлюємо час покупки
 				var currentTime = DateTime.Now;
@@ -93,19 +93,6 @@ namespace BusinessLogic.Services
 				Console.WriteLine($"Помилка при додаванні квитків: {ex.Message}");
 				return false;
 			}
-		}
-
-		public async Task<bool> UpdateTicketAsync(int id, TicketDTO ticketDTO)
-		{
-			var existinTicket = await _ticketRepository.GetByID(id);
-			if (existinTicket == null)
-			{
-				return false;
-			}
-
-			var updatedTicket = _mapper.Map<Ticket>(ticketDTO);
-			await _ticketRepository.Update(updatedTicket);
-			return true;
 		}
 
 		public async Task<bool> DeleteTicketAsync(int id)

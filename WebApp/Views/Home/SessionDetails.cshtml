@@ -101,7 +101,7 @@
 
             <!--<form method="post" asp-controller="Tickets" asp-action="CreateTicket">-->
             <!--</form>-->
-            <button class="buy-button" onclick="submitSeats(@Model.Session.Id, '@((await userManager.FindByNameAsync(User.Identity.Name)).Id)');">Купити</button>
+            <button class="buy-button" onclick="submitSeats(@Model.Session.Id, @((await userManager.FindByNameAsync(User.Identity.Name)).Id));">Купити</button>
 
         </div>
     }
@@ -152,13 +152,17 @@
                 return;
             }
 
-            fetch(`/api/tickets/create-multiple`, {
+			console.log(selectedSeats);
+            console.log(selectedSeats.map(seat => [seat.row, seat.col]));
+
+            fetch(`/api/tickets/CreateByElements`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: ({
-                    sessionId: sessionId,
-                    userId: userId,
-                    seats: selectedSeats.map(seat => [seat.row, seat.col])
+                    "sessionId": sessionId,
+                    "userId": userId,
+                    //"seats": selectedSeats.map(seat => [seat.row, seat.col])
+                    "seats": selectedSeats
                 })
             })
             .then(response => {

@@ -26,6 +26,11 @@ namespace BusinessLogic.Helpers
 
 			CreateMap<Session, SessionDTO>().ReverseMap();
 			CreateMap<Seat, SeatDTO>().ReverseMap();
+
+			/*CreateMap<TicketDTO, Ticket>()
+				.ForMember(t => t.Seat, opt => opt.AddTransform(s => new Seat { Id = s.Id }))
+				.ForMember(t => t.Session, opt => opt.AddTransform(s => new Session { Id = s.Id } ));*/
+
 			CreateMap<Ticket, TicketDTO>().ReverseMap();
 
 			/*CreateMap<SessionDTO, Session>()
