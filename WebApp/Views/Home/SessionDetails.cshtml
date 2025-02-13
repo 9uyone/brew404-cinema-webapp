@@ -101,7 +101,11 @@
 
             <!--<form method="post" asp-controller="Tickets" asp-action="CreateTicket">-->
             <!--</form>-->
-            <button class="buy-button" onclick="submitSeats(@Model.Session.Id, @((await userManager.FindByNameAsync(User.Identity.Name)).Id));">Купити</button>
+            @{
+                var userId = signInManager.IsSignedIn(User) ? (await userManager.GetUserAsync(User))?.Id : "";
+            }
+
+            <button class="buy-button" onclick="submitSeats(@Model.Session.Id, '@userId');">Купити</button>
 
         </div>
     }
@@ -146,14 +150,14 @@
                 document.getElementById("totalPrice").textContent = `${totalPrice} грн`;
             }
 
-             window.submitSeats = function(sessionId, userId) {
+        window.submitSeats = function(sessionId, userId) {
+            console.log(selectedSeats);
+            console.log(selectedSeats.map(seat => [seat.row, seat.col]));
+            
             if (selectedSeats.length === 0) {
                 alert("Виберіть хоча б одне місце");
                 return;
             }
-
-			console.log(selectedSeats);
-            console.log(selectedSeats.map(seat => [seat.row, seat.col]));
 
             fetch(`/api/tickets/CreateByElements`, {
                 method: "POST",
@@ -178,7 +182,5 @@
             window.toggleSeat = toggleSeat;  // Робимо функцію глобально доступною
         });
     </script>
-
-
 </body>
 </html>
