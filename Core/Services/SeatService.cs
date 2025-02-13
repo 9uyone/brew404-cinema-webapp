@@ -25,14 +25,14 @@ namespace BusinessLogic.Services
 
 		public async Task<SeatDTO> GetSeatIdFromSessionIdByRowAndCol(int sessionId, int row, int col)
 		{
-			var session = await _sessionRepository.GetByID(sessionId);
-			if (session == null)
-			{
-				throw new ArgumentException($"Сеанс з ID {sessionId} не знайдено.");
-			}
+			//var session = await _sessionRepository.GetByID(sessionId);
+			//if (session == null)
+			//{
+			//	throw new ArgumentException($"Сеанс з ID {sessionId} не знайдено.");
+			//}
 
 			var seats = await _seatRepository.Get(
-				filter: s => s.Row == row && s.Number == col && s.HallId == session.HallId);
+				filter: s => s.Row == row && s.Number == col);
 
 			var seat = seats.FirstOrDefault();
 			if (seat == null)

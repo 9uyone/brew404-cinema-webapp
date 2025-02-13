@@ -52,12 +52,30 @@ namespace WebApp.Controllers
 				return Conflict("Деякі місця вже зайняті");
 			}
 
-			var ticketDTOs = seats.Select(s => new TicketDTO
+			var ticketDTOs = new List<TicketDTO>();
+
+			foreach (var seat in seats)
 			{
-				UserId = userId,
-				SessionId = sessionId,
-				SeatId = _seatService.GetSeatIdFromSessionIdByRowAndCol(sessionId, s.Item1, s.Item2).Id
-			});
+				var seatObj =  await _seatService.GetSeatIdFromSessionIdByRowAndCol(sessionId, seat.Item1, seat.Item2);
+				var seatId = seatObj?.Id; 
+				if (seatId == null)
+				{
+					return Conflict($"Не вдалося знайти місце: ряд {seat.Item1}, місце {seat.Item2}");
+				}
+				ticketDTOs.Add(new TicketDTO
+				{
+					UserId = userId,
+					SessionId = sessionId,
+					SeatId = seatId.Value
+				});
+			}
+
+			//var ticketDTOs = seats.Select(s => new TicketDTO
+			//{
+			//	UserId = userId,
+			//	SessionId = sessionId,
+			//	SeatId = _seatService.GetSeatIdFromSessionIdByRowAndCol(sessionId, s.Item1, s.Item2).Id
+			//});
 
 			if (await _ticketService.AddTicketsAsync(ticketDTOs))
 				return Ok("Квитки успішно створені");
