@@ -8,8 +8,6 @@ namespace BusinessLogic.Services
 	public class TicketService
 	{
 		private IRepository<Ticket> _ticketRepository;
-		private IRepository<Session> _sessionRepository;
-		private IRepository<Seat> _seatRepository;
 		private IMapper _mapper;
 
 		public TicketService(IRepository<Ticket> ticketRepository,
@@ -18,8 +16,6 @@ namespace BusinessLogic.Services
 			IMapper mapper)
 		{
 			_ticketRepository = ticketRepository;
-			_sessionRepository = sessionRepository;
-			_seatRepository = seatRepository;
 			_mapper = mapper;
 		}
 
@@ -63,10 +59,10 @@ namespace BusinessLogic.Services
 			{
 				return false;
 			}
-			foreach (var ticket in tickets)
+			/*foreach (var ticket in tickets)
 			{
 				ticket.PurchaseTime = DateTime.Now;
-			}
+			}*/
 			await _ticketRepository.AddRange(tickets);
 			return true;
 		}
@@ -103,16 +99,6 @@ namespace BusinessLogic.Services
 				);
 
 			return _mapper.Map<List<TicketDTO>>(tickets);
-		}
-		
-		public async Task<IEnumerable<Tuple<int, int>>> GetOccupiedSeatsAsync(int sessionId)
-		{
-			var tickets = await _ticketRepository.Get(
-				filter: t => t.SessionId == sessionId,
-				includeProperties: "Seat"
-				);
-
-			return tickets.Select(t => new Tuple<int, int>(t.Seat.Row, t.Seat.Number));
 		}
 	}
 }

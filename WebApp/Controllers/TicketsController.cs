@@ -1,6 +1,5 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Services;
-using DataAccess.EntityModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Toycloud.AspNetCore.Mvc.ModelBinding;
@@ -13,17 +12,12 @@ namespace WebApp.Controllers
 	public class TicketsController : Controller
 	{
 		private readonly TicketService _ticketService;
+		private readonly SeatService _seatService;
 
-		public TicketsController(TicketService ticketService)
+		public TicketsController(TicketService ticketService, SeatService seatService)
 		{
 			_ticketService = ticketService;
-		}
-
-		[HttpGet("occupiedSeats/{sessionId}")]
-		public async Task<IActionResult> GetOccupiedSeats(int sessionId)
-		{
-			var occupiedSeats = await _ticketService.GetOccupiedSeatsAsync(sessionId);
-			return Ok(occupiedSeats);
+			_seatService = seatService;
 		}
 
 		[HttpPost]
@@ -40,16 +34,31 @@ namespace WebApp.Controllers
 			if (!result)
 				return Conflict("Помилка створення квитка");
 
-			return Ok("Ticket created successffully.");
+			return Ok("Квиток успішно створений");
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateTicketsForSeatsByElements([FromBodyOrDefault] int sessionId, string UserId, List<Tuple<int, int>> RowsCols )
+		public async Task<IActionResult> CreateTicketsByElements([FromBodyOrDefault] int sessionId, string userId, List<Tuple<int, int>> seats)
 		{
-			var occupiedSeats = await _ticketService.GetOccupiedSeatsAsync(sessionId);
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+			if (await _seatService.IsAnySeatOcuupied(sessionId, seats))
+			{
+				return Conflict("Деякі місця вже зайняті");
+			}
 
-			return null;
+			var ticketDTOs = seats.Select(s => new TicketDTO
+			{
+				UserId = userId,
+				SessionId = sessionId,
+				SeatId = _seatService.GetSeatIdFromSessionIdByRowAndCol(sessionId, s.Item1, s.Item2).Id
+			});
+
+			if (await _ticketService.AddTicketsAsync(ticketDTOs))
+				return Ok("Квитки успішно створені");
+			else return Conflict("Помилка створення квитків");
 		}
-
 	}
 }

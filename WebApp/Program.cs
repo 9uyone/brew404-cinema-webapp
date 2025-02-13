@@ -29,6 +29,7 @@ builder.Services.AddScoped<ActorService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<SeatService>();
 builder.Services.AddScoped<TicketService>();
 
 builder.Services.AddIdentity<User, IdentityRole>()
