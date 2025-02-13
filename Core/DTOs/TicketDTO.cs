@@ -8,6 +8,6 @@ namespace BusinessLogic.DTOs
 		public string UserId { get; set; }
 		public int SeatId { get; set; }
 		public int SessionId { get; set; }
-		public DateTime PurchaseTime { get; set; }
+		public DateTime PurchaseTime { get; set; } = DateTime.Now;
 	}
 }

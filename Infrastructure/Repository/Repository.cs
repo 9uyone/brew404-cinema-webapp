@@ -16,6 +16,8 @@ namespace DataAccess.Repository
 			DbSet = Context.Set<TEntity>();
 		}
 
+		public IQueryable<TEntity> Query() => DbSet.AsQueryable();
+
 		public virtual async Task<IEnumerable<TEntity>> Get(
 			Expression<Func<TEntity, bool>>? filter = null,
 			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,

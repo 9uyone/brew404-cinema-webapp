@@ -1,12 +1,15 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Toycloud.AspNetCore.Mvc.ModelBinding;
 
 namespace WebApp.Controllers
 {
 	[ApiController]
 	[Route("api/tickets")]
-	public class TicketsController : ControllerBase
+	[Authorize]
+	public class TicketsController : Controller
 	{
 		private readonly TicketService _ticketService;
 
@@ -16,15 +19,17 @@ namespace WebApp.Controllers
 		}
 
 		[HttpGet("occupiedSeats/{sessionId}")]
-		public async Task<IActionResult> GetOccutiedSeats(int sessionId)
+		public async Task<IActionResult> GetOccupiedSeats(int sessionId)
 		{
 			var occupiedSeats = await _ticketService.GetOccupiedSeatsAsync(sessionId);
 			return Ok(occupiedSeats);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateTicket([FromBody] TicketDTO ticketDTO)
+		public async Task<IActionResult> CreateTicket([FromBodyOrDefault] TicketDTO ticketDTO, string jsonSeats)
 		{
+			Console.WriteLine(jsonSeats);
+
 			if (!ModelState.IsValid)
 			{
 				return BadRequest(ModelState);
@@ -32,7 +37,7 @@ namespace WebApp.Controllers
 
 			var result = await _ticketService.AddTicketAsync(ticketDTO);
 			if (!result)
-				return Conflict("Ticket could not be created (maybe seat already occupied).");
+				return Conflict("Помилка створення квитка");
 
 			return Ok("Ticket created successffully.");
 		}

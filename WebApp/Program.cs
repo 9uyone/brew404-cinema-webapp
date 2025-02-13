@@ -21,6 +21,7 @@ builder.Services.AddDbContext<CinemaDbContext>(options =>
 // Add services
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<MovieService>();
+builder.Services.AddSingleton<TMDbApiService>();
 builder.Services.AddScoped<HallService>();
 builder.Services.AddScoped<GenreService>();
 builder.Services.AddScoped<SessionService>();
@@ -28,7 +29,7 @@ builder.Services.AddScoped<ActorService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<AccountService>();
-builder.Services.AddSingleton<TMDbApiService>();
+builder.Services.AddScoped<TicketService>();
 
 builder.Services.AddIdentity<User, IdentityRole>()
 	.AddEntityFrameworkStores<CinemaDbContext>()

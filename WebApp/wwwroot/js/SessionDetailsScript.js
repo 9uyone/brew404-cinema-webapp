@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.appendChild(tooltip);
     let tooltipTimeout;
 
-    const sessionId = @Model.Id;
+    //const sessionId = @Model.Id;
 
     async function fetchOccupiedSeats() {
         const sessionId = 1;  // Тут вкажи актуальний sessionId
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    const occupiedSeats = await fetchOccupiedSeats();
+    //const occupiedSeats = await fetchOccupiedSeats();
 
     // Створення місця
     function createSeat(row, seatNumber, isVip) {

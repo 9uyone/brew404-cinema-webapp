@@ -53,6 +53,24 @@ namespace BusinessLogic.Services
 			return true;
 		}
 
+		public async Task<bool> AddTicketsAsync(IEnumerable<TicketDTO> ticketDTOs)
+		{
+			var tickets = _mapper.Map<List<Ticket>>(ticketDTOs);
+			// Перевірка, чи зайнято
+			var existingTickets = await _ticketRepository.Get(
+				t => ticketDTOs.Any(td => td.SeatId == t.SeatId && td.SessionId == t.SessionId));
+			if (existingTickets.Any())
+			{
+				return false;
+			}
+			foreach (var ticket in tickets)
+			{
+				ticket.PurchaseTime = DateTime.Now;
+			}
+			await _ticketRepository.AddRange(tickets);
+			return true;
+		}
+
 		public async Task<bool> UpdateTicketAsync(int id, TicketDTO ticketDTO)
 		{
 			var existinTicket = await _ticketRepository.GetByID(id);
@@ -86,15 +104,15 @@ namespace BusinessLogic.Services
 
 			return _mapper.Map<List<TicketDTO>>(tickets);
 		}
-
-		public async Task<IEnumerable<int>> GetOccupiedSeatsAsync(int sessionId)
+		
+		public async Task<IEnumerable<Tuple<int, int>>> GetOccupiedSeatsAsync(int sessionId)
 		{
 			var tickets = await _ticketRepository.Get(
 				filter: t => t.SessionId == sessionId,
 				includeProperties: "Seat"
 				);
 
-			return tickets.Select(t => t.SeatId).Distinct(); // 
+			return tickets.Select(t => new Tuple<int, int>(t.Seat.Row, t.Seat.Number));
 		}
 	}
 }

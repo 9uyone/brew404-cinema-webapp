@@ -13,21 +13,20 @@ namespace BusinessLogic.Services
 		public HallService(IMapper mapper
 			, IRepository<Hall> hallRepository)
 		{
-			_mapper = mapper;
-			_hallRepository = hallRepository;
+			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+			_hallRepository = hallRepository ?? throw new ArgumentNullException(nameof(hallRepository));
 		}
 
 		public async Task<IEnumerable<HallDTO>> GetAllHallsAsync()
 		{
-			var halls = await Task.Run(() => _hallRepository.Get(orderBy: q => q.OrderBy(h => h.Name)
-			, includeProperties: "Seats"));
+			var halls = await _hallRepository.Get(includeProperties: "Seats") ?? new List<Hall>();
 			return _mapper.Map<List<HallDTO>>(halls);
 		}
 
 		public async Task<HallDTO?> GetHallByIdAsync(int id)
 		{
 			var hall = await _hallRepository.GetByID(id, includeProperties: "Seats");
-			return hall == null? null :  _mapper.Map<HallDTO?>(hall);
+			return hall is null ? null : _mapper.Map<HallDTO>(hall);
 		}
 
 		private List<Seat> GenerateSeats(HallDTO hallDTO)
@@ -52,15 +51,19 @@ namespace BusinessLogic.Services
 
 		public async Task AddHallAsync(HallDTO hallDTO)
 		{
+			if (hallDTO is null)
+				throw new ArgumentNullException(nameof(hallDTO));
+
 			var hall = _mapper.Map<Hall>(hallDTO);
-
 			hall.Seats = GenerateSeats(hallDTO);
-
 			await _hallRepository.Insert(hall);
 		}
 
 		public async Task UpdateHallAsync(HallDTO hallDTO)
 		{
+			if (hallDTO is null)
+				throw new ArgumentNullException(nameof(hallDTO));
+
 			var hall = _mapper.Map<Hall>(hallDTO);
 			await _hallRepository.Update(hall,
 				new List<string> {"Name"} );
