@@ -51,20 +51,48 @@ namespace BusinessLogic.Services
 
 		public async Task<bool> AddTicketsAsync(IEnumerable<TicketDTO> ticketDTOs)
 		{
-			var tickets = _mapper.Map<List<Ticket>>(ticketDTOs);
-			// Перевірка, чи зайнято
-			var existingTickets = await _ticketRepository.Get(
-				t => ticketDTOs.Any(td => td.SeatId == t.SeatId && td.SessionId == t.SessionId));
-			if (existingTickets.Any())
+			try
 			{
+				if (!ticketDTOs.Any()) return false;
+
+				var tickets = _mapper.Map<List<Ticket>>(ticketDTOs);
+
+				// Перевіряємо чи всі необхідні поля заповнені
+				if (tickets.Any(t => t.SessionId == 0 || t.SeatId == 0 || string.IsNullOrEmpty(t.UserId)))
+				{
+					return false;
+				}
+
+				// Перевіряємо чи є вже квитки для цих місць
+				var sessionId = tickets.First().SessionId;
+				var seatIds = tickets.Select(t => t.SeatId).ToList();
+
+				var existingTickets = await _ticketRepository.Get(
+					filter: t => t.SessionId == sessionId && seatIds.Contains(t.SeatId),
+					tracking: true
+				);
+
+				if (existingTickets.Any())
+				{
+					return false;
+				}
+
+				// Встановлюємо час покупки
+				var currentTime = DateTime.Now;
+				foreach (var ticket in tickets)
+				{
+					ticket.PurchaseTime = currentTime;
+				}
+
+				await _ticketRepository.AddRange(tickets);
+				return true;
+			}
+			catch (Exception ex)
+			{
+				// Логуємо помилку
+				Console.WriteLine($"Помилка при додаванні квитків: {ex.Message}");
 				return false;
 			}
-			/*foreach (var ticket in tickets)
-			{
-				ticket.PurchaseTime = DateTime.Now;
-			}*/
-			await _ticketRepository.AddRange(tickets);
-			return true;
 		}
 
 		public async Task<bool> UpdateTicketAsync(int id, TicketDTO ticketDTO)

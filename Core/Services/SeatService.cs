@@ -9,7 +9,7 @@ namespace BusinessLogic.Services
 	{
 		private readonly IRepository<Seat> _seatRepository;
 		private readonly IRepository<Session> _sessionRepository;
-		private IRepository<Ticket> _ticketRepository;
+		private readonly IRepository<Ticket> _ticketRepository;
 		private readonly IMapper _mapper;
 
 		public SeatService(IRepository<Seat> seatRepository,
@@ -28,17 +28,16 @@ namespace BusinessLogic.Services
 			var session = await _sessionRepository.GetByID(sessionId);
 			if (session == null)
 			{
-				throw new ArgumentException($"Session with ID {sessionId} not found.");
+				throw new ArgumentException($"Сеанс з ID {sessionId} не знайдено.");
 			}
 
 			var seats = await _seatRepository.Get(
-				filter: s => s.Row == row && s.Number == col && s.HallId == session.HallId
-			);
+				filter: s => s.Row == row && s.Number == col && s.HallId == session.HallId);
 
 			var seat = seats.FirstOrDefault();
 			if (seat == null)
 			{
-				throw new ArgumentException($"Seat with row {row} and number {col} not found in the hall for session {sessionId}.");
+				throw new ArgumentException($"Місце в ряду {row} номер {col} не знайдено в залі для сеансу {sessionId}.");
 			}
 
 			return _mapper.Map<SeatDTO>(seat);
@@ -49,27 +48,37 @@ namespace BusinessLogic.Services
 			var tickets = await _ticketRepository.Get(
 				filter: t => t.SessionId == sessionId,
 				includeProperties: "Seat"
-				);
+			);
 
 			return tickets.Select(t => new Tuple<int, int>(t.Seat.Row, t.Seat.Number));
 		}
 
 		public async Task<bool> IsAnySeatOcuupied(int sessionId, List<Tuple<int, int>> seats)
 		{
-			foreach (var seat in seats)
+			try
 			{
-				var seatDTO = await GetSeatIdFromSessionIdByRowAndCol(sessionId, seat.Item1, seat.Item2);
-				if (seatDTO != null)
+				foreach (var seat in seats)
 				{
-					if ((await _ticketRepository.Get(
-						t => t.SessionId == sessionId && t.SeatId == seatDTO.Id
-					)).Any())
+					// Отримуємо ID місця
+					var seatDTO = await GetSeatIdFromSessionIdByRowAndCol(sessionId, seat.Item1, seat.Item2);
+
+					// Перевіряємо чи є квитки на це місце
+					var existingTickets = await _ticketRepository.Get(
+						filter: t => t.SessionId == sessionId && t.SeatId == seatDTO.Id
+					);
+
+					if (existingTickets.Any())
 					{
 						return true;
 					}
 				}
+				return false;
 			}
-			return false;
+			catch (Exception)
+			{
+				// Якщо виникла помилка, вважаємо що місце зайняте
+				return true;
+			}
 		}
 	}
 }

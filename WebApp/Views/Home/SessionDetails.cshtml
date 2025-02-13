@@ -21,11 +21,11 @@
     <link rel="stylesheet" href="~/css/SessionDetailsStyles.css">
     <style>
         .seats-container {
-        display: grid;
-        grid-template-columns: repeat( @Model.Session.Hall.SeatsPerRow, 1fr);
-        gap: 8px;
-        margin-bottom: 20px;
-        width: max-content;
+            display: grid;
+            grid-template-columns: repeat( @Model.Session.Hall.SeatsPerRow, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+            width: max-content;
         }
     </style>
 </head>
@@ -92,7 +92,6 @@
             <h3>Ваше бронювання</h3>
             <div id="bookingDetails">
                 <div class="booking-details">
-
                 </div>
             </div>
             <div class="total-price">
@@ -102,81 +101,80 @@
 
             <!--<form method="post" asp-controller="Tickets" asp-action="CreateTicket">-->
             <!--</form>-->
-            <button class="buy-button" onclick="submitSeats(@Model.Session.Id, @((await userManager.FindByNameAsync(User.Identity.Name)).Id));">Купити</button>
+            <button class="buy-button" onclick="submitSeats(@Model.Session.Id, '@((await userManager.FindByNameAsync(User.Identity.Name)).Id)');">Купити</button>
+
         </div>
     }
-    else 
+    else
     {
-		<div class="header-4 text-center">Для бронювання квитків, будь ласка, увійдіть в систему</div>
+        <div class="header-4 text-center">Для бронювання квитків, будь ласка, увійдіть в систему</div>
     }
     <!--<script src="~/js/SessionDetailsScript.js"></script>-->
     <script>
-		//let selectedSeats = new Map();
-		let selectedSeats = [];
-		const price = 100;
+        document.addEventListener("DOMContentLoaded", function() {
+            const bookingDetails = document.getElementById("bookingDetails");
+            let selectedSeats = [];
+            const price = 100;
 
-        /*function toggleSeat (event, row, col) {
-            var seat = event.target;
+            function toggleSeat(event, row, col) {
+                const seat = event.target;
+                const index = selectedSeats.findIndex(seat => seat.row === row && seat.col === col);
 
-            if (selectedSeats.has(seat.id)) {
-                selectedSeats.delete(seat.id);
-                seat.classList.remove("seat-selected");
-            } else {
-                selectedSeats.set(seat.id, {row, col});
-                seat.classList.add("seat-selected");
+                if (index === -1) {
+                    selectedSeats.push({ row, col });
+                    seat.classList.add("seat-selected");
+                } else {
+                    selectedSeats.splice(index, 1);
+                    seat.classList.remove("seat-selected");
+                }
+
+                updateBooking();
             }
 
-            //updateBooking();
-        }*/
+            function updateBooking() {
+                bookingDetails.innerHTML = "";  // Очищуємо блок із деталями
+                let totalPrice = 0;
 
-        function toggleSeat (event, row, col) {
-            var seat = event.target;
-            var index = selectedSeats.indexOf({row, col});
+                selectedSeats.forEach((seat, index) => {
+                    const detail = document.createElement("div");
+                    detail.className = "booking-details";
+                    detail.innerHTML = `<span>Місце ${index + 1}: Ряд ${seat.row}, Місце ${seat.col}</span><span>${price} грн</span>`;
+                    bookingDetails.appendChild(detail);
+                    totalPrice += price;
+                });
 
-            if (index == -1) {
-                selectedSeats.push({row, col});
-                seat.classList.add("seat-selected");
-            } else {
-                selectedSeats.splice(index);
-                seat.classList.remove("seat-selected");
+                document.getElementById("totalPrice").textContent = `${totalPrice} грн`;
             }
 
-            //updateBooking();
-        }
-
-        /*function updateBooking() {
-            bookingDetails.innerHTML = "";
-            totalPrice = 0;
-
-            selectedSeats.forEach(({ type, price }, seatId) => {
-                console.log(seatId);
-                const detail = document.createElement("div");
-                detail.className = "booking-details";
-                detail.innerHTML = `<span>${type} (${seatId})</span><span>${price} грн</span>`;
-                bookingDetails.appendChild(detail);
-                totalPrice += price;                
-            });
-
-            totalPriceElement.textContent = `${totalPrice} грн`;
-        }*/
-
-        function submitSeats(sessionId, userId) {
+             window.submitSeats = function(sessionId, userId) {
             if (selectedSeats.length === 0) {
                 alert("Виберіть хоча б одне місце");
                 return;
             }
 
-            fetch("/Tickets/CreateTicketsByElements", {
+            fetch(`/api/tickets/create-multiple`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(
-                    { seats: selectedSeats }
-                )
+                body: ({
+                    sessionId: sessionId,
+                    userId: userId,
+                    seats: selectedSeats.map(seat => [seat.row, seat.col])
+                })
             })
-            .then(response => response.json())
-            .then(data => alert("Успішно заброньовано: " + data.message))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Помилка при бронюванні місць.");
+                }
+                return response.json();
+            })
+            .then(data => alert("Успішно заброньовано: " + data))
             .catch(error => console.error("Помилка:", error));
-        }
+        };
+
+            window.toggleSeat = toggleSeat;  // Робимо функцію глобально доступною
+        });
     </script>
+
+
 </body>
 </html>

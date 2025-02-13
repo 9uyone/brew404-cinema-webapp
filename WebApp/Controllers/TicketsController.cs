@@ -19,7 +19,7 @@ namespace WebApp.Controllers
 			_ticketService = ticketService;
 			_seatService = seatService;
 		}
-
+		[HttpPost("create")]
 		[HttpPost]
 		public async Task<IActionResult> CreateTicket([FromBodyOrDefault] TicketDTO ticketDTO, string jsonSeats)
 		{
@@ -37,8 +37,8 @@ namespace WebApp.Controllers
 			return Ok("Квиток успішно створений");
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> CreateTicketsByElements([FromBodyOrDefault] int sessionId, string userId, List<Tuple<int, int>> seats)
+		[HttpPost("create-multiple")]
+		public async Task<IActionResult> CreateTicketsByElements(int sessionId, string userId, [FromBodyOrDefault] List<Tuple<int, int>> seats)
 		{
 			if (!ModelState.IsValid)
 			{
