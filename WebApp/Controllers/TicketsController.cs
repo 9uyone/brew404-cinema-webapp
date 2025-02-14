@@ -72,7 +72,7 @@ namespace WebApp.Controllers
 			//});
 
 			if (await _ticketService.AddTicketsAsync(ticketDTOs))
-				return Ok("{\"Квитки успішно створені\"}");
+				return Ok();
 			else return Conflict("{\"Помилка створення квитків\"}");
 		}
 	}

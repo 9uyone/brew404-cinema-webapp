@@ -101,11 +101,8 @@
 
             <!--<form method="post" asp-controller="Tickets" asp-action="CreateTicket">-->
             <!--</form>-->
-            @{
-                var userId = signInManager.IsSignedIn(User) ? (await userManager.GetUserAsync(User))?.Id : "";
-            }
 
-            <button class="buy-button" onclick="submitSeats(@Model.Session.Id, `@userId`);">Купити</button>
+            <button class="buy-button" onclick="submitSeats();">Купити</button>
         </div>
     }
     else
@@ -149,12 +146,14 @@
                 document.getElementById("totalPrice").textContent = `${totalPrice} грн`;
             }
 
-        window.submitSeats = function(sessionId, userId) {
+        window.submitSeats = function() {
             if (selectedSeats.length === 0) {
                 alert("Виберіть хоча б одне місце");
                 return;
             }
 
+            var sessionId = '@Model.Session.Id';
+            var userId = '@(userManager.GetUserAsync(User).Result?.Id)';
             fetch(`/api/tickets/CreateByElements?sessionId=${sessionId}&userId=${userId}`, {  
                            method: "POST",  
                            headers: { "Content-Type": "application/json" },  
