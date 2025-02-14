@@ -73,15 +73,11 @@ body {
 }
 
 .price-tag.blue {
-    color: #00a0e9;
+    background-color: #00a0e9;
 }
 
-.price-tag.green {
-    color: #4caf50;
-}
-
-.price-tag.gray {
-    color: #808080;
+.price-tag.grey {
+    background-color: #00283a;
 }
 
 .seating-area {
@@ -140,29 +136,9 @@ body {
     background-color: #ff6b01;
 }
 
-.seat-disabled {
+.seat-occupied {
     cursor: not-allowed;
-    opacity: 0.5;
-}
-
-.vip-container {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
-    width: max-content;
-    margin-top: 20px;
-}
-
-.seat-vip {
-    background-color: #4caf50;
-    width: 32px;
-    height: 24px;
-}
-
-.seat-selected-vip {
-    background-color: #ff6b01;
-    width: 32px;
-    height: 24px;
+    background-color: #00283a;
 }
 
 .booking-panel {

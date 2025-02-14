@@ -41,7 +41,7 @@
                     <span class="quality-3d">@Model.Session.Hall.Name</span>
                     <span class="quality-4k">4K</span>
                 </h1>
-                <p><strong>Genres:</strong> @string.Join(", ", Model.Session.Movie.Genres.Select(g => g.Name))</p> @*ПОНЯТТЯ НЕМАЮ ЧОГО НЕ ПРАЦЮЄ *@
+                <p><strong>Genres:</strong> @string.Join(", ", Model.Session.Movie.Genres?.Select(g => g.Name) ?? Enumerable.Empty<string>())</p>
                 <p><strong>Release Date:</strong> @Model.Session.Movie.ReleaseDate</p>
                 <p><strong>Runtime:</strong> @Model.Session.Movie.RunTime</p>
                 <p><strong>Overview:</strong> @Model.Session.Movie.Overview</p>
@@ -49,18 +49,17 @@
         </div>
 
         <div class="screening-info">
-            <span>П'ятниця, 07.02.2025</span>
+            <span>@Model.Session.StartTime.ToString("dd.MM.yyyy")</span>
             <span>
                 @Model.Session.StartTime.ToString("HH:mm")
             </span>
             <span>Львів, ТРЦ Форум</span>
-            <span>Зал №2</span>
+            <span>Зал @Model.Session.Hall.Name</span>
         </div>
 
         <div class="price-options">
-            <span class="price-tag blue">190 грн</span>
-            <span class="price-tag green">420 грн</span>
-            <span class="price-tag gray">Продані</span>
+            <span class="price-tag blue">@Model.Session.Price грн</span>
+            <span class="price-tag grey">Продані</span>
         </div>
 
         <div class="seating-area">
@@ -73,7 +72,7 @@
                         {
                             if (Model.OccupiedSeats.Contains(new Tuple<int, int>(i, j)))
                             {
-                                <div class="seat seat-disabled" id="seat-@i-@j"></div>
+                                <div class="seat seat-occupied" id="seat-@i-@j"></div>
                             }
                             else
                             {
@@ -83,38 +82,34 @@
                     }
                 </div>
             </div>
+
+            @if (signInManager.IsSignedIn(User)) {
+                <div class="booking-panel">
+                    <h3>Ваше бронювання</h3>
+                    <div id="bookingDetails">
+                        <div class="booking-details">
+                        </div>
+                    </div>
+                    <div class="total-price">
+                        <span>Всього до сплати:</span>
+                        <span id="totalPrice">0 грн</span>
+                    </div>
+
+                    <button class="buy-button" onclick="submitSeats();">Купити</button>
+                </div>
+            }
+            else {
+                <div class="header-4 text-center">Для бронювання квитків, будь ласка, увійдіть в систему</div>
+            }
         </div>
     </div>
 
-    @if (signInManager.IsSignedIn(User))
-    {
-        <div class="booking-panel">
-            <h3>Ваше бронювання</h3>
-            <div id="bookingDetails">
-                <div class="booking-details">
-                </div>
-            </div>
-            <div class="total-price">
-                <span>Всього до сплати:</span>
-                <span id="totalPrice">0 грн</span>
-            </div>
-
-            <!--<form method="post" asp-controller="Tickets" asp-action="CreateTicket">-->
-            <!--</form>-->
-
-            <button class="buy-button" onclick="submitSeats();">Купити</button>
-        </div>
-    }
-    else
-    {
-        <div class="header-4 text-center">Для бронювання квитків, будь ласка, увійдіть в систему</div>
-    }
     <!--<script src="~/js/SessionDetailsScript.js"></script>-->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const bookingDetails = document.getElementById("bookingDetails");
+			const price = @Model.Session.Price;
             let selectedSeats = [];
-            const price = 100;
 
             function toggleSeat(event, row, col) {
                 const seat = event.target;
@@ -138,7 +133,7 @@
                 selectedSeats.forEach((seat, index) => {
                     const detail = document.createElement("div");
                     detail.className = "booking-details";
-                    detail.innerHTML = `<span>Місце ${index + 1}: Ряд ${seat.row}, Місце ${seat.col}</span><span>${price} грн</span>`;
+                    detail.innerHTML = `<span>Місце ${index + 1}: ряд ${seat.row}, місце ${seat.col}</span><span>${price} грн</span>`;
                     bookingDetails.appendChild(detail);
                     totalPrice += price;
                 });

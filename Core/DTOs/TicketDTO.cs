@@ -1,6 +1,4 @@
-﻿using DataAccess.EntityModels;
-
-namespace BusinessLogic.DTOs
+﻿namespace BusinessLogic.DTOs
 {
 	public class TicketDTO
 	{

@@ -31,8 +31,8 @@ namespace DataAccess.Configurations
 				.HasForeignKey(s => s.HallId)
 				.OnDelete(DeleteBehavior.Cascade);
 
-			/*builder.Property(s => s.Price)
-				.IsRequired();*/
+			builder.Property(s => s.Price)
+				.IsRequired();
 		}
 	}
 }
