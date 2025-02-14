@@ -2,7 +2,6 @@
 using BusinessLogic.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Toycloud.AspNetCore.Mvc.ModelBinding;
 
 namespace WebApp.Controllers
 {
@@ -20,12 +19,9 @@ namespace WebApp.Controllers
 			_seatService = seatService;
 		}
 
-		//[HttpPost("create")]
 		[HttpPost]
-		public async Task<IActionResult> Create([FromBodyOrDefault] TicketDTO ticketDTO, string jsonSeats)
+		public async Task<IActionResult> Create(TicketDTO ticketDTO)
 		{
-			Console.WriteLine(jsonSeats);
-
 			if (!ModelState.IsValid)
 			{
 				return BadRequest(ModelState);
@@ -38,10 +34,8 @@ namespace WebApp.Controllers
 			return Ok("Квиток успішно створений");
 		}
 
-		//[HttpPost("create-multiple")]
 		[HttpPost]
-		[IgnoreAntiforgeryToken]
-		public async Task<IActionResult> CreateByElements(int sessionId, string userId, List<Tuple<int, int>> seats)
+		public async Task<IActionResult> CreateByElements(int sessionId, string userId, [FromBody]List<Tuple<int, int>> seats)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -49,7 +43,7 @@ namespace WebApp.Controllers
 			}
 			if (await _seatService.IsAnySeatOcuupied(sessionId, seats))
 			{
-				return Conflict("Деякі місця вже зайняті");
+				return Conflict("{\"Деякі місця вже зайняті\"}");
 			}
 
 			var ticketDTOs = new List<TicketDTO>();
@@ -60,7 +54,7 @@ namespace WebApp.Controllers
 				var seatId = seatObj?.Id; 
 				if (seatId == null)
 				{
-					return Conflict($"Не вдалося знайти місце: ряд {seat.Item1}, місце {seat.Item2}");
+					return Conflict("{\"Не вдалося знайти місце: ряд " + seat.Item1 + ", місце " + seat.Item2 + "\"}");
 				}
 				ticketDTOs.Add(new TicketDTO
 				{
@@ -78,8 +72,8 @@ namespace WebApp.Controllers
 			//});
 
 			if (await _ticketService.AddTicketsAsync(ticketDTOs))
-				return Ok("Квитки успішно створені");
-			else return Conflict("Помилка створення квитків");
+				return Ok("{\"Квитки успішно створені\"}");
+			else return Conflict("{\"Помилка створення квитків\"}");
 		}
 	}
 }

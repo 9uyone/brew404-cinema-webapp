@@ -105,8 +105,7 @@
                 var userId = signInManager.IsSignedIn(User) ? (await userManager.GetUserAsync(User))?.Id : "";
             }
 
-            <button class="buy-button" onclick="submitSeats(@Model.Session.Id, '@userId');">Купити</button>
-
+            <button class="buy-button" onclick="submitSeats(@Model.Session.Id, `@userId`);">Купити</button>
         </div>
     }
     else
@@ -151,24 +150,18 @@
             }
 
         window.submitSeats = function(sessionId, userId) {
-            console.log(selectedSeats);
-            console.log(selectedSeats.map(seat => [seat.row, seat.col]));
-            
             if (selectedSeats.length === 0) {
                 alert("Виберіть хоча б одне місце");
                 return;
             }
 
-            fetch(`/api/tickets/CreateByElements`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: ({
-                    "sessionId": sessionId,
-                    "userId": userId,
-                    //"seats": selectedSeats.map(seat => [seat.row, seat.col])
-                    "seats": selectedSeats
-                })
-            })
+            fetch(`/api/tickets/CreateByElements?sessionId=${sessionId}&userId=${userId}`, {  
+                           method: "POST",  
+                           headers: { "Content-Type": "application/json" },  
+                           body: JSON.stringify(  
+                               selectedSeats.map(t => ({"Item1": t.row, "Item2": t.col}))
+                           )
+                       })
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Помилка при бронюванні місць.");
