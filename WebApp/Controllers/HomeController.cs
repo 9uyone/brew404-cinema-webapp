@@ -76,14 +76,23 @@ namespace WebApp.Controllers
 			var sessions = await _sessionService.GetFilteredSessions(filter, onlyFutureSessions: true);
 			var movies = await _movieService.GetAllMoviesAsync();
 
+			var groupedSessions = sessions?
+				.GroupBy(s => s.Movie)?
+				.ToDictionary(
+					g => g.Key, // фільм
+					g => g.ToList() // список сеансів для фільму
+				);
+
+			// Створюємо FilterSessionsViewModel
 			var filterSessionViewModel = new FilterSessionsViewModel()
 			{
-				Movies = movies.ToList(),
-				Sessions = sessions.ToList()
+				Movies = movies.ToList(), // Просто передаємо фільми, без Distinct
+				GroupedSessions = groupedSessions
 			};
 
 			return View(filterSessionViewModel);
 		}
+
 
 		public async Task<IActionResult> SessionDetails(int id)
 		{
