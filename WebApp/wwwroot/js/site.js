@@ -1,10 +1,9 @@
-﻿function handleAjaxError(response) {
-	console.log(response);
-
+﻿function handleError(response) {
     const data = response.responseJSON;
-    if (data && data.errors !== undefined)
+
+    if (data && typeof data === 'object' && data.errors !== undefined)
         alert(Object.values(data.errors).flat().join('\n'));
-    else if (data)
+    else if (data && typeof data === 'object')
         alert(Object.values(data).flat().join('\n'));
     else if (response.responseText !== null)
         alert(response.responseText);
@@ -20,7 +19,7 @@ $(document).on('submit', 'form[data-ajax="true"]', function (e) {
         success: function (response, status, xhr) {
             window.location.reload();
         },
-        error: handleAjaxError
+        error: handleError
     });
 }); 
 

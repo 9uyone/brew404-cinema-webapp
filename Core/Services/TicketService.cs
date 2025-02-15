@@ -35,7 +35,6 @@ namespace BusinessLogic.Services
 		{
 			var ticket = _mapper.Map<Ticket>(ticketDTO);
 
-			// Перевірка, чи зайнято
 			var existingTickets = await _ticketRepository.Get(
 				t => t.SeatId == ticketDTO.SeatId && t.SessionId == ticketDTO.SessionId);
 
@@ -56,32 +55,16 @@ namespace BusinessLogic.Services
 				if (!ticketDTOs.Any()) return false;
 
 				var tickets = _mapper.Map<List<Ticket>>(ticketDTOs);
-
-				// Перевіряємо чи всі необхідні поля заповнені
-				if (tickets.Any(t => t.SessionId == 0 || t.SeatId == 0 || string.IsNullOrEmpty(t.UserId)))
-				{
-					return false;
-				}
-
-				// Перевіряємо чи є вже квитки для цих місць
-				/*var sessionId = tickets.First().SessionId;
+				var sessionId = tickets.First().SessionId;
 				var seatIds = tickets.Select(t => t.SeatId).ToList();
 
 				var existingTickets = await _ticketRepository.Get(
-					filter: t => t.SessionId == sessionId && seatIds.Contains(t.SeatId),
+					filter: t => t.SessionId == sessionId,
 					tracking: true
 				);
 
-				if (existingTickets.Any())
-				{
+				if (existingTickets.Any(t => seatIds.Contains(t.SeatId))) {
 					return false;
-				}*/
-
-				// Встановлюємо час покупки
-				var currentTime = DateTime.Now;
-				foreach (var ticket in tickets)
-				{
-					ticket.PurchaseTime = currentTime;
 				}
 
 				await _ticketRepository.AddRange(tickets);
@@ -89,8 +72,6 @@ namespace BusinessLogic.Services
 			}
 			catch (Exception ex)
 			{
-				// Логуємо помилку
-				Console.WriteLine($"Помилка при додаванні квитків: {ex.Message}");
 				return false;
 			}
 		}

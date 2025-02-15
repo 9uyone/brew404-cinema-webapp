@@ -1,7 +1,10 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using WebApp.DTOs;
 
 namespace WebApp.Controllers
 {
@@ -12,68 +15,78 @@ namespace WebApp.Controllers
 	{
 		private readonly TicketService _ticketService;
 		private readonly SeatService _seatService;
+		private readonly IValidator<TicketDTO> _ticketDTOvalidator;
 
-		public TicketsController(TicketService ticketService, SeatService seatService)
+		public TicketsController(TicketService ticketService, 
+			SeatService seatService, 
+			IValidator<TicketDTO> ticketDTOvalidator)
 		{
 			_ticketService = ticketService;
 			_seatService = seatService;
+			_ticketDTOvalidator = ticketDTOvalidator;
 		}
 
-		[HttpPost]
+		/*[HttpPost]
 		public async Task<IActionResult> Create(TicketDTO ticketDTO)
 		{
 			if (!ModelState.IsValid)
-			{
 				return BadRequest(ModelState);
-			}
 
 			var result = await _ticketService.AddTicketAsync(ticketDTO);
 			if (!result)
 				return Conflict("Помилка створення квитка");
 
-			return Ok("Квиток успішно створений");
-		}
+			return Ok();
+		}*/
 
 		[HttpPost]
-		public async Task<IActionResult> CreateByElements(int sessionId, string userId, [FromBody]List<Tuple<int, int>> seats)
+		public async Task<IActionResult> Create(TicketsCreationDTO model)
 		{
 			if (!ModelState.IsValid)
 			{
 				return BadRequest(ModelState);
 			}
-			if (await _seatService.IsAnySeatOcuupied(sessionId, seats))
-			{
-				return Conflict("{\"Деякі місця вже зайняті\"}");
-			}
 
 			var ticketDTOs = new List<TicketDTO>();
 
-			foreach (var seat in seats)
+			foreach (var seat in model.Seats)
 			{
-				var seatObj =  await _seatService.GetSeatIdFromSessionIdByRowAndCol(sessionId, seat.Item1, seat.Item2);
-				var seatId = seatObj?.Id; 
-				if (seatId == null)
+				int? seatId = null;
+				try
 				{
-					return Conflict("{\"Не вдалося знайти місце: ряд " + seat.Item1 + ", місце " + seat.Item2 + "\"}");
+					seatId = (await _seatService.GetSeatIdFromSessionIdByRowAndCol(model.SessionId, seat.Item1, seat.Item2))?.Id;
 				}
-				ticketDTOs.Add(new TicketDTO
-				{
-					UserId = userId,
-					SessionId = sessionId,
-					SeatId = seatId.Value
-				});
-			}
+				catch {
+					ModelState.AddModelError("Seats", $"Місце в ряду {seat.Item1} номер {seat.Item2} не знайдено в залі для сеансу {model.SessionId}.");
+					return BadRequest(ModelState);
+				}
 
-			//var ticketDTOs = seats.Select(s => new TicketDTO
-			//{
-			//	UserId = userId,
-			//	SessionId = sessionId,
-			//	SeatId = _seatService.GetSeatIdFromSessionIdByRowAndCol(sessionId, s.Item1, s.Item2).Id
-			//});
+				var ticketDTO = new TicketDTO
+				{
+					UserId = model.UserId,
+					SessionId = model.SessionId,
+					SeatId = seatId,
+				};
+
+				var validationResult = _ticketDTOvalidator.Validate(ticketDTO);
+				if (!validationResult.IsValid) {
+					var modelErrors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+					foreach (var error in modelErrors) {
+						ModelState.AddModelError("Tickets", error);
+					}
+					return BadRequest(ModelState);
+				}
+
+				ticketDTOs.Add(ticketDTO);
+			}
 
 			if (await _ticketService.AddTicketsAsync(ticketDTOs))
 				return Ok();
-			else return Conflict("{\"Помилка створення квитків\"}");
+			else
+			{
+				ModelState.AddModelError("Tickets", "Помилка створення квитків");
+				return Conflict(ModelState);
+			}
 		}
 	}
 }

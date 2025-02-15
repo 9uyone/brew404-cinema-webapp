@@ -63,7 +63,7 @@ namespace BusinessLogic.Services
 
 		}
 
-		public async Task<IEnumerable<MovieDTO>?> GetMoviesByGenres(List<GenreDTO>? genres)
+		public async Task<IEnumerable<MovieDTO>?> GetMoviesByGenres(IEnumerable<GenreDTO>? genres)
 		{
 			if (genres == null) return null;
 

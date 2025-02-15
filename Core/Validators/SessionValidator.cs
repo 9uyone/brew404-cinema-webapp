@@ -1,11 +1,11 @@
-﻿using BusinessLogic.DTOs;
+﻿using DataAccess.EntityModels;
 using FluentValidation;
 
 namespace BusinessLogic.Validations
 {
-	public class SessionDTOValidator : AbstractValidator<SessionDTO>
+	public class SessionValidator : AbstractValidator<Session>
 	{
-		public SessionDTOValidator()
+		public SessionValidator()
 		{
 			RuleFor(dest => dest.StartTime).NotEmpty()
 				.WithMessage("Початковий час не може бути порожнім")

@@ -104,7 +104,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const bookingDetails = document.getElementById("bookingDetails");
-			const price = @Model.Session.Price;
+            const price = @Model.Session.Price;
             let selectedSeats = [];
 
             function toggleSeat(event, row, col) {
@@ -137,27 +137,31 @@
                 document.getElementById("totalPrice").textContent = `${totalPrice} грн`;
             }
 
-        window.submitSeats = function() {
-            if (selectedSeats.length === 0) {
-                alert("Виберіть хоча б одне місце");
-                return;
-            }
+            window.submitSeats = function() {
+                if (selectedSeats.length === 0) {
+                    alert("Виберіть хоча б одне місце");
+                    return;
+                }
 
-            var sessionId = '@Model.Session.Id';
-            var userId = '@(userManager.GetUserAsync(User).Result?.Id)';
-            fetch(`/api/tickets/CreateByElements?sessionId=${sessionId}&userId=${userId}`, {  
-                method: "POST",  
-                headers: { "Content-Type": "application/json" },  
-                body: JSON.stringify(  
-                    selectedSeats.map(t => ({"Item1": t.row, "Item2": t.col}))  
-                )
-            })
-            .then(response => {  
-                if (!response.ok)
-                    alert("Помилка бронювання квитків")
-                else alert("Успішно заброньовано");
-                location.reload();
-            })};
+                var sessionId = '@Model.Session.Id';
+                var userId = '@(userManager.GetUserAsync(User).Result?.Id)';
+                fetch(`/api/tickets/Create`, {  
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },  
+                    body: JSON.stringify({
+                        UserId: userId,
+                        SessionId: sessionId,
+                        Seats: selectedSeats.map(t => ({"Item1": t.row, "Item2": t.col}))
+                    })
+                })
+                .then(response => {
+                    if (response.ok)
+                        alert("Успішно заброньовано");
+                    else
+                        alert("Сталася помилка. Можливо, місце вже зайняте");
+                    location.reload();
+				})
+            };
 
             window.toggleSeat = toggleSeat;  // Робимо функцію глобально доступною
         });

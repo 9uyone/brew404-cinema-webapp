@@ -25,14 +25,14 @@ namespace BusinessLogic.Services
 
 		public async Task<SeatDTO> GetSeatIdFromSessionIdByRowAndCol(int sessionId, int row, int col)
 		{
-			//var session = await _sessionRepository.GetByID(sessionId);
-			//if (session == null)
-			//{
-			//	throw new ArgumentException($"Сеанс з ID {sessionId} не знайдено.");
-			//}
+			var session = await _sessionRepository.GetByID(sessionId);
+			if (session == null)
+			{
+				throw new ArgumentException($"Сеанс з ID {sessionId} не знайдено.");
+			}
 
 			var seats = await _seatRepository.Get(
-				filter: s => s.Row == row && s.Number == col);
+				filter: s => s.Row == row && s.Number == col && s.HallId == session.HallId);
 
 			var seat = seats.FirstOrDefault();
 			if (seat == null)
@@ -53,7 +53,7 @@ namespace BusinessLogic.Services
 			return tickets.Select(t => new Tuple<int, int>(t.Seat.Row, t.Seat.Number));
 		}
 
-		public async Task<bool> IsAnySeatOcuupied(int sessionId, List<Tuple<int, int>> seats)
+		public async Task<bool> IsAnySeatOcuupied(int sessionId, IEnumerable<Tuple<int, int>> seats)
 		{
 			try
 			{
