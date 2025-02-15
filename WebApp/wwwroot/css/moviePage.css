@@ -159,7 +159,7 @@ body {
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Кнопка застосування фільтрів */
+/* Кнопка застосування фільтрів
 .btn-primary {
   background-color: #6366f1;
   border: none;
@@ -172,7 +172,7 @@ body {
 .btn-primary:hover {
   opacity: 0.9;
   transform: translateY(-1px);
-}
+} */
 
 /* Карточки фільмів */
 .movie-card {

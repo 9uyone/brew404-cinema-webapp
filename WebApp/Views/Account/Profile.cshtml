@@ -1,4 +1,180 @@
-﻿@model WebApp.ViewModels.ProfileViewModel
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Персональний кабінет</title>
+ <link rel="stylesheet" href="@Url.Content("~/css/profile.css")">
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="profile-section">
+        <div class="avatar" id="avatarContainer">
+          <img src="https://marketplace.canva.com/EAFqhoRVTgA/1/0/1600w/canva-grey-and-blue-cute-cartoon-anime-manga-illustrated-boy-profile-photo-avatar-u9aFvuQMzUk.jpg" alt="avatar icon" id="currentAvatar">
+        </div>
+        <h2>@User.Identity.Name</h2>
+      </div>
+      <button class="nav-btn active" data-section="personal-data">Персональні дані</button>
+      <button class="nav-btn" data-section="tickets">Активні квитки</button>
+      <button class="nav-btn" data-section="history">Історія покупок</button>
+      <form action="@Url.Action("Logout", "Account")" method="post">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="logout">Вихід</button>
+      </form>
+    </aside>
+    
+    <main class="content">
+      <section class="personal-data-section active">
+        <div class="content-header">
+          <h1>Персональні дані</h1>
+          <button class="edit-btn">Редагувати</button>
+        </div>
+        <div class="content-body">
+          <div class="data-grid">
+            <div class="data-item">
+              <div class="data-label">Ім'я</div>
+              <div class="data-value">@User.Identity.Name</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Пошта</div>
+                <div class="data-value">@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Дата народження</div>
+              <div class="data-value">4 квітня 2005</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Номер телефону</div>
+              <div class="data-value">+380 (93) 748 89 50</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-<p>@Model.Name</p>
-<p>@Model.Tickets.Count()</p>
+      <section class="tickets-section">
+        <div class="content-header">
+          <h1>Активні квитки</h1>
+        </div>
+        <div class="content-body">
+          <div class="ticket">
+            <div class="ticket-info">
+              <div class="label">Фільм</div>
+              <div class="value">Назва фільму</div>
+              <div class="label">Дата та час</div>
+              <div class="value">12 лютого, 19:30</div>
+            </div>
+            <div class="ticket-info">
+              <div class="label">Зал</div>
+              <div class="value">Зал 3</div>
+              <div class="label">Місце</div>
+              <div class="value">Ряд 7, Місце 12</div>
+            </div>
+            <div class="ticket-info">
+              <div class="label">Ціна</div>
+              <div class="value">120 грн</div>
+              <div class="label">Статус</div>
+              <div class="value">Оплачено</div>
+            </div>
+          </div>
+        </div>
+        <div class="content-body">
+          <div class="ticket">
+            <div class="ticket-info">
+              <div class="label">Фільм</div>
+              <div class="value">Назва фільму</div>
+              <div class="label">Дата та час</div>
+              <div class="value">12 лютого, 19:30</div>
+            </div>
+            <div class="ticket-info">
+              <div class="label">Зал</div>
+              <div class="value">Зал 3</div>
+              <div class="label">Місце</div>
+              <div class="value">Ряд 7, Місце 12</div>
+            </div>
+            <div class="ticket-info">
+              <div class="label">Ціна</div>
+              <div class="value">120 грн</div>
+              <div class="label">Статус</div>
+              <div class="value">Оплачено</div>
+            </div>
+          </div>
+        </div>
+        <div class="content-body">
+          <div class="ticket">
+            <div class="ticket-info">
+              <div class="label">Фільм</div>
+              <div class="value">Назва фільму</div>
+              <div class="label">Дата та час</div>
+              <div class="value">12 лютого, 19:30</div>
+            </div>
+            <div class="ticket-info">
+              <div class="label">Зал</div>
+              <div class="value">Зал 3</div>
+              <div class="label">Місце</div>
+              <div class="value">Ряд 7, Місце 12</div>
+            </div>
+            <div class="ticket-info">
+              <div class="label">Ціна</div>
+              <div class="value">120 грн</div>
+              <div class="label">Статус</div>
+              <div class="value">Оплачено</div>
+            </div>
+          </div>
+        </div>
+        <div class="content-body">
+          <div class="ticket">
+            <div class="ticket-info">
+              <div class="label">Фільм</div>
+              <div class="value">Назва фільму</div>
+              <div class="label">Дата та час</div>
+              <div class="value">12 лютого, 19:30</div>
+            </div>
+            <div class="ticket-info">
+              <div class="label">Зал</div>
+              <div class="value">Зал 3</div>
+              <div class="label">Місце</div>
+              <div class="value">Ряд 7, Місце 12</div>
+            </div>
+            <div class="ticket-info">
+              <div class="label">Ціна</div>
+              <div class="value">120 грн</div>
+              <div class="label">Статус</div>
+              <div class="value">Оплачено</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="history-section">
+        <div class="content-header">
+          <h1>Історія покупок</h1>
+        </div>
+        <div class="content-body">
+          <div class="ticket">
+            <div class="ticket-info">
+              <div class="label">Фільм</div>
+              <div class="value">Назва фільму</div>
+              <div class="label">Дата та час</div>
+              <div class="value">12 лютого, 19:30</div>
+            </div>
+            <div class="ticket-info">
+              <div class="label">Зал</div>
+              <div class="value">Зал 3</div>
+              <div class="label">Місце</div>
+              <div class="value">Ряд 7, Місце 12</div>
+            </div>
+            <div class="ticket-info">
+              <div class="label">Ціна</div>
+              <div class="value">120 грн</div>
+              <div class="label">Статус</div>
+              <div class="value">Оплачено</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
+<script src="~/js/profile.js" asp-append-version="true"></script>
