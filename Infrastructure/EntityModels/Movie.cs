@@ -17,8 +17,8 @@ namespace DataAccess.Models
 		public DateTime ReleaseDate { get; set; }
 		public float VoteAverage { get; set; }
 
-		public ICollection<Genre> Genres { get; set; } = new List<Genre>();
-		public ICollection<Actor> Actors { get; set; } = new List<Actor>();
-		public ICollection<Session> Sessions { get; set; } = new List<Session>();
+		public IEnumerable<Genre> Genres { get; set; } = new List<Genre>();
+		public IEnumerable<Actor> Actors { get; set; } = new List<Actor>();
+		public IEnumerable<Session> Sessions { get; set; } = new List<Session>();
 	}
 }

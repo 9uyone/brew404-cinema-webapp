@@ -1,0 +1,19 @@
+﻿using DataAccess.EntityModels;
+using FluentValidation;
+
+namespace BusinessLogic.Validations
+{
+	public class SessionValidator : AbstractValidator<Session>
+	{
+		public SessionValidator()
+		{
+			RuleFor(dest => dest.StartTime).NotEmpty()
+				.WithMessage("Початковий час не може бути порожнім")
+				.GreaterThan(DateTime.Now).WithMessage("Дата та час застарілі");
+
+			RuleFor(dest => dest.Price)
+				.NotEmpty().WithMessage("Ціна не може бути порожньою")
+				.GreaterThanOrEqualTo(0).WithMessage("Ціна не може бути від'ємною");
+		}
+	}
+}

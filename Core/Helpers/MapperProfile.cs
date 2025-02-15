@@ -12,13 +12,10 @@ namespace BusinessLogic.Helpers
 		{
 			CreateMap<Movie, MovieDTO>()
 				.ForMember(dest => dest.ReleaseDate, opt => opt.MapFrom(src => src.ReleaseDate.ToString("yyyy-MM-dd")));
-				//.ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres))
-				//.ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.Actors));
+				//.ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres.Select(g => new GenreDTO { Id = g.Id, Name = g.Name })));
 
 			CreateMap<MovieDTO, Movie>()
 				.ForMember(dest => dest.ReleaseDate, opt => opt.MapFrom(src => ParseReleaseDate(src.ReleaseDate)));
-				//.ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres))
-				//.ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.Actors));
 		
 			CreateMap<Genre, GenreDTO>().ReverseMap();
 			CreateMap<Actor, ActorDTO>().ReverseMap();
@@ -27,10 +24,11 @@ namespace BusinessLogic.Helpers
 			CreateMap<Session, SessionDTO>().ReverseMap();
 			CreateMap<Seat, SeatDTO>().ReverseMap();
 
-			/*CreateMap<SessionDTO, Session>()
-				.ForMember(dest => dest.Id, opt => opt.Ignore())
-				.ForMember(dest => dest.Movie, opt => opt.Ignore())
-				.ForMember(dest => dest.Hall, opt => opt.Ignore());*/
+			/*CreateMap<TicketDTO, Ticket>()
+				.ForMember(t => t.Seat, opt => opt.AddTransform(s => new Seat { Id = s.Id }))
+				.ForMember(t => t.Session, opt => opt.AddTransform(s => new Session { Id = s.Id } ));*/
+
+			CreateMap<Ticket, TicketDTO>().ReverseMap();
 
 			CreateMap<RegisterDTO, User>()
 				.ForMember(dest => dest.Role, opt => opt.MapFrom(src => "User"));

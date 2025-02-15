@@ -12,14 +12,18 @@ namespace WebApp.Controllers
 		MovieService _movieService;
 		SessionService _sessionService;
 		GenreService _genreService;
+		SeatService _seatService;
 
 		public HomeController(MovieService movieService
 			, SessionService sessionService
-			, GenreService genreService)
+			, GenreService genreService
+			, TicketService ticketService
+			, SeatService seatService)
 		{
 			_movieService = movieService;
 			_sessionService = sessionService;
 			_genreService = genreService;
+			_seatService = seatService;
 		}
 
 		public async Task<IActionResult> Index()
@@ -52,18 +56,6 @@ namespace WebApp.Controllers
 
 			return View(movieDetailsViewModel);
 		}
-		//public async Task<IActionResult> GetSessions(DateTime date, int movieId)
-		//{
-		//	var sessions = await _sessionService.GetSessionsByDateAndMovieIdAsync(date, movieId);
-
-		//	// If there are no sessions, return an empty array
-		//	if (sessions == null)
-		//	{
-		//		return Json(new List<SessionDTO>());
-		//	}
-
-		//	return Json(sessions);
-		//}
 
 		public async Task<IActionResult> FilteredMovies(MovieFilteredDTO filter)
 		{
@@ -96,7 +88,12 @@ namespace WebApp.Controllers
 		public async Task<IActionResult> SessionDetails(int id)
 		{
 			SessionDTO? session = await _sessionService.GetSessionByIdAsync(id);
-			return View(session);
+			var occupiedSeats = await _seatService.GetOccupiedSeatsAsync(id);
+
+			return View(new SessionDetailsViewModel { 
+				Session = session, 
+				OccupiedSeats = occupiedSeats
+			});
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

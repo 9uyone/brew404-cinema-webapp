@@ -1,5 +1,4 @@
-﻿
-namespace BusinessLogic.DTOs
+﻿namespace BusinessLogic.DTOs
 {
 	public class SessionFilterDTO
 	{

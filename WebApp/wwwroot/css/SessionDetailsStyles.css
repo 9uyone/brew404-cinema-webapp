@@ -1,0 +1,253 @@
+body {
+    background-color: #0f1115;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.movie-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.movie-info {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.movie-poster {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
+}
+
+.movie-details h1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.age-rating {
+    background-color: #ff8c00;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.quality-3d {
+    background-color: #fff;
+    color: #000;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.quality-4k {
+    background-color: #00a0e9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.screening-info {
+    display: flex;
+    gap: 20px;
+    background-color: #1a1d24;
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.price-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.price-tag {
+    background-color: #1a1d24;
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+
+.price-tag.blue {
+    background-color: #00a0e9;
+}
+
+.price-tag.grey {
+    background-color: #00283a;
+}
+
+.seating-area {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.seats-section {
+    flex-grow: 1;
+    max-width: 65%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.screen {
+    height: 40px;
+    width: 100%;
+    background-color: #333;
+    margin-bottom: 60px;
+    border-radius: 50% / 100% 100% 0 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.screen::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: -10%;
+    right: -10%;
+    height: 40px;
+    background-color: #0f1115;
+    border-radius: 50% / 0 0 100% 100%;
+}
+
+/*.seats-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+    width: max-content;
+}*/
+
+.seat {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #00a0e9;
+}
+
+.seat-selected {
+    background-color: #ff6b01;
+}
+
+.seat-occupied {
+    cursor: not-allowed;
+    background-color: #00283a;
+}
+
+.booking-panel {
+    background-color: #1a1d24;
+    border-radius: 8px;
+    padding: 25px;
+    width: 100%;
+    max-width: 350px;
+    align-self: flex-start;
+}
+
+.booking-panel h3 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.booking-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+}
+
+.total-price {
+    border-top: 1px solid #555;
+    margin-top: 15px;
+    padding-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.buy-button {
+    margin-top: 20px;
+    background-color: #ff6b01;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.buy-button:hover {
+    background-color: #ff7b21;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: black;
+    color: white;
+    padding: 5px 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.tooltip::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
+
+#bookingDetails {
+    width: 300px;
+    height: 185px;
+    overflow-y: scroll;
+    padding: 5px 10px;
+    background-color: #1a1d24;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 8px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+#bookingDetails::-webkit-scrollbar {
+    width: 6px;
+}
+
+#bookingDetails::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#bookingDetails::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 6px;
+}
+
+.booking-list {
+    padding-right: 10px;
+}
+
+html {
+    overflow-y: auto;
+}

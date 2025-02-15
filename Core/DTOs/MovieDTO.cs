@@ -24,10 +24,10 @@ namespace BusinessLogic.DTOs
 		[JsonPropertyName("release_date")]
 		public string? ReleaseDate { get; set; }
 
-		public List<ActorDTO>? Actors { get; set; }
+		public IEnumerable<ActorDTO>? Actors { get; set; }
 
 		[JsonPropertyName("genres")]
-		public List<GenreDTO>? Genres { get; set; }
+		public IEnumerable<GenreDTO>? Genres { get; set; }
 
 		[JsonPropertyName("vote_average")]
 		public float VoteAverage { get; set; }
