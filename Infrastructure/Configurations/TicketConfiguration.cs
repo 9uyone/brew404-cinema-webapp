@@ -13,6 +13,8 @@ namespace DataAccess.Configurations
 			builder.Property(t => t.Id)
 				.ValueGeneratedOnAdd();
 
+			builder.Property(t => t.PurchaseTime).IsRequired();
+
 			builder.HasOne(t => t.Seat)
 				.WithMany()
 				.HasForeignKey(t => t.SeatId)
@@ -24,7 +26,7 @@ namespace DataAccess.Configurations
 				.OnDelete(DeleteBehavior.Cascade);
 
 			builder.HasOne(t => t.User)
-				.WithMany()
+				.WithMany(u => u.Tickets)
 				.HasForeignKey(t => t.UserId)
 				.OnDelete(DeleteBehavior.Cascade);
 		}

@@ -7,9 +7,8 @@ using Microsoft.Extensions.Configuration;
 
 namespace DataAccess.Context
 {
-	public class CinemaDbContext : IdentityDbContext<User>
-	{
-		IConfiguration _configuration;
+	public class CinemaDbContext : IdentityDbContext<User> {
+		private readonly IConfiguration _configuration;
 
 		public DbSet<Movie> Movies { get; set; }
 		public DbSet<Genre> Genres { get; set; }
@@ -17,35 +16,33 @@ namespace DataAccess.Context
 		public DbSet<Session> Sessions { get; set; }
 		public DbSet<Hall> Halls { get; set; }
 		public DbSet<Seat> Seats { get; set; }
-		//public DbSet<Ticket> Tickets { get; set; }
-		
-		public CinemaDbContext(DbContextOptions options, IConfiguration configuration) : base(options) {
-			_configuration = configuration;
-		}
-		public CinemaDbContext(): base() {}
+		public DbSet<Ticket> Tickets { get; set; }
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
-		{
+		public CinemaDbContext(DbContextOptions options, IConfiguration configuration) : base(options) {
+			_configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+		}
+		public CinemaDbContext() : base() { }
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.ApplyConfiguration(new MovieConfiguration());
 			modelBuilder.ApplyConfiguration(new GenreConfiguration());
 			modelBuilder.ApplyConfiguration(new ActorConfiguration());
 			modelBuilder.ApplyConfiguration(new SessionConfiguration());
 			modelBuilder.ApplyConfiguration(new HallConfiguration());
 			modelBuilder.ApplyConfiguration(new SeatConfiguration());
-			//modelBuilder.ApplyConfiguration(new TicketConfiguration());
-			
+			modelBuilder.ApplyConfiguration(new TicketConfiguration());
+
 			modelBuilder.ApplyConfiguration(new UserConfiguration());
 
 			base.OnModelCreating(modelBuilder);
 		}
 
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-		{
-			if(!optionsBuilder.IsConfigured)
-			{
-				string connectionString = _configuration["ConnectionString"];
-				optionsBuilder.UseMySql(connectionString, new MySqlServerVersion(new Version(10, 3, 39)));
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+			if (!optionsBuilder.IsConfigured) {
+				string connectionString = _configuration["ConnectionString"].ToString();
+				optionsBuilder.UseMySql(connectionString, new MariaDbServerVersion(new Version(10, 3, 39)));
 			}
 		}
+
 	}
 }

@@ -19,7 +19,15 @@ namespace DataAccess.Configurations
 			builder.Property(h => h.Role)
 				.IsRequired();
 
-			builder.Property(h => h.PasswordHash).IsRequired();
+			builder.Property(h => h.PasswordHash)
+				.IsRequired();
+
+			builder.Property(h => h.BirthDate)
+				.IsRequired(false)
+				.HasColumnType("date");
+
+			builder.Property(h => h.PhoneNumber)
+				.IsRequired(false);
 		}
 	}
 }

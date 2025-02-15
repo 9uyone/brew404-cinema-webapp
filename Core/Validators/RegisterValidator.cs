@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace BusinessLogic.Validations
 {
-	public class RegisterDTOValidator : AbstractValidator<RegisterDTO>
+	public class RegisterValidator : AbstractValidator<RegisterDTO>
 	{
-		public RegisterDTOValidator()
+		public RegisterValidator()
 		{
 			RuleFor(x => x.Password)
 				.Equal(x => x.ConfirmPassword).WithMessage("Паролі не співпадають")

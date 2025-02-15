@@ -10,5 +10,7 @@ namespace WebApp.ViewModels
 
 		public IEnumerable<MovieDTO>? Movies { get; set; }
 		public IEnumerable<HallDTO>? Halls { get; set; }
+
+		public int Price { get; set; }
 	}
 }

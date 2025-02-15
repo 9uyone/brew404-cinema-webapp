@@ -53,7 +53,8 @@ namespace WebApp.Controllers.Admin
 			{
 				MovieId = model.MovieId,
 				HallId = model.HallId,
-				StartTime = model.StartTime
+				StartTime = model.StartTime,
+				Price = model.Price
 			};
 
 			if (TryValidateModel(sessionDTO) == false)

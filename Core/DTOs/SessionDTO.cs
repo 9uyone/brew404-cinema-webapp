@@ -14,5 +14,6 @@ namespace BusinessLogic.DTOs
 		public int HallId { get; set; }
 		public HallDTO? Hall { get; set; }
 
+		public int Price { get; set; }
 	}
 }

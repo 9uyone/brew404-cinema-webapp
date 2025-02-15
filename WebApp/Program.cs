@@ -15,12 +15,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<CinemaDbContext>(options =>
 	options.UseMySql(
 		builder.Configuration["ConnectionString"],
-		new MySqlServerVersion(new Version(10, 3, 39))
+		new MariaDbServerVersion(new Version(10, 3, 39))
 	));
 
 // Add services
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<MovieService>();
+builder.Services.AddSingleton<TMDbApiService>();
 builder.Services.AddScoped<HallService>();
 builder.Services.AddScoped<GenreService>();
 builder.Services.AddScoped<SessionService>();
@@ -28,7 +29,8 @@ builder.Services.AddScoped<ActorService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<AccountService>();
-builder.Services.AddSingleton<TMDbApiService>();
+builder.Services.AddScoped<SeatService>();
+builder.Services.AddScoped<TicketService>();
 
 builder.Services.AddIdentity<User, IdentityRole>()
 	.AddEntityFrameworkStores<CinemaDbContext>()

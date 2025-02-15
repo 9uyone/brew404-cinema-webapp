@@ -1,5 +1,170 @@
-﻿@model BusinessLogic.DTOs.SessionDTO
+﻿@using System.Globalization
+@using BusinessLogic.DTOs
+@using BusinessLogic.Services
+@using DataAccess.EntityModels
+@using Microsoft.AspNetCore.Identity
+@using WebApp.ViewModels
+@using WebApp.Controllers
+@using System.Collections.Generic;
+@inject SignInManager<User> signInManager
+@inject UserManager<User> userManager
+@model SessionDetailsViewModel
 
-<p>@Model.Movie.Title</p>
-<p>@Model.Hall.Name</p>
-<p>@Model.Hall.Seats.Count()</p>
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.Session.Movie.Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/SessionDetailsStyles.css">
+    <style>
+        .seats-container {
+            display: grid;
+            grid-template-columns: repeat( @Model.Session.Hall.SeatsPerRow, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+            width: max-content;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="movie-container">
+        <div class="movie-info">
+            <img src="@Model.Session.Movie.ImageUrl" alt="@Model.Session.Movie.Title" class="movie-poster">
+            <div class="movie-details">
+                <h1>
+                    @Model.Session.Movie.Title
+                    <span class="age-rating">@Model.Session.Movie.VoteAverage ⭐</span>
+                    <span class="quality-3d">@Model.Session.Hall.Name</span>
+                    <span class="quality-4k">4K</span>
+                </h1>
+                <p><strong>Genres:</strong> @string.Join(", ", Model.Session.Movie.Genres?.Select(g => g.Name) ?? Enumerable.Empty<string>())</p>
+                <p><strong>Release Date:</strong> @Model.Session.Movie.ReleaseDate</p>
+                <p><strong>Runtime:</strong> @Model.Session.Movie.RunTime</p>
+                <p><strong>Overview:</strong> @Model.Session.Movie.Overview</p>
+            </div>
+        </div>
+
+        <div class="screening-info">
+            <span>@Model.Session.StartTime.ToString("dd.MM.yyyy")</span>
+            <span>@Model.Session.StartTime.ToString("HH:mm")</span>
+            <span>Зал @Model.Session.Hall.Name</span>
+        </div>
+
+        <div class="price-options">
+            <span class="price-tag blue">@Model.Session.Price грн</span>
+            <span class="price-tag grey">Продані</span>
+        </div>
+
+        <div class="seating-area">
+            <div class="seats-section">
+                <div class="screen"></div>
+                <div class="seats-container" id="seatsContainer">
+                    @for (int i = 1; i <= Model.Session.Hall.NumbOfRows; ++i)
+                    {
+                        for (int j = 1; j <= Model.Session.Hall.SeatsPerRow; ++j)
+                        {
+                            if (Model.OccupiedSeats.Contains(new Tuple<int, int>(i, j)))
+                            {
+                                <div class="seat seat-occupied" id="seat-@i-@j"></div>
+                            }
+                            else
+                            {
+                                <div class="seat" id="seat-@i-@j" onclick=" toggleSeat(event, @i, @j);"></div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+
+            @if (signInManager.IsSignedIn(User)) {
+                <div class="booking-panel">
+                    <h3>Ваше бронювання</h3>
+                    <div id="bookingDetails">
+                        <div class="booking-details">
+                        </div>
+                    </div>
+                    <div class="total-price">
+                        <span>Всього до сплати:</span>
+                        <span id="totalPrice">0 грн</span>
+                    </div>
+
+                    <button class="buy-button" onclick="submitSeats();">Купити</button>
+                </div>
+            }
+            else {
+                <div class="header-4 text-center">Для бронювання квитків, будь ласка, увійдіть в систему</div>
+            }
+        </div>
+    </div>
+
+    <!--<script src="~/js/SessionDetailsScript.js"></script>-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const bookingDetails = document.getElementById("bookingDetails");
+            const price = @Model.Session.Price;
+            let selectedSeats = [];
+
+            function toggleSeat(event, row, col) {
+                const seat = event.target;
+                const index = selectedSeats.findIndex(seat => seat.row === row && seat.col === col);
+
+                if (index === -1) {
+                    selectedSeats.push({ row, col });
+                    seat.classList.add("seat-selected");
+                } else {
+                    selectedSeats.splice(index, 1);
+                    seat.classList.remove("seat-selected");
+                }
+
+                updateBooking();
+            }
+
+            function updateBooking() {
+                bookingDetails.innerHTML = "";  // Очищуємо блок із деталями
+                let totalPrice = 0;
+
+                selectedSeats.forEach((seat, index) => {
+                    const detail = document.createElement("div");
+                    detail.className = "booking-details";
+                    detail.innerHTML = `<span>Місце ${index + 1}: ряд ${seat.row}, місце ${seat.col}</span><span>${price} грн</span>`;
+                    bookingDetails.appendChild(detail);
+                    totalPrice += price;
+                });
+
+                document.getElementById("totalPrice").textContent = `${totalPrice} грн`;
+            }
+
+            window.submitSeats = function() {
+                if (selectedSeats.length === 0) {
+                    alert("Виберіть хоча б одне місце");
+                    return;
+                }
+
+                var sessionId = '@Model.Session.Id';
+                var userId = '@(userManager.GetUserAsync(User).Result?.Id)';
+                fetch(`/api/tickets/Create`, {  
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },  
+                    body: JSON.stringify({
+                        UserId: userId,
+                        SessionId: sessionId,
+                        Seats: selectedSeats.map(t => ({"Item1": t.row, "Item2": t.col}))
+                    })
+                })
+                .then(response => {
+                    if (response.ok)
+                        alert("Успішно заброньовано");
+                    else
+                        alert("Сталася помилка. Можливо, місце вже зайняте");
+                    location.reload();
+				})
+            };
+
+            window.toggleSeat = toggleSeat;  // Робимо функцію глобально доступною
+        });
+    </script>
+</body>
+</html>
