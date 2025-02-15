@@ -81,7 +81,8 @@ namespace WebApp.Controllers
 			ProfileViewModel model = new ProfileViewModel()
 			{
 				Name = User.Identity.Name,
-				Tickets = userTickets.ToList()
+				PastTickets = userTickets.Item1.ToList(),
+				CurrentTickets = userTickets.Item2.ToList()
 			};
 
 			return View(model);

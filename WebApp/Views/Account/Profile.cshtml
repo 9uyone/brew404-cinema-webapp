@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@model WebApp.ViewModels.ProfileViewModel
+
+<!DOCTYPE html>
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
@@ -57,92 +59,32 @@
           <h1>Активні квитки</h1>
         </div>
         <div class="content-body">
-          <div class="ticket">
-            <div class="ticket-info">
-              <div class="label">Фільм</div>
-              <div class="value">Назва фільму</div>
-              <div class="label">Дата та час</div>
-              <div class="value">12 лютого, 19:30</div>
-            </div>
-            <div class="ticket-info">
-              <div class="label">Зал</div>
-              <div class="value">Зал 3</div>
-              <div class="label">Місце</div>
-              <div class="value">Ряд 7, Місце 12</div>
-            </div>
-            <div class="ticket-info">
-              <div class="label">Ціна</div>
-              <div class="value">120 грн</div>
-              <div class="label">Статус</div>
-              <div class="value">Оплачено</div>
-            </div>
-          </div>
-        </div>
-        <div class="content-body">
-          <div class="ticket">
-            <div class="ticket-info">
-              <div class="label">Фільм</div>
-              <div class="value">Назва фільму</div>
-              <div class="label">Дата та час</div>
-              <div class="value">12 лютого, 19:30</div>
-            </div>
-            <div class="ticket-info">
-              <div class="label">Зал</div>
-              <div class="value">Зал 3</div>
-              <div class="label">Місце</div>
-              <div class="value">Ряд 7, Місце 12</div>
-            </div>
-            <div class="ticket-info">
-              <div class="label">Ціна</div>
-              <div class="value">120 грн</div>
-              <div class="label">Статус</div>
-              <div class="value">Оплачено</div>
-            </div>
-          </div>
-        </div>
-        <div class="content-body">
-          <div class="ticket">
-            <div class="ticket-info">
-              <div class="label">Фільм</div>
-              <div class="value">Назва фільму</div>
-              <div class="label">Дата та час</div>
-              <div class="value">12 лютого, 19:30</div>
-            </div>
-            <div class="ticket-info">
-              <div class="label">Зал</div>
-              <div class="value">Зал 3</div>
-              <div class="label">Місце</div>
-              <div class="value">Ряд 7, Місце 12</div>
-            </div>
-            <div class="ticket-info">
-              <div class="label">Ціна</div>
-              <div class="value">120 грн</div>
-              <div class="label">Статус</div>
-              <div class="value">Оплачено</div>
-            </div>
-          </div>
-        </div>
-        <div class="content-body">
-          <div class="ticket">
-            <div class="ticket-info">
-              <div class="label">Фільм</div>
-              <div class="value">Назва фільму</div>
-              <div class="label">Дата та час</div>
-              <div class="value">12 лютого, 19:30</div>
-            </div>
-            <div class="ticket-info">
-              <div class="label">Зал</div>
-              <div class="value">Зал 3</div>
-              <div class="label">Місце</div>
-              <div class="value">Ряд 7, Місце 12</div>
-            </div>
-            <div class="ticket-info">
-              <div class="label">Ціна</div>
-              <div class="value">120 грн</div>
-              <div class="label">Статус</div>
-              <div class="value">Оплачено</div>
-            </div>
-          </div>
+            @foreach (var ticket in Model.CurrentTickets)
+            {
+                <div class="ticket">
+                    <div class="ticket-info">
+                        <div class="label">Фільм</div>
+                        <div class="value">@ticket.Session.Movie.Title</div>
+                        <div class="label">Дата та час</div>
+                        <div class="value">
+                            @ticket.Session.StartTime.ToString("d MMMM", new System.Globalization.CultureInfo("uk-UA")),
+                            @ticket.Session.StartTime.ToString("HH:mm")
+                        </div>
+                    </div>
+                    <div class="ticket-info">
+                        <div class="label">Зал</div>
+                        <div class="value">@ticket.Session.Hall.Name</div>
+                        <div class="label">Місце</div>
+                        <div class="value">Ряд @ticket.Seat.Row, Місце @ticket.Seat.Number</div>
+                    </div>
+                    <div class="ticket-info">
+                        <div class="label">Ціна</div>
+                        <div class="value">120 грн</div>
+                        <div class="label">Статус</div>
+                        <div class="value">Оплачено</div>
+                    </div>
+                </div>
+            }
         </div>
       </section>
 
@@ -151,26 +93,30 @@
           <h1>Історія покупок</h1>
         </div>
         <div class="content-body">
-          <div class="ticket">
-            <div class="ticket-info">
-              <div class="label">Фільм</div>
-              <div class="value">Назва фільму</div>
-              <div class="label">Дата та час</div>
-              <div class="value">12 лютого, 19:30</div>
-            </div>
-            <div class="ticket-info">
-              <div class="label">Зал</div>
-              <div class="value">Зал 3</div>
-              <div class="label">Місце</div>
-              <div class="value">Ряд 7, Місце 12</div>
-            </div>
-            <div class="ticket-info">
-              <div class="label">Ціна</div>
-              <div class="value">120 грн</div>
-              <div class="label">Статус</div>
-              <div class="value">Оплачено</div>
-            </div>
-          </div>
+            @foreach(var ticket in Model.PastTickets)
+            {
+              <div class="ticket">
+                <div class="ticket-info">
+                  <div class="label">Фільм</div>
+                  <div class="value">@ticket.Session.Movie.Title</div>
+                  <div class="label">Дата та час</div>
+                  <div class="value">@ticket.Session.StartTime.ToString("d MMMM", new System.Globalization.CultureInfo("uk-UA")),
+                  @ticket.Session.StartTime.ToString("HH:mm")</div>
+                </div>
+                <div class="ticket-info">
+                  <div class="label">Зал</div>
+                  <div class="value">@ticket.Session.Hall.Name</div>
+                  <div class="label">Місце</div>
+                                <div class="value">Ряд @ticket.Seat.Row, Місце @ticket.Seat.Number</div>
+                </div>
+                <div class="ticket-info">
+                  <div class="label">Ціна</div>
+                  <div class="value">120 грн</div>
+                  <div class="label">Статус</div>
+                  <div class="value">Оплачено</div>
+                </div>
+              </div>
+            }
         </div>
       </section>
     </main>
