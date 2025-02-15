@@ -1,4 +1,17 @@
-﻿$(document).on('submit', 'form[data-ajax="true"]', function (e) {
+﻿function handleAjaxError(response) {
+	console.log(response);
+
+    const data = response.responseJSON;
+    if (data && data.errors !== undefined)
+        alert(Object.values(data.errors).flat().join('\n'));
+    else if (data)
+        alert(Object.values(data).flat().join('\n'));
+    else if (response.responseText !== null)
+        alert(response.responseText);
+    else alert('Сталася помилка');
+}
+
+$(document).on('submit', 'form[data-ajax="true"]', function (e) {
     e.preventDefault();
     $.ajax({
         url: $(this).attr('action'),
@@ -7,20 +20,7 @@
         success: function (response, status, xhr) {
             window.location.reload();
         },
-        error: function (response) {
-            const data = response.responseJSON;
-
-            if (data && data.errors !== undefined)
-                alert(Object.values(data.errors).flat().join('\n'));
-
-            else if (data)
-                alert(Object.values(data).flat().join('\n'));
-
-            else if (response.responseText !== null)
-                alert(response.responseText);
-
-            else alert('Сталася помилка');
-        }
+        error: handleAjaxError
     });
 }); 
 

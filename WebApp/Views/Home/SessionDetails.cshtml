@@ -6,10 +6,9 @@
 @using WebApp.ViewModels
 @using WebApp.Controllers
 @using System.Collections.Generic;
-@model SessionDetailsViewModel
 @inject SignInManager<User> signInManager
-
 @inject UserManager<User> userManager
+@model SessionDetailsViewModel
 
 <!DOCTYPE html>
 <html lang="uk">
@@ -50,10 +49,7 @@
 
         <div class="screening-info">
             <span>@Model.Session.StartTime.ToString("dd.MM.yyyy")</span>
-            <span>
-                @Model.Session.StartTime.ToString("HH:mm")
-            </span>
-            <span>Львів, ТРЦ Форум</span>
+            <span>@Model.Session.StartTime.ToString("HH:mm")</span>
             <span>Зал @Model.Session.Hall.Name</span>
         </div>
 
@@ -150,21 +146,18 @@
             var sessionId = '@Model.Session.Id';
             var userId = '@(userManager.GetUserAsync(User).Result?.Id)';
             fetch(`/api/tickets/CreateByElements?sessionId=${sessionId}&userId=${userId}`, {  
-                           method: "POST",  
-                           headers: { "Content-Type": "application/json" },  
-                           body: JSON.stringify(  
-                               selectedSeats.map(t => ({"Item1": t.row, "Item2": t.col}))
-                           )
-                       })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Помилка при бронюванні місць.");
-                }
-                return response.json();
+                method: "POST",  
+                headers: { "Content-Type": "application/json" },  
+                body: JSON.stringify(  
+                    selectedSeats.map(t => ({"Item1": t.row, "Item2": t.col}))  
+                )
             })
-            .then(data => alert("Успішно заброньовано: " + data))
-            .catch(error => console.error("Помилка:", error));
-        };
+            .then(response => {  
+                if (!response.ok)
+                    alert("Помилка бронювання квитків")
+                else alert("Успішно заброньовано");
+                location.reload();
+            })};
 
             window.toggleSeat = toggleSeat;  // Робимо функцію глобально доступною
         });
