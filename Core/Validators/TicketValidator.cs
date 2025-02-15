@@ -18,7 +18,7 @@ namespace WebApp.Validations
 
 			/*RuleFor(t => t.PurchaseTime)
 				.NotNull().WithMessage("PurchaseTime не може бути пустим")
-				.LessThanOrEqualTo(DateTime.UtcNow.ToLocalTime()).WithMessage("PurchaseTime має бути менше поточного часу");*/
+				.LessThanOrEqualTo(DateTime.Now).WithMessage("PurchaseTime має бути менше поточного часу");*/
 		}
 	}
 }
