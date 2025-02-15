@@ -11,6 +11,6 @@ namespace DataAccess.EntityModels
 
 		public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 		
-		//public DateOnly? BirthDate { get; set; }
+		public DateOnly? BirthDate { get; set; }
 	}
 }
