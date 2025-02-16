@@ -48,18 +48,19 @@ namespace BusinessLogic.Services
 			return _mapper.Map<List<GenreDTO>>(genres);
 		}
 
-/*		public async Task<IdentityResult> UpdateUserAsync(string userId, UpdateUserDTO model)
+		public async Task<IdentityResult> UpdateUserAsync(string userId, UpdateUserDTO model)
 		{
 			var user = await _userManager.FindByIdAsync(userId);
 			if(user == null)
 				return IdentityResult.Failed(new IdentityError { Description = "Користувача не знайдено" });
 
+			user.UserName = model.UserName;
 			user.Email = model.Email;
 			user.PhoneNumber = model.PhoneNumber;
 			user.BirthDate = model.BirthDate;
 
 			return await _userManager.UpdateAsync(user);
-		}*/
+		}
 
 		public async Task<IdentityResult> RegisterUserAsync(RegisterDTO model)
 		{
