@@ -4,15 +4,17 @@
 <link rel="stylesheet" href="~/css/SessionsFilterPage.css" />
 
 <style>
-    .session-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: none;
-        overflow: hidden;
-        border-radius: 10px;
-    }
+    /* Контейнер для постера */
+.session-card {
+    position: relative;
+    border: solid 1px white;
+    border-radius: 8px;
+    padding: 10px;
+    overflow: hidden; /* Запобігає виходу елементів за межі */
+}
 
     .filter-button.active {
-        background: #6e05ab;
+        background-color: #8b8ef5; /* Синьо-фіолетовий фон */
     }
     .movie-label {
         display: flex;
@@ -27,10 +29,29 @@
         color: #fff;
         user-select: none;
     }
-    .session-img {
-        height: 250px;
-        object-fit: cover;
-    }
+/* Стилі для постера */
+.session-img {
+    height: 400px;
+    width: 100%; /* Щоб зображення займало всю ширину */
+    border-radius: 12px; /* Округлені кути */
+    object-fit: cover; /* Обрізає картинку без спотворення */
+    filter: brightness(50%) blur(2px); /* Затемнює і додає розмиття */
+}
+
+/* Стилі для назви фільму */
+.card-title {
+    position: absolute;
+    top: 20%; /* Центруємо по вертикалі */
+    left: 50%; /* Центруємо по горизонталі */
+    transform: translate(-50%, -50%); /* Вирівнюємо */
+    font-size: 3rem; /* Збільшений розмір тексту */
+    font-weight: bold;
+    color: white; /* Білий колір для контрасту */
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8); /* Додаємо тінь для кращої читабельності */
+    text-align: center;
+    width: 90%; /* Запобігає виходу тексту за межі */
+    z-index: 10; /* Щоб було поверх постера */
+}
 
     .session-details {
         padding: 1rem;
@@ -88,6 +109,55 @@
         padding: 10px;
     }
 
+    /* Встановлюємо однаковий розмір для всіх кнопок */
+.filter-button,
+#todaySessionsButton {
+    width: 200px; /* Однакова ширина */
+    height: 45px; /* Однакова висота */
+    font-size: 18px; /* Розмір тексту */
+    font-weight: bold; /* Жирний текст */
+    margin: 5px 0; /* Відступи між кнопками */
+    background-color: #3E56DDFF;
+    color: white; /* Білий текст */
+    border: none; /* Без рамки */
+    border-radius: 8px; /* Округлені кути */
+    cursor: pointer;
+    transition: background 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-button:hover,
+#todaySessionsButton:hover {
+    background-color: #58048e; /* Темніший фіолетовий при наведенні */
+}
+
+
+
+/* Для контейнера фільтрів (фільм, дата і кнопка фільтрувати) */
+.filter-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%; /* щоб всі елементи займали всю ширину */
+    align-items: center;
+}
+
+/* Щоб "сеанси сьогодні" стояло праворуч */
+#todaySessionsButton {
+    margin-left: auto; /* Це переносить кнопку на праву сторону */
+}
+
+/* Якщо потрібно додатково налаштувати стиль кнопки "сеанси сьогодні" */
+#todaySessionsButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3E56DDFF; /* Синій фон */
+    color: white; /* Текст білий */
+    font-size: 18px; /* Розмір тексту */
+    border-radius: 8px; /* Округлені кути для цієї кнопки */
+}
 
 </style>
 
@@ -97,7 +167,7 @@
 
         <div class="filter-section">
             <button type="button" class="filter-button">
-                <span>вибрати фільм</span>
+                <span>Вибрати фільм</span>
             </button>
             <div class="filter-dropdown" id="movies-dropdown">
                 <select name="MovieId" multiple class="form-control movie-">
@@ -114,10 +184,10 @@
             </div>
 
         <div>
-            <button type="submit" class="btn btn-primary">Фільтрувати</button>
+            <button type="submit" class="filter-button">Фільтрувати</button>
         </div>
             <button class="extra" id="todaySessionsButton">
-                сеанси сьогодні
+                Сеанси сьогодні
                 <div class="star star-1">
                     <svg xmlns="http://www.w3.org/2000/svg"
                          viewBox="0 0 784.11 815.53">
@@ -179,16 +249,19 @@
 
 @foreach (var group in Model.GroupedSessions)
 {
-    <div class="card mb-5">
-        <div class="card-body">
+    <div class="card mb-5 position-relative">
+        <!-- Додаємо перевірку, чи є у групи фонова картинка -->
+        @if (!string.IsNullOrEmpty(group.Key.BackgroundUrl))
+        {
             <img src="@group.Key.BackgroundUrl" class="card-img-top session-img" alt="@group.Key.Title" />
-            <h3 class="card-title">@group.Key.Title</h3>
+        }
 
-            <hr>
-            <h5>Сеанси:</h5>
-            <div class="container mt-5">
+        <div class="card-body">
+            <h3 class="card-title text-center">@group.Key.Title</h3> <!-- Заголовок групи -->
+
+            <div class="container mt-3">
                 <div class="row">
-                    @foreach (var session in group.Value)
+                    @foreach (var session in group.Value) // НЕ ігноруємо цей блок
                     {
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
                             <a asp-action="SessionDetails" asp-controller="Home" asp-route-id="@session.Id" class="text-decoration-none">
@@ -201,6 +274,7 @@
                                             <span class="text-danger" style="font-size: 18px">
                                                 @session.StartTime.ToString("HH:mm") - @session.EndTime.ToString("HH:mm")
                                             </span>
+                                            <br />
                                             <span class="text-muted" style="font-size: 18px">
                                                 @session.Hall.Name
                                             </span>
@@ -212,10 +286,10 @@
                     }
                 </div>
             </div>
-
         </div>
     </div>
 }
+
 
 
 
@@ -240,7 +314,7 @@
                     buttonText.textContent = selectedOptions.join(", ");
                     dropdown.classList.remove("active")
                 } else {
-                    buttonText.textContent = "вибрати фільм";
+                    buttonText.textContent = "Вибрати фільм";
                 }
             });
 
