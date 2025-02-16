@@ -1,3 +1,164 @@
-﻿@model WebApp.ViewModels.ProfileViewModel
+@model WebApp.ViewModels.ProfileViewModel
 
-<p>@Model.Name</p>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Персональний кабінет</title>
+    <link rel="stylesheet" href="@Url.Content("~/css/profile.css")">
+</head>
+<body>
+    <div class="profile-container">
+        <aside class="sidebar">
+            <div class="profile-section">
+                <div class="avatar" id="avatarContainer">
+                    <img src="https://marketplace.canva.com/EAFqhoRVTgA/1/0/1600w/canva-grey-and-blue-cute-cartoon-anime-manga-illustrated-boy-profile-photo-avatar-u9aFvuQMzUk.jpg" alt="avatar icon" id="currentAvatar">
+                </div>
+                <h2>@Model.User.UserName</h2>
+            </div>
+            <button class="nav-btn active" data-section="personal-data">Персональні дані</button>
+            <button class="nav-btn" data-section="tickets">Активні квитки</button>
+            <button class="nav-btn" data-section="history">Історія покупок</button>
+            <form action="@Url.Action("Logout", "Account")" method="post">
+                <button type="submit" class="logout-btn">Вихід</button>
+            </form>
+        </aside>
+    
+    <main class="content">
+      <section class="personal-data-section active">
+        <div class="content-header">
+          <h1>Персональні дані</h1>
+            <button id="update-btn" class="edit-btn" data-bs-toggle="modal" data-bs-target="#UpdateUserModal">
+                Редагувати
+            </button>
+        </div>
+        <div class="content-body">
+          <div class="data-grid">
+            <div class="data-item">
+            <div class="data-label">Ім'я</div>
+              <div class="data-value">@Model.User.UserName</div>
+            </div>
+            <div class="data-item">
+            <div class="data-label">Пошта</div>
+              <div class="data-value">@Model.User.Email</div>
+            </div>
+            <div class="data-item">
+            <div class="data-label">Дата народження</div>
+              <div class="data-value">@Model.User.BirthDate</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Номер телефону</div>
+              <div class="data-value">@Model.User.PhoneNumber</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tickets-section">
+        <div class="content-header">
+          <h1>Активні квитки</h1>
+        </div>
+        <div class="content-body">
+            @foreach (var ticket in Model.CurrentTickets)
+            {
+                <div class="ticket">
+                    <div class="ticket-info">
+                        <div class="label">Фільм</div>
+                        <div class="value">@ticket.Session.Movie.Title</div>
+                        <div class="label">Дата та час</div>
+                        <div class="value">
+                            @ticket.Session.StartTime.ToString("d MMMM", new System.Globalization.CultureInfo("uk-UA")),
+                            @ticket.Session.StartTime.ToString("HH:mm")
+                        </div>
+                    </div>
+                    <div class="ticket-info">
+                        <div class="label">Зал</div>
+                        <div class="value">@ticket.Session.Hall.Name</div>
+                        <div class="label">Місце</div>
+                        <div class="value">Ряд @ticket.Seat.Row, Місце @ticket.Seat.Number</div>
+                    </div>
+                    <div class="ticket-info">
+                        <div class="label">Ціна</div>
+                        <div class="value">@ticket.Session.Price</div>
+                        <div class="label">Статус</div>
+                        <div class="value">Оплачено</div>
+                    </div>
+                </div>
+            }
+        </div>
+      </section>
+
+      <section class="history-section">
+        <div class="content-header">
+          <h1>Історія покупок</h1>
+        </div>
+        <div class="content-body">
+            @foreach(var ticket in Model.PastTickets)
+            {
+              <div class="ticket">
+                <div class="ticket-info">
+                  <div class="label">Фільм</div>
+                  <div class="value">@ticket.Session.Movie.Title</div>
+                  <div class="label">Дата та час</div>
+                  <div class="value">@ticket.Session.StartTime.ToString("d MMMM", new System.Globalization.CultureInfo("uk-UA")),
+                  @ticket.Session.StartTime.ToString("HH:mm")</div>
+                </div>
+                <div class="ticket-info">
+                  <div class="label">Зал</div>
+                  <div class="value">@ticket.Session.Hall.Name</div>
+                  <div class="label">Місце</div>
+                                <div class="value">Ряд @ticket.Seat.Row, Місце @ticket.Seat.Number</div>
+                </div>
+                <div class="ticket-info">
+                  <div class="label">Ціна</div>
+                  <div class="value">@ticket.Session.Price</div>
+                  <div class="label">Статус</div>
+                  <div class="value">Оплачено</div>
+                </div>
+              </div>
+            }
+        </div>
+      </section>
+    </main>
+  </div>
+
+    <div class="modal fade" id="UpdateUserModal" tabindex="-1" aria-labelledby="updateUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateUserModalLabel">Оновити дані</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateUserForm" method="post" asp-action="Update" asp-controller="Account" data-ajax="true">
+                        <div class="mb-3">
+                            <label asp-for="UpdateUser.UserName" class="form-label">Ім'я</label>
+                            <input asp-for="UpdateUser.UserName" class="form-control" />
+                            <span asp-validation-for="UpdateUser.UserName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="UpdateUser.Email" class="form-label">Пошта</label>
+                            <input asp-for="UpdateUser.Email" class="form-control" />
+                            <span asp-validation-for="UpdateUser.Email" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="UpdateUser.PhoneNumber" class="form-label">Номер телефону</label>
+                            <input asp-for="UpdateUser.PhoneNumber" class="form-control" />
+                            <span asp-validation-for="UpdateUser.PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="UpdateUser.BirthDate" class="form-label">Дата народження</label>
+                            <input asp-for="UpdateUser.BirthDate" type="date" class="form-control" />
+                            <span asp-validation-for="UpdateUser.BirthDate" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-success">Оновити</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/profile.js" asp-append-version="true"></script>
+
+</body>
+</html>

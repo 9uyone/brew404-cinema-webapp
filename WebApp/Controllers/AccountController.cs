@@ -1,5 +1,8 @@
 ﻿using BusinessLogic.DTOs.Auth;
+using BusinessLogic.DTOs.User;
 using BusinessLogic.Services;
+using DataAccess.EntityModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Toycloud.AspNetCore.Mvc.ModelBinding;
 using WebApp.ViewModels;
@@ -11,10 +14,16 @@ namespace WebApp.Controllers
 	public class AccountController : Controller
 	{
 		private readonly AccountService _accountService;
+		private readonly TicketService _ticketService;
+		private readonly UserManager<User> _userManager;
 
-		public AccountController(AccountService accountService)
+		public AccountController(AccountService accountService
+			, TicketService ticketService
+			, UserManager<User> userManager)
 		{
 			_accountService = accountService;
+			_ticketService = ticketService;
+			_userManager = userManager;
 		}
 
 		[HttpGet]
@@ -44,10 +53,10 @@ namespace WebApp.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Register([FromBodyOrDefault] RegisterDTO model)
 		{
-			var result = await _accountService.RegisterUserAsync(model);
-			
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
+
+			var result = await _accountService.RegisterUserAsync(model);
 
 			if (!result.Succeeded)
 			{
@@ -64,11 +73,39 @@ namespace WebApp.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
-		public IActionResult Profile()
+		[HttpPost]
+		public async Task<IActionResult> Update([FromForm, Bind(Prefix = "UpdateUser")] UpdateUserDTO updateDTO)
 		{
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
+			var user = await _userManager.GetUserAsync(User);
+			if (user == null)
+			{
+				return Unauthorized();
+			}
+
+			await _accountService.UpdateUserAsync(user.Id, updateDTO);
+			return RedirectToAction(nameof(Profile));
+		}
+
+		public async Task<IActionResult> Profile()
+		{
+			var user = await _userManager.GetUserAsync(User);
+
+			var userTickets = await _ticketService.GetTicketByUserIdAsync(user?.Id);
 			ProfileViewModel model = new ProfileViewModel()
 			{
-				Name = User.Identity.Name
+				User = await _userManager.GetUserAsync(User),
+				PastTickets = userTickets.Item1.ToList(),
+				CurrentTickets = userTickets.Item2.ToList(),
+				UpdateUser = new UpdateUserDTO
+				{
+					UserName = user.UserName,
+					Email = user.Email,
+					PhoneNumber = user.PhoneNumber,
+					BirthDate = user.BirthDate
+				},
 			};
 
 			return View(model);

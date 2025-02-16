@@ -1,10 +1,7 @@
 ﻿using BusinessLogic.DTOs;
 using BusinessLogic.Services;
-using BusinessLogic.Validations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol;
-using System.ComponentModel.DataAnnotations;
 using WebApp.ViewModels;
 
 namespace WebApp.Controllers.Admin
@@ -36,7 +33,7 @@ namespace WebApp.Controllers.Admin
 		{
 			var addSessionViewModel = new AddSessionViewModel()
 			{
-				Movies = await _movieService.GetAllMoviesAsync(),
+				Movies = await _movieService.GetAllMoviesAsync(onlyReleased: true),
 				Halls = await _hallService.GetAllHallsAsync()
 			};
 
@@ -53,7 +50,8 @@ namespace WebApp.Controllers.Admin
 			{
 				MovieId = model.MovieId,
 				HallId = model.HallId,
-				StartTime = model.StartTime
+				StartTime = model.StartTime,
+				Price = model.Price
 			};
 
 			if (TryValidateModel(sessionDTO) == false)

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-
-namespace BusinessLogic.DTOs.Auth
+﻿namespace BusinessLogic.DTOs.Auth
 {
 	public class RegisterDTO
 	{
@@ -12,5 +9,9 @@ namespace BusinessLogic.DTOs.Auth
 		public string ConfirmPassword { get; set; }
 
 		public string UserName { get; set; }
+
+		public string? PhoneNumber { get; set; }
+
+		public DateOnly? BirthDate { get; set; }
 	}
 }

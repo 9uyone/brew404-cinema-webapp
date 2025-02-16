@@ -13,7 +13,7 @@ namespace BusinessLogic.Validations
 
 			RuleFor(dest => dest.Price)
 				.NotEmpty().WithMessage("Ціна не може бути порожньою")
-				.GreaterThan(0).WithMessage("Ціна не може бути від'ємною");
+				.GreaterThanOrEqualTo(0).WithMessage("Ціна не може бути від'ємною");
 		}
 	}
 }

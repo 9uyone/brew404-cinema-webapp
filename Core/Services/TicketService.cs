@@ -21,13 +21,15 @@ namespace BusinessLogic.Services
 
 		public async Task<IEnumerable<TicketDTO?>> GetAllTicketAsync(int id)
 		{
-			var tickets = await Task.Run(() => _ticketRepository.Get(includeProperties: "User,Seat,Session"));
+			var tickets = await _ticketRepository.Get(includeProperties: "Seat,Session.Movie.Genres,Session.Hall");
 			return _mapper.Map<List<TicketDTO>>(tickets);
 		}
 
 		public async Task<TicketDTO?> GetTicketByIdAsync(int id)
 		{
-			var ticket = await _ticketRepository.GetByID(id, includeProperties: "User,Seat,Session");
+			var ticket = await _ticketRepository.GetByID(id,
+				includeProperties: "Seat,Session.Movie.Genres,Session.Hall");
+
 			return ticket == null ? null : _mapper.Map<TicketDTO>(ticket);
 		}
 
@@ -46,6 +48,16 @@ namespace BusinessLogic.Services
 			ticket.PurchaseTime = DateTime.Now;
 			await _ticketRepository.Update(ticket);
 			return true;
+		}
+
+		public async Task<Dictionary<int, int>> GetTicketCountByMovieAsync()
+		{
+			var tickets = await _ticketRepository.Get(includeProperties: "Session");
+
+			return tickets
+				.Where(t => t.Session != null)
+				.GroupBy(t => t.Session.MovieId)
+				.ToDictionary(g => g.Key, g => g.Count());
 		}
 
 		public async Task<bool> AddTicketsAsync(IEnumerable<TicketDTO> ticketDTOs)
@@ -87,14 +99,17 @@ namespace BusinessLogic.Services
 			return true;
 		}
 
-		public async Task<IEnumerable<TicketDTO>> GetTicketByUserIdAsync(string userId)
+		public async Task<(IEnumerable<TicketDTO>, IEnumerable<TicketDTO>)> GetTicketByUserIdAsync(string userId)
 		{
 			var tickets = await _ticketRepository.Get(
 				filter: t => t.UserId == userId,
-				includeProperties: "Seat,Session"
+				includeProperties: "Seat,Session.Movie.Genres,Session.Hall"
 				);
-
-			return _mapper.Map<List<TicketDTO>>(tickets);
+			
+			var pastTickets = tickets.Where(t => t.Session.EndTime < DateTime.Now).ToList();
+			var currentTickets = tickets.Where(t => t.Session.EndTime > DateTime.Now).ToList();
+			
+			return (_mapper.Map<List<TicketDTO>>(pastTickets), _mapper.Map<List<TicketDTO>>(currentTickets));
 		}
 	}
 }

@@ -24,14 +24,26 @@
 
                     <div class="mb-3">
                         <label for="registerConfirmPassword" class="form-label" name="ConfirmPassword">Підтвердіть пароль</label>
-                        <input type="password" class="form-control" id="registerPassword" asp-for="ConfirmPassword" required>
+                        <input type="password" class="form-control" id="registerConfirmPassword" asp-for="ConfirmPassword" required>
                         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label for="registerPassword" class="form-label">Ім'я користувача</label>
+                        <label for="username" class="form-label">Ім'я користувача</label>
                         <input type="text" class="form-control" id="username" name="UserName" asp-for="UserName" required>
                         <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="birthDate" class="form-label">Дата народження <span class="reg-unnecessary-field-hint">(необов'язково)</span></label>
+                        <input type="date" class="form-control" id="birthDate" asp-for="BirthDate">
+                        <span asp-validation-for="BirthDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phoneNumber" class="form-label">Номер телефону <span class="reg-unnecessary-field-hint">(необов'язково)</label>
+                        <input type="text" class="form-control" id="phoneNumber" asp-for="PhoneNumber">
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
 
                     <div class="text-end">

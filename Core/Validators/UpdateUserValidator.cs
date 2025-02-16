@@ -1,17 +1,12 @@
-﻿using BusinessLogic.DTOs.Auth;
+﻿using BusinessLogic.DTOs.User;
 using FluentValidation;
 
-namespace BusinessLogic.Validations
+namespace BusinessLogic.Validators
 {
-	public class RegisterValidator : AbstractValidator<RegisterDTO>
+	public class UpdateUserValidator : AbstractValidator<UpdateUserDTO>
 	{
-		public RegisterValidator()
+		public UpdateUserValidator()
 		{
-			RuleFor(x => x.Password)
-				.Equal(x => x.ConfirmPassword).WithMessage("Паролі не співпадають")
-				.NotEmpty().WithMessage("Пароль не може бути пустим")
-				.MinimumLength(6).WithMessage("Мінімальна довжина паролю 6 символів");
-
 			RuleFor(x => x.UserName)
 				.NotEmpty().WithMessage("Ім'я користувача не може бути пустим")
 				.MaximumLength(25).WithMessage("Ім'я користувача не може бути більше 25 символів");
@@ -27,6 +22,7 @@ namespace BusinessLogic.Validations
 			RuleFor(x => x.BirthDate)
 				.GreaterThanOrEqualTo(new DateOnly(1900, 1, 1)).WithMessage("Дата народження не може бути менше 1900 року")
 					.When(x => x.BirthDate.HasValue && x.BirthDate.Value != DateOnly.MinValue);
+
 		}
 	}
 }

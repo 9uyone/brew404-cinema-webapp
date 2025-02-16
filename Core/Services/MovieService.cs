@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs;
+using BusinessLogic.DTOs.Statistic;
 using BusinessLogic.Interfaces;
 using DataAccess.EntityModels;
 using DataAccess.Interfaces;
 using DataAccess.Models;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Services
 {
@@ -27,12 +27,16 @@ namespace BusinessLogic.Services
 			_actorRepository = actorRepository ?? throw new ArgumentNullException(nameof(actorRepository));
 		}
 
-		public async Task<IEnumerable<MovieDTO>> GetAllMoviesAsync()
+
+		public async Task<IEnumerable<MovieDTO>> GetAllMoviesAsync(bool onlyReleased = false)
 		{
 			var movies = await _movieRepository.Get(
 				includeProperties: "Actors,Genres",
 				orderBy: q => q.OrderBy(m => m.ReleaseDate)
 			) ?? new List<Movie>();
+
+			if (onlyReleased)
+				movies = movies.Where(m => m.ReleaseDate.Date < DateTime.Now);
 
 			return _mapper.Map<List<MovieDTO>>(movies);
 		}
@@ -61,6 +65,33 @@ namespace BusinessLogic.Services
 
 			return _mapper.Map<List<MovieDTO>>(movieQuery);
 
+		}
+
+		public async Task<List<TopMovieDTO>> GetTopMoviesByTicketsAsync(Dictionary<int, int> ticketData)
+		{
+			var movies = await _movieRepository.Get();
+			var topMovies = movies
+				.Where(m => ticketData.ContainsKey(m.Id))
+				.Select(m => new TopMovieDTO
+				{
+					MovieId = m.Id,
+					Title = m.Title,
+					TicketsCount = ticketData[m.Id]
+				})
+				.OrderByDescending(m => m.TicketsCount)
+				.Take(10)
+				.ToList();
+
+			return topMovies;
+		}
+
+
+		public async Task<List<MovieDTO>?> GetRecomendedMovies(List<GenreDTO> favGenres)
+		{
+			var movieQuery = await _movieRepository.Get(includeProperties: "Genres");
+			var recMovies = movieQuery.Where(m => m.Genres.Any(g => favGenres.Any(fg => fg.Id == g.Id)));
+
+			return _mapper.Map<List<MovieDTO>>(recMovies);
 		}
 
 		public async Task<IEnumerable<MovieDTO>?> GetMoviesByGenres(IEnumerable<GenreDTO>? genres)
