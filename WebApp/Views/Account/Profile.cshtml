@@ -1,7 +1,5 @@
 @model WebApp.ViewModels.ProfileViewModel
 
-<!DOCTYPE html>
-<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,20 +7,19 @@
     <link rel="stylesheet" href="@Url.Content("~/css/profile.css")">
 </head>
 <body>
-    <div class="container">
+    <div class="profile-container">
         <aside class="sidebar">
             <div class="profile-section">
                 <div class="avatar" id="avatarContainer">
                     <img src="https://marketplace.canva.com/EAFqhoRVTgA/1/0/1600w/canva-grey-and-blue-cute-cartoon-anime-manga-illustrated-boy-profile-photo-avatar-u9aFvuQMzUk.jpg" alt="avatar icon" id="currentAvatar">
                 </div>
-                <h2>@User.Identity.Name</h2>
+                <h2>@Model.User.UserName</h2>
             </div>
             <button class="nav-btn active" data-section="personal-data">Персональні дані</button>
             <button class="nav-btn" data-section="tickets">Активні квитки</button>
             <button class="nav-btn" data-section="history">Історія покупок</button>
             <form action="@Url.Action("Logout", "Account")" method="post">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="logout">Вихід</button>
+                <button type="submit" class="logout-btn">Вихід</button>
             </form>
         </aside>
     
@@ -35,20 +32,20 @@
         <div class="content-body">
           <div class="data-grid">
             <div class="data-item">
-              <div class="data-label">Ім'я</div>
-              <div class="data-value">@User.Identity.Name</div>
+            <div class="data-label">Ім'я</div>
+              <div class="data-value">@Model.User.UserName</div>
             </div>
             <div class="data-item">
-              <div class="data-label">Пошта</div>
-                <div class="data-value">@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</div>
+            <div class="data-label">Пошта</div>
+              <div class="data-value">@Model.User.Email</div>
             </div>
             <div class="data-item">
-              <div class="data-label">Дата народження</div>
-              <div class="data-value">4 квітня 2005</div>
+            <div class="data-label">Дата народження</div>
+              <div class="data-value">@Model.User.BirthDate</div>
             </div>
             <div class="data-item">
               <div class="data-label">Номер телефону</div>
-              <div class="data-value">+380 (93) 748 89 50</div>
+              <div class="data-value">@Model.User.PhoneNumber</div>
             </div>
           </div>
         </div>
