@@ -96,8 +96,8 @@ namespace BusinessLogic.Services
 				includeProperties: "Seat,Session.Movie.Genres,Session.Hall"
 				);
 			
-			var pastTickets = tickets.Where(t => t.Session.EndTime < DateTime.UtcNow).ToList();
-			var currentTickets = tickets.Where(t => t.Session.EndTime > DateTime.UtcNow).ToList();
+			var pastTickets = tickets.Where(t => t.Session.EndTime < DateTime.Now).ToList();
+			var currentTickets = tickets.Where(t => t.Session.EndTime > DateTime.Now).ToList();
 			
 			return (_mapper.Map<List<TicketDTO>>(pastTickets), _mapper.Map<List<TicketDTO>>(currentTickets));
 		}
