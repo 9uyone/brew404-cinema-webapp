@@ -4,8 +4,6 @@ using BusinessLogic.Interfaces;
 using DataAccess.EntityModels;
 using DataAccess.Interfaces;
 using DataAccess.Models;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BusinessLogic.Services
 {
@@ -27,12 +25,16 @@ namespace BusinessLogic.Services
 			_actorRepository = actorRepository ?? throw new ArgumentNullException(nameof(actorRepository));
 		}
 
-		public async Task<IEnumerable<MovieDTO>> GetAllMoviesAsync()
+
+		public async Task<IEnumerable<MovieDTO>> GetAllMoviesAsync(bool onlyReleased = false)
 		{
 			var movies = await _movieRepository.Get(
 				includeProperties: "Actors,Genres",
 				orderBy: q => q.OrderBy(m => m.ReleaseDate)
 			) ?? new List<Movie>();
+
+			if (onlyReleased)
+				movies = movies.Where(m => m.ReleaseDate.Date < DateTime.Now);
 
 			return _mapper.Map<List<MovieDTO>>(movies);
 		}
