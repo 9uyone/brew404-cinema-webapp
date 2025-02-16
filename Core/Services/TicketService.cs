@@ -50,6 +50,16 @@ namespace BusinessLogic.Services
 			return true;
 		}
 
+		public async Task<Dictionary<int, int>> GetTicketCountByMovieAsync()
+		{
+			var tickets = await _ticketRepository.Get(includeProperties: "Session");
+
+			return tickets
+				.Where(t => t.Session != null)
+				.GroupBy(t => t.Session.MovieId)
+				.ToDictionary(g => g.Key, g => g.Count());
+		}
+
 		public async Task<bool> AddTicketsAsync(IEnumerable<TicketDTO> ticketDTOs)
 		{
 			try

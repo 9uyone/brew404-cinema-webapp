@@ -1,3 +1,81 @@
-﻿@{
-	Layout = "_AdminLayout";
+﻿@model List<BusinessLogic.DTOs.Statistic.TopMovieDTO>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center">Топ фільмів за кількістю проданих квитків</h2>
+
+    <!-- Таблиця -->
+    <table class="table table-striped table-bordered mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Назва фільму</th>
+                <th>Кількість квитків</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                var index = 1;
+                @foreach (var movie in Model)
+                {
+                    <tr>
+                        <td>@index</td>
+                        <td>@movie.Title</td>
+                        <td>@movie.TicketsCount</td>
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3" class="text-center">Немає даних</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Графік -->
+    <div class="mt-5">
+        <h3 class="text-center">Візуалізація квитків по фільмах</h3>
+        <canvas id="topMoviesChart"></canvas>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const data = @Html.Raw(Json.Serialize(Model));
+            const labels = data.map(movie => movie.title);
+            const tickets = data.map(movie => movie.ticketsCount);
+
+            const ctx = document.getElementById("topMoviesChart").getContext("2d");
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Продані квитки",
+                        data: tickets,
+                        backgroundColor: "rgba(85, 206, 217, 1)",
+                        borderColor: "rgba(54, 162, 235, 1)",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 }

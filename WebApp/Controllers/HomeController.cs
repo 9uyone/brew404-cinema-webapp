@@ -4,7 +4,6 @@ using System.Diagnostics;
 using BusinessLogic.DTOs;
 using BusinessLogic.Services;
 using WebApp.ViewModels;
-using Microsoft.AspNetCore.Identity;
 
 namespace WebApp.Controllers
 {

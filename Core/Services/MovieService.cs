@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using BusinessLogic.DTOs;
+using BusinessLogic.DTOs.Statistic;
 using BusinessLogic.Interfaces;
 using DataAccess.EntityModels;
 using DataAccess.Interfaces;
 using DataAccess.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Services
 {
@@ -64,6 +66,25 @@ namespace BusinessLogic.Services
 			return _mapper.Map<List<MovieDTO>>(movieQuery);
 
 		}
+
+		public async Task<List<TopMovieDTO>> GetTopMoviesByTicketsAsync(Dictionary<int, int> ticketData)
+		{
+			var movies = await _movieRepository.Get();
+			var topMovies = movies
+				.Where(m => ticketData.ContainsKey(m.Id))
+				.Select(m => new TopMovieDTO
+				{
+					MovieId = m.Id,
+					Title = m.Title,
+					TicketsCount = ticketData[m.Id]
+				})
+				.OrderByDescending(m => m.TicketsCount)
+				.Take(10)
+				.ToList();
+
+			return topMovies;
+		}
+
 
 		public async Task<List<MovieDTO>?> GetRecomendedMovies(List<GenreDTO> favGenres)
 		{

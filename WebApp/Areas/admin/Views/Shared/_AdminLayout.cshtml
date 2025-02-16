@@ -37,8 +37,6 @@
         </div>
 
         <a asp-controller="Hall">Зали</a>
-        <a asp-controller="Statistics">Статистика</a>
-        <a asp-controller="Users">Користувачі</a>
 
         <form asp-area="" asp-controller="Home" asp-action="Index" method="get" class="d-inline">
             <button type="submit" class="btn btn-outline-light rounded-pill px-4 py-2 mt-3">
@@ -50,6 +48,7 @@
     <div style="width: 100%">
         <main role="main" class="pb-3 content-wrapper">
             @RenderBody()
+            @RenderSection("Scripts", required: false)
         </main>
     </div>
 
