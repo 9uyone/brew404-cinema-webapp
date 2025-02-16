@@ -21,14 +21,14 @@ namespace BusinessLogic.Services
 
 		public async Task<IEnumerable<TicketDTO?>> GetAllTicketAsync(int id)
 		{
-			var tickets = await _ticketRepository.Get(includeProperties: "Seat,Session.Movie,Session.Hall");
+			var tickets = await _ticketRepository.Get(includeProperties: "Seat,Session.Movie.Genres,Session.Hall");
 			return _mapper.Map<List<TicketDTO>>(tickets);
 		}
 
 		public async Task<TicketDTO?> GetTicketByIdAsync(int id)
 		{
 			var ticket = await _ticketRepository.GetByID(id,
-				includeProperties: "User,Seat,Session.Movie");
+				includeProperties: "Seat,Session.Movie.Genres,Session.Hall");
 
 			return ticket == null ? null : _mapper.Map<TicketDTO>(ticket);
 		}
@@ -93,7 +93,7 @@ namespace BusinessLogic.Services
 		{
 			var tickets = await _ticketRepository.Get(
 				filter: t => t.UserId == userId,
-				includeProperties: "Seat,Session.Movie,Session.Hall"
+				includeProperties: "Seat,Session.Movie.Genres,Session.Hall"
 				);
 			
 			var pastTickets = tickets.Where(t => t.Session.EndTime < DateTime.UtcNow).ToList();

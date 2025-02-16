@@ -76,8 +76,8 @@ namespace WebApp.Controllers
 		public async Task<IActionResult> Profile()
 		{
 			var user = await _userManager.GetUserAsync(User);
-			var userTickets = await _ticketService.GetTicketByUserIdAsync(user?.Id);
 
+			var userTickets = await _ticketService.GetTicketByUserIdAsync(user?.Id);
 			ProfileViewModel model = new ProfileViewModel()
 			{
 				Name = User.Identity.Name,

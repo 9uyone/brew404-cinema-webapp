@@ -1,0 +1,28 @@
+﻿.fixed-button {
+    position: fixed;
+    bottom: 100px; /* Відступ від нижнього краю */
+    right: 50px; /* Відступ від правого краю */
+    background-color: #ff9800; /* Яскравий колір фону */
+    color: white; /* Білий текст */
+    display: flex;
+    align-items: center; /* Центрування по вертикалі */
+    justify-content: center; /* Центрування по горизонталі */
+    z-index: 1000; /* Щоб кнопка була над іншими елементами */
+    padding: 15px 30px; /* Відступи для збільшення кнопки */
+    border-radius: 50px; /* Заокруглені кути */
+    font-size: 18px; /* Розмір шрифту */
+    font-weight: bold; /* Жирний шрифт */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Тінь для кнопки */
+    cursor: pointer;
+    transition: all 0.3s ease-in-out; /* Плавна анімація для ефектів */
+}
+
+.fixed-button:hover {
+    background-color: #ff5722; /* Зміна кольору при наведенні */
+    transform: scale(1.1); /* Легке збільшення при наведенні */
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.5); /* Підсилена тінь */
+}
+
+.fixed-button:active {
+    transform: scale(0.95); /* Легке зменшення при натисканні */
+}
