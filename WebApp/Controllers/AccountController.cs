@@ -44,10 +44,10 @@ namespace WebApp.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Register([FromBodyOrDefault] RegisterDTO model)
 		{
-			var result = await _accountService.RegisterUserAsync(model);
-			
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
+
+			var result = await _accountService.RegisterUserAsync(model);
 
 			if (!result.Succeeded)
 			{

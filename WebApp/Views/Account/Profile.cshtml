@@ -1,5 +1,5 @@
-﻿<!DOCTYPE html>
-<html lang="uk">
+﻿@inject Microsoft.AspNetCore.Identity.UserManager<DataAccess.EntityModels.User> userManager
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,15 +38,16 @@
             </div>
             <div class="data-item">
               <div class="data-label">Пошта</div>
-                <div class="data-value">@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</div>
+                <!--<div class="data-value">@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</div>-->
+                <div class="data-value">@userManager.GetUserAsync(User).Result.Email</div>
             </div>
             <div class="data-item">
               <div class="data-label">Дата народження</div>
-              <div class="data-value">4 квітня 2005</div>
+              <div class="data-value">@userManager.GetUserAsync(User).Result.BirthDate</div>
             </div>
             <div class="data-item">
               <div class="data-label">Номер телефону</div>
-              <div class="data-value">+380 (93) 748 89 50</div>
+              <div class="data-value">@userManager.GetUserAsync(User).Result.PhoneNumber</div>
             </div>
           </div>
         </div>
