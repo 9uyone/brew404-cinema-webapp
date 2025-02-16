@@ -100,6 +100,11 @@ header, footer {
     background-color: #1f1f1f;
 }
 
+.reg-unnecessary-field-hint {
+    font-size: 0.9em;
+    color: #43ba07;
+}
+
 .movie-poster {
     max-width: 100%;
     border-radius: 8px;

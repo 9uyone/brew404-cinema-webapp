@@ -31,7 +31,9 @@ namespace BusinessLogic.Helpers
 			CreateMap<Ticket, TicketDTO>().ReverseMap();
 
 			CreateMap<RegisterDTO, User>()
-				.ForMember(dest => dest.Role, opt => opt.MapFrom(src => "User"));
+				.ForMember(dest => dest.Role, opt => opt.MapFrom(src => "User"))
+				.ForMember(dest => dest.BirthDate, opt => opt.Condition(src => src.BirthDate != default))
+				.ForMember(dest => dest.PhoneNumber, opt => opt.Condition(src => !string.IsNullOrEmpty(src.PhoneNumber)));
 		}
 		
 		private static DateTime ParseReleaseDate(string? releaseDate)
