@@ -56,23 +56,14 @@
                     </li>
 
 					@if (signInManager.IsSignedIn(User))
-					{
-                        <li class="nav-item dropdown mx-2">
-                            <a class="nav-link dropdown-toggle text-light" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                @User.Identity.Name
+                    {
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-light position-relative hover-effect" 
+                                    asp-controller="Account" asp-action="Profile">
+                                    @User.Identity.Name
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end bg-black" aria-labelledby="userDropdown">
-                                <li class="nav-item mx-2">
-                                        <a class="dropdown-item text-white position-relative hover-effect" asp-controller="Account" asp-action="Profile">Профіль</a>
-                                </li>
-                                <li class="nav-item mx-2">
-                                    <form asp-controller="Account" asp-action="Logout" method="post">
-                                            <button type="submit" class="dropdown-item text-white position-relative hover-effect">Вийти</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-					}
+                         </li>
+                    }
                     else
                     {
                         <li class="nav-item mx-2">
