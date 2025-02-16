@@ -1,5 +1,4 @@
-﻿using BusinessLogic.DTOs;
-using BusinessLogic.DTOs.Auth;
+﻿using BusinessLogic.DTOs.Auth;
 using BusinessLogic.Services;
 using DataAccess.EntityModels;
 using Microsoft.AspNetCore.Identity;
@@ -80,7 +79,7 @@ namespace WebApp.Controllers
 			var userTickets = await _ticketService.GetTicketByUserIdAsync(user?.Id);
 			ProfileViewModel model = new ProfileViewModel()
 			{
-				Name = User.Identity.Name,
+				User = await _userManager.GetUserAsync(User),
 				PastTickets = userTickets.Item1.ToList(),
 				CurrentTickets = userTickets.Item2.ToList()
 			};
