@@ -40,5 +40,15 @@ namespace BusinessLogic.DTOs
 			return $"Tile:{Title}\n\noverview: {Overview}\n\nImageUrl: {ImageUrl}\n\nBackgroundUrl: {BackgroundUrl}\n\n" +
 				$"TrailerUrl: {TrailerUrl}\n\nReleaseDate: {ReleaseDate}";
 		}
+
+		public override bool Equals(object? obj)
+		{
+			return obj is MovieDTO dto && Id == dto.Id;
+		}
+
+		public override int GetHashCode()
+		{
+			return Id.GetHashCode();
+		}
 	}
 }

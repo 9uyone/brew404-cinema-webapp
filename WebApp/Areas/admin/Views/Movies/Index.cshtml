@@ -11,6 +11,13 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/Admin/addmovies.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Admin/addBtn.css" asp-append-version="true" />
+
+    <style>
+        .btn-lg {
+            height: 50px;
+            width: 150px;
+        }
+    </style>
 </head>
 
 <body>
@@ -35,7 +42,7 @@
                     </button>
 
                     <form asp-action="Delete" asp-route-id="@movie.Id" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити фільм @movie.Title?');">
-                        <button type="submit" class="btn btn-lg btn-danger btn-lg">Delete</button>
+                        <button type="submit" class="btn btn-danger btn-lg">Delete</button>
                     </form>
                 </div>
             </div>

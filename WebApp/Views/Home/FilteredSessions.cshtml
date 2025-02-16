@@ -11,6 +11,22 @@
         border-radius: 10px;
     }
 
+    .filter-button.active {
+        background: #6e05ab;
+    }
+    .movie-label {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        margin-bottom: 15px;
+        border: 3px solid rgba(64, 47, 181, 0.3);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 15px;
+        color: #fff;
+        user-select: none;
+    }
     .session-img {
         height: 250px;
         object-fit: cover;
@@ -26,29 +42,52 @@
 
     #movies-dropdown
     {
-        width: 300px;
+        width: 350px;
+        height: 500px;
     }
     .filter-dropdown select {
         width: 100%; /* Ширина на 100% батьківського елемента */
-        max-width: 300px; /* Максимальна ширина для обмеження */
+        height: 100%;
     }
 
-    /* Стилі прокрутки тільки для #movies-dropdown */
-    #movies-dropdown::-webkit-scrollbar {
-        width: 12px;
-        height: 12px;
+    #movies-dropdown select::-webkit-scrollbar {
+        width: 8px; /* Товщина скролбару */
     }
 
-    #movies-dropdown::-webkit-scrollbar-thumb {
-        background-color: #555;
-        border-radius: 10px;
-        border: 3px solid #fff;
-    }
-
-    #movies-dropdown::-webkit-scrollbar-track {
-        background-color: #f1f1f1;
+    #movies-dropdown select::-webkit-scrollbar-track {
+        background: #f1f1f1; /* Колір фону треку */
         border-radius: 10px;
     }
+
+    #movies-dropdown select::-webkit-scrollbar-thumb {
+        background: #888; /* Колір скроллера */
+        border-radius: 10px;
+    }
+
+    #movies-dropdown select::-webkit-scrollbar-thumb:hover {
+        background: #555; /* Колір при наведенні */
+    }
+
+    /* Стиль для Firefox */
+    #movies-dropdown select {
+        scrollbar-width: thin;
+        scrollbar-color: #888 #f1f1f1;
+        scrollbar-width: none;
+    }
+
+    .session-img {
+        height: 400px;
+        width: 100%; /* Щоб зображення займало всю ширину */
+        border-radius: 12px; /* Округлені кути */
+        backdrop-filter: blur(5px);
+    }
+
+    .session-card {
+        border: solid 1px white;
+        border-radius: 8px;
+        padding: 10px;
+    }
+
 
 </style>
 
@@ -72,28 +111,6 @@
 
             <div class="filter-section">
                 <input type="date" name="Date" class="filter-button">
-            </div>
-
-            <div class="filter-section">
-                <button type="button" class="filter-button" data-filter="sort">
-                    <span>Сортування</span>
-                </button>
-                <div class="filter-dropdown">
-                    <div class="mb-2">
-                        <label for="sortBy">Сортувати за</label>
-                        <select id="sortBy" name="SortBy" class="form-control">
-                            <option value="date">За датою</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="sortOrder">Напрямок</label>
-                        <select id="sortOrder" name="Descending" class="form-control">
-                            <option value="false">За зростанням</option>
-                            <option value="true">За спаданням</option>
-                        </select>
-
-                    </div>
-                </div>
             </div>
 
         <div>
@@ -160,31 +177,46 @@
     </div>
 </form>
 
-<div class="container mt-5">
-    <div class="row">
-        @foreach (var session in Model.Sessions)
-        {
-            <div class="col-12 col-md-6 col-lg-4 mb-4">
-                <a asp-action="SessionDetails" asp-controller="Home" asp-route-id="@session.Id" class="text-decoration-none">
-                    <div class="card session-card">
-                        <img src="@session.Movie.ImageUrl" class="card-img-top session-img" alt="@session.Movie.Title" />
-                        <div class="card-body session-details">
-                            <h4 class="card-title text-white mb-3">@session.Movie.Title</h4>
-                            <h5 class="card-text text-white">
-                                @session.StartTime.ToString("d MMMM", new System.Globalization.CultureInfo("uk-UA"))
-                            </h5>
-                            <p class="card-text">
-                                <span class="text-danger" style="font-size: 18px">@session.StartTime.ToString("HH:mm") - @session.EndTime.ToString("HH:mm")</span>
-                                <span class="text-muted" style="font-size: 18px"> @session.Hall.Name</span>
-                            </p>
+@foreach (var group in Model.GroupedSessions)
+{
+    <div class="card mb-5">
+        <div class="card-body">
+            <img src="@group.Key.BackgroundUrl" class="card-img-top session-img" alt="@group.Key.Title" />
+            <h3 class="card-title">@group.Key.Title</h3>
 
+            <hr>
+            <h5>Сеанси:</h5>
+            <div class="container mt-5">
+                <div class="row">
+                    @foreach (var session in group.Value)
+                    {
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                            <a asp-action="SessionDetails" asp-controller="Home" asp-route-id="@session.Id" class="text-decoration-none">
+                                <div class="card session-card">
+                                    <div class="card-body session-details">
+                                        <h5 class="card-text text-white">
+                                            @session.StartTime.ToString("d MMMM", new System.Globalization.CultureInfo("uk-UA"))
+                                        </h5>
+                                        <p class="card-text">
+                                            <span class="text-danger" style="font-size: 18px">
+                                                @session.StartTime.ToString("HH:mm") - @session.EndTime.ToString("HH:mm")
+                                            </span>
+                                            <span class="text-muted" style="font-size: 18px">
+                                                @session.Hall.Name
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                    </div>
-                </a>
+                    }
+                </div>
             </div>
-        }
+
+        </div>
     </div>
-</div>
+}
+
 
 
 <script>
@@ -251,6 +283,19 @@
         const sortBy = document.getElementById('sortBy').value;
         const sortOrder = document.getElementById('sortOrder').value;
         console.log(`Sort By: ${sortBy}, Descending: ${sortOrder}`);
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const selectElement = document.querySelector("#movies-dropdown select");
+        const button = document.querySelector(".filter-button");
+
+        selectElement.addEventListener("change", function () {
+            if (selectElement.selectedOptions.length > 0) {
+                button.classList.add("active"); // Додаємо клас, якщо є вибрані елементи
+            } else {
+                button.classList.remove("active"); // Видаляємо клас, якщо вибрано 0
+            }
+        });
     });
 </script>
 
