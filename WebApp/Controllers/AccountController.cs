@@ -52,10 +52,10 @@ namespace WebApp.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Register([FromBodyOrDefault] RegisterDTO model)
 		{
-			var result = await _accountService.RegisterUserAsync(model);
-			
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
+
+			var result = await _accountService.RegisterUserAsync(model);
 
 			if (!result.Succeeded)
 			{
@@ -79,7 +79,7 @@ namespace WebApp.Controllers
 			var userTickets = await _ticketService.GetTicketByUserIdAsync(user?.Id);
 			ProfileViewModel model = new ProfileViewModel()
 			{
-				Name = User.Identity.Name,
+				User = await _userManager.GetUserAsync(User),
 				PastTickets = userTickets.Item1.ToList(),
 				CurrentTickets = userTickets.Item2.ToList()
 			};
