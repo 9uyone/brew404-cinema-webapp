@@ -1,0 +1,26 @@
+﻿@using System.Collections.Generic;
+@using BusinessLogic.DTOs;
+@model List<MovieDTO>
+
+<link rel="stylesheet" href="@Url.Content("~/css/moviePage.css")">
+
+<!-- Список фільмів -->
+<div id="moviesGrid" class="container mt-5">
+    <div class="row d-flex justify-content-start" id="movieResults">
+        @foreach (var movie in Model)
+        {
+            <div class="col-md-4 col-sm-6 col-12 mb-3">
+                <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="text-decoration-none">
+                    <div class="card movie-card" data-genres="@string.Join(",", movie.Genres.Select(g => g.Id))">
+                        <img src="@movie.ImageUrl" class="card-img" alt="@movie.Title">
+                        <div class="rating-badge">@movie.VoteAverage⭐</div>
+                        <div class="card-body">
+                            <h5 class="card-title">@movie.Title</h5>
+                            <p class="movie-year">@movie.ReleaseDate</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>

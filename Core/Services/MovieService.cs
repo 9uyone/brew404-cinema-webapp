@@ -63,6 +63,14 @@ namespace BusinessLogic.Services
 
 		}
 
+		public async Task<List<MovieDTO>?> GetRecomendedMovies(List<GenreDTO> favGenres)
+		{
+			var movieQuery = await _movieRepository.Get(includeProperties: "Genres");
+			var recMovies = movieQuery.Where(m => m.Genres.Any(g => favGenres.Any(fg => fg.Id == g.Id)));
+
+			return _mapper.Map<List<MovieDTO>>(recMovies);
+		}
+
 		public async Task<IEnumerable<MovieDTO>?> GetMoviesByGenres(IEnumerable<GenreDTO>? genres)
 		{
 			if (genres == null) return null;

@@ -241,7 +241,7 @@ body {
 .genre-checkbox {
   display: none;
 }
-.genre-label, movie-label {
+.genre-label {
   display: flex;
   align-items: center;
   padding: 8px 12px;

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using BusinessLogic.DTOs;
 using BusinessLogic.Services;
 using WebApp.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebApp.Controllers
 {
@@ -13,17 +14,20 @@ namespace WebApp.Controllers
 		SessionService _sessionService;
 		GenreService _genreService;
 		SeatService _seatService;
+		AccountService _accountServise;
 
 		public HomeController(MovieService movieService
 			, SessionService sessionService
 			, GenreService genreService
 			, TicketService ticketService
-			, SeatService seatService)
+			, SeatService seatService
+			, AccountService accountServise)
 		{
 			_movieService = movieService;
 			_sessionService = sessionService;
 			_genreService = genreService;
 			_seatService = seatService;
+			_accountServise = accountServise;
 		}
 
 		public async Task<IActionResult> Index()
@@ -76,14 +80,23 @@ namespace WebApp.Controllers
 			var sessions = await _sessionService.GetFilteredSessions(filter, onlyFutureSessions: true);
 			var movies = await _movieService.GetAllMoviesAsync();
 
+			var groupedSessions = sessions?
+				.GroupBy(s => s.Movie)?
+				.ToDictionary(
+					g => g.Key, // фільм
+					g => g.ToList() // список сеансів для фільму
+				);
+
+			// Створюємо FilterSessionsViewModel
 			var filterSessionViewModel = new FilterSessionsViewModel()
 			{
-				Movies = movies.ToList(),
-				Sessions = sessions.ToList()
+				Movies = movies.ToList(), // Просто передаємо фільми, без Distinct
+				GroupedSessions = groupedSessions
 			};
 
 			return View(filterSessionViewModel);
 		}
+
 
 		public async Task<IActionResult> SessionDetails(int id)
 		{

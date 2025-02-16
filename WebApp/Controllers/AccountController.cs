@@ -1,5 +1,8 @@
-﻿using BusinessLogic.DTOs.Auth;
+﻿using BusinessLogic.DTOs;
+using BusinessLogic.DTOs.Auth;
 using BusinessLogic.Services;
+using DataAccess.EntityModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Toycloud.AspNetCore.Mvc.ModelBinding;
 using WebApp.ViewModels;
@@ -11,10 +14,16 @@ namespace WebApp.Controllers
 	public class AccountController : Controller
 	{
 		private readonly AccountService _accountService;
+		private readonly TicketService _ticketService;
+		private readonly UserManager<User> _userManager;
 
-		public AccountController(AccountService accountService)
+		public AccountController(AccountService accountService
+			, TicketService ticketService
+			, UserManager<User> userManager)
 		{
 			_accountService = accountService;
+			_ticketService = ticketService;
+			_userManager = userManager;
 		}
 
 		[HttpGet]
@@ -64,11 +73,16 @@ namespace WebApp.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
-		public IActionResult Profile()
+		public async Task<IActionResult> Profile()
 		{
+			var user = await _userManager.GetUserAsync(User);
+
+			var userTickets = await _ticketService.GetTicketByUserIdAsync(user?.Id);
 			ProfileViewModel model = new ProfileViewModel()
 			{
-				Name = User.Identity.Name
+				Name = User.Identity.Name,
+				PastTickets = userTickets.Item1.ToList(),
+				CurrentTickets = userTickets.Item2.ToList()
 			};
 
 			return View(model);

@@ -4,7 +4,7 @@ namespace WebApp.ViewModels
 {
 	public class FilterSessionsViewModel
 	{
-		public List<MovieDTO>? Movies { get; set; }
-		public List<SessionDTO>? Sessions { get; set; }
+		public List<MovieDTO> Movies { get; set; } = new();
+		public Dictionary<MovieDTO, List<SessionDTO>> GroupedSessions { get; set; } = new();
 	}
 }

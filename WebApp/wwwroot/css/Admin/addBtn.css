@@ -13,29 +13,29 @@
     z-index: 1000; /* Щоб кнопка була над іншими елементами */
 }
 
-    .fixed-button::before, .fixed-button::after {
-        content: '';
-        position: absolute;
-        background-color: white; /* Колір плюсика */
-    }
+ .fixed-button::before, .fixed-button::after {
+     content: '';
+     position: absolute;
+     background-color: white; /* Колір плюсика */
+ }
 
-    /* Горизонтальна лінія */
-    .fixed-button::before {
-        width: 40px; /* Довжина горизонтальної лінії */
-        height: 6px; /* Товщина лінії */
-    }
+ /* Горизонтальна лінія */
+ .fixed-button::before {
+     width: 40px; /* Довжина горизонтальної лінії */
+     height: 6px; /* Товщина лінії */
+ }
 
-    /* Вертикальна лінія */
-    .fixed-button::after {
-        width: 6px; /* Товщина вертикальної лінії */
-        height: 40px; /* Довжина вертикальної лінії */
-    }
+ /* Вертикальна лінія */
+ .fixed-button::after {
+     width: 6px; /* Товщина вертикальної лінії */
+     height: 40px; /* Довжина вертикальної лінії */
+ }
 
-    /* Центруємо лінії */
-    .fixed-button::before {
-        transform: translateX(0%) translateY(0%);
-    }
+ /* Центруємо лінії */
+ .fixed-button::before {
+     transform: translateX(0%) translateY(0%);
+ }
 
-    .fixed-button::after {
-        transform: translateX(0%) translateY(0%);
-    }
+ .fixed-button::after {
+     transform: translateX(0%) translateY(0%);
+ }
