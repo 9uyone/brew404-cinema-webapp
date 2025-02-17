@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.DTOs.Auth;
+using BusinessLogic.DTOs.User;
 using BusinessLogic.Services;
 using DataAccess.EntityModels;
 using Microsoft.AspNetCore.Identity;
@@ -72,6 +73,22 @@ namespace WebApp.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
+		[HttpPost]
+		public async Task<IActionResult> Update([FromForm, Bind(Prefix = "UpdateUser")] UpdateUserDTO updateDTO)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
+			var user = await _userManager.GetUserAsync(User);
+			if (user == null)
+			{
+				return Unauthorized();
+			}
+
+			await _accountService.UpdateUserAsync(user.Id, updateDTO);
+			return RedirectToAction(nameof(Profile));
+		}
+
 		public async Task<IActionResult> Profile()
 		{
 			var user = await _userManager.GetUserAsync(User);
@@ -81,7 +98,14 @@ namespace WebApp.Controllers
 			{
 				User = await _userManager.GetUserAsync(User),
 				PastTickets = userTickets.Item1.ToList(),
-				CurrentTickets = userTickets.Item2.ToList()
+				CurrentTickets = userTickets.Item2.ToList(),
+				UpdateUser = new UpdateUserDTO
+				{
+					UserName = user.UserName,
+					Email = user.Email,
+					PhoneNumber = user.PhoneNumber,
+					BirthDate = user.BirthDate
+				},
 			};
 
 			return View(model);

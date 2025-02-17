@@ -118,7 +118,24 @@
                 <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="text-decoration-none">
                     <div class="card movie-card" data-genres="@string.Join(",", movie.Genres.Select(g => g.Id))">
                         <img src="@movie.ImageUrl" class="card-img" alt="@movie.Title">
-                        <div class="rating-badge">@movie.VoteAverage⭐</div>
+                        <div class="rating-badge">
+                            @{
+                                DateTime? releaseDate = null;
+                                DateTime parsedDate;
+                                if (DateTime.TryParseExact(movie.ReleaseDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out parsedDate))
+                                {
+                                    releaseDate = parsedDate;
+                                }
+                            }
+                            @if (releaseDate <= DateTime.Today)
+                            {
+                                <span style="color: white">@movie.VoteAverage ⭐</span>
+                            }
+                            else
+                            {
+                                <text>Очікується прем'єра</text>
+                            }
+                        </div>
                         <div class="card-body">
                             <h5 class="card-title">@movie.Title</h5>
                             <p class="movie-year">@movie.ReleaseDate</p>

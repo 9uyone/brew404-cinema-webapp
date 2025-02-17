@@ -4,7 +4,6 @@ using System.Diagnostics;
 using BusinessLogic.DTOs;
 using BusinessLogic.Services;
 using WebApp.ViewModels;
-using Microsoft.AspNetCore.Identity;
 
 namespace WebApp.Controllers
 {
@@ -32,7 +31,16 @@ namespace WebApp.Controllers
 
 		public async Task<IActionResult> Index()
 		{
-			return View(await _movieService.GetAllMoviesAsync());
+			List<MovieDTO> movies = (await _movieService.GetAllMoviesAsync(onlyReleased: true)).ToList();
+			List<MovieDTO> premieres = (await _movieService.GetAllPremieresAsync()).ToList();
+			
+			MoviesAndPremieres moviesAndPremieres = new MoviesAndPremieres
+			{
+				Movies = movies,
+				Premieres = premieres
+			};
+
+			return View(moviesAndPremieres);
 		}
 
 		public IActionResult Privacy()

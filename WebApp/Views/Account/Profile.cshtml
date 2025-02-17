@@ -1,5 +1,6 @@
 @model WebApp.ViewModels.ProfileViewModel
 
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +28,9 @@
       <section class="personal-data-section active">
         <div class="content-header">
           <h1>Персональні дані</h1>
-          <button class="edit-btn">Редагувати</button>
+            <button id="update-btn" class="edit-btn" data-bs-toggle="modal" data-bs-target="#UpdateUserModal">
+                Редагувати
+            </button>
         </div>
         <div class="content-body">
           <div class="data-grid">
@@ -118,6 +121,44 @@
       </section>
     </main>
   </div>
+
+    <div class="modal fade" id="UpdateUserModal" tabindex="-1" aria-labelledby="updateUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateUserModalLabel">Оновити дані</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateUserForm" method="post" asp-action="Update" asp-controller="Account" data-ajax="true">
+                        <div class="mb-3">
+                            <label asp-for="UpdateUser.UserName" class="form-label">Ім'я</label>
+                            <input asp-for="UpdateUser.UserName" class="form-control" />
+                            <span asp-validation-for="UpdateUser.UserName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="UpdateUser.Email" class="form-label">Пошта</label>
+                            <input asp-for="UpdateUser.Email" class="form-control" />
+                            <span asp-validation-for="UpdateUser.Email" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="UpdateUser.PhoneNumber" class="form-label">Номер телефону</label>
+                            <input asp-for="UpdateUser.PhoneNumber" class="form-control" />
+                            <span asp-validation-for="UpdateUser.PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="UpdateUser.BirthDate" class="form-label">Дата народження</label>
+                            <input asp-for="UpdateUser.BirthDate" type="date" class="form-control" />
+                            <span asp-validation-for="UpdateUser.BirthDate" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-success">Оновити</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/profile.js" asp-append-version="true"></script>
+
 </body>
 </html>
-<script src="~/js/profile.js" asp-append-version="true"></script>

@@ -50,6 +50,16 @@ namespace BusinessLogic.Services
 			return true;
 		}
 
+		public async Task<Dictionary<int, int>> GetTicketCountByMovieAsync()
+		{
+			var tickets = await _ticketRepository.Get(includeProperties: "Session");
+
+			return tickets
+				.Where(t => t.Session != null)
+				.GroupBy(t => t.Session.MovieId)
+				.ToDictionary(g => g.Key, g => g.Count());
+		}
+
 		public async Task<bool> AddTicketsAsync(IEnumerable<TicketDTO> ticketDTOs)
 		{
 			try
@@ -96,8 +106,8 @@ namespace BusinessLogic.Services
 				includeProperties: "Seat,Session.Movie.Genres,Session.Hall"
 				);
 			
-			var pastTickets = tickets.Where(t => t.Session.EndTime < DateTime.UtcNow).ToList();
-			var currentTickets = tickets.Where(t => t.Session.EndTime > DateTime.UtcNow).ToList();
+			var pastTickets = tickets.Where(t => t.Session.EndTime < DateTime.Now).ToList();
+			var currentTickets = tickets.Where(t => t.Session.EndTime > DateTime.Now).ToList();
 			
 			return (_mapper.Map<List<TicketDTO>>(pastTickets), _mapper.Map<List<TicketDTO>>(currentTickets));
 		}

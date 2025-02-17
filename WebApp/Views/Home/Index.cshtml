@@ -1,7 +1,7 @@
 ﻿@using System.Collections.Generic;
 @using BusinessLogic.DTOs;
 @using Microsoft.AspNetCore.Identity
-@model List<MovieDTO>
+@model MoviesAndPremieres
 @using DataAccess.EntityModels
 @inject SignInManager<User> signInManager
 
@@ -96,7 +96,7 @@
 
         /* Збільшення розміру каруселі */
         .carousel {
-        height: 600px; /* Можна змінити за потреби */
+        top: 50%; /* Можна змінити за потреби */
         }
 
     </style>
@@ -106,10 +106,10 @@
     <!-- Banner Section -->
     <div id="mainCarousel" class="carousel slide mt-3" data-bs-ride="carousel">
         <div class="carousel-inner">
-            @for (int i = 0; i < Model.Count; i++)
+            @for (int i = 0; i < Model.Movies.Count; i++)
             {
                 var isActiveClass = i == 0 ? "active" : "";
-                var movie = Model[i];
+                var movie = Model.Movies[i];
                 <div class="carousel-item @isActiveClass position-relative">
                     <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="text-decoration-none">
                     <!-- Фонова картинка -->
@@ -123,7 +123,22 @@
                             <h2 style="color: white">@movie.Title</h2>
 
                             <div class="reactions mt-2">
-                            <span style="color: white">@movie.VoteAverage ⭐</span>
+                                @{
+                                    DateTime? releaseDate = null;
+                                    DateTime parsedDate;
+                                    if (DateTime.TryParseExact(movie.ReleaseDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out parsedDate))
+                                    {
+                                        releaseDate = parsedDate;
+                                    }
+                                }
+                                @if (releaseDate.HasValue && releaseDate.Value <= DateTime.Today)
+                                {
+                                    <span style="color: white">@movie.VoteAverage ⭐</span>
+                                }
+                                else
+                                {
+                                    <text>Очікується прем'єра</text>
+                                }
                             </div>
                             <ul style="list-style-type: none; padding: 0; display: flex; flex-wrap: wrap;" class="mt-2">
                                 @{
@@ -154,32 +169,70 @@
 
 
     <!-- Premieres Section -->
-    <div class="container mt-5">
-        <h2>Найсвіжіші прем'єри</h2>
-        <div class="row d-flex justify-content-start">
+    <div id="premiereCarousel" class="carousel slide mt-5" data-bs-ride="false">
+        <h2>Скоро у прокаті</h2>
+        <div class="carousel-inner">
             @{
-                var min = Math.Min(3, Model.Count);
-                var topByDate = Model.OrderByDescending(movie => movie.ReleaseDate).Take(min).ToList();
-                for(int i = 0; i < min; i++)
+                var moviesPerSlide = 3;
+                var totalMovies = Model.Premieres.Count;
+                var movieGroups = Model.Premieres.OrderByDescending(movie => movie.ReleaseDate)
+                .Select((movie, index) => new { movie, index })
+                .GroupBy(x => x.index / moviesPerSlide)
+                .ToList();
+
+                for (int i = 0; i < movieGroups.Count; i++)
                 {
-                    var movie = topByDate[i];
-                    <div class="col-md-4 col-sm-6 col-12 mb-3">
-                        <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="text-decoration-none">
-                            <div class="card" style="position: relative;">
-                                <img src="@movie.ImageUrl" class="card-img-top fixed-size" alt="@movie.Title">
-                                <div class="card-body">
-                                    <h5 class="card-title" style="color: white">@movie.Title</h5>
-                                    <h5 class="card-title" style="color: lightgrey;">@movie.ReleaseDate</h5>
+                    var isActive = i == 0 ? "active" : "";
+                    <div class="carousel-item @isActive">
+                        <div class="row d-flex justify-content-start">
+                            @foreach (var item in movieGroups[i])
+                            {
+                                var movie = item.movie;
+                                <div class="col-md-4 col-sm-6 col-12 mb-3">
+                                    <a asp-action="Details" asp-controller="Home" asp-route-id="@movie.Id" class="text-decoration-none">
+                                        <div class="card" style="position: relative;">
+                                            <img src="@movie.ImageUrl" class="card-img-top fixed-size" alt="@movie.Title">
+                                            <div class="card-body">
+                                                <h5 class="card-title" style="color: white">@movie.Title</h5>
+                                                <h5 class="card-title" style="color: lightgrey;">@movie.ReleaseDate</h5>
+                                            </div>
+                                            <h5 class="card-title" style="color: white; position: absolute; bottom: 100px; left: 10px; background-color: rgba(0, 0, 0, 0.6); padding: 5px 10px; border-radius: 5px;">
+                                                @{
+                                                    DateTime? releaseDate = null;
+                                                    DateTime parsedDate;
+                                                    if (DateTime.TryParseExact(movie.ReleaseDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out parsedDate))
+                                                    {
+                                                        releaseDate = parsedDate;
+                                                    }
+                                                }
+                                                @if (releaseDate.HasValue && releaseDate.Value <= DateTime.Today)
+                                                {
+                                                    @movie.VoteAverage <text>⭐</text>
+                                                }
+                                                else
+                                                {
+                                                    <span style="font-weight: bold; font-size: 16px;">Очікується прем'єра</span>
+                                                }
+                                            </h5>
+                                        </div>
+                                    </a>
                                 </div>
-                                <h5 class="card-title" style="color: white; position: absolute; bottom: 100px; left: 10px; background-color: rgba(0, 0, 0, 0.6); padding: 5px 10px; border-radius: 5px;">
-                                    @movie.VoteAverage ⭐
-                                </h5>
-                            </div>
-                        </a>
+                            }
+                        </div>
                     </div>
                 }
             }
         </div>
+
+        <!-- Кнопки керування каруселлю -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#premiereCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Попередній</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#premiereCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Наступний</span>
+        </button>
     </div>
 
     @if (signInManager.IsSignedIn(User))
