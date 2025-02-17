@@ -5,7 +5,6 @@ using BusinessLogic.Interfaces;
 using DataAccess.EntityModels;
 using DataAccess.Interfaces;
 using DataAccess.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogic.Services
 {
@@ -36,7 +35,19 @@ namespace BusinessLogic.Services
 			) ?? new List<Movie>();
 
 			if (onlyReleased)
-				movies = movies.Where(m => m.ReleaseDate.Date < DateTime.Now);
+				movies = movies.Where(m => m.ReleaseDate.Date <= DateTime.Now);
+
+			return _mapper.Map<List<MovieDTO>>(movies);
+		}
+
+		public async Task<IEnumerable<MovieDTO>> GetAllPremieresAsync()
+		{
+			var movies = await _movieRepository.Get(
+				includeProperties: "Actors,Genres",
+				orderBy: q => q.OrderBy(m => m.ReleaseDate)
+			) ?? new List<Movie>();
+
+			movies = movies.Where(m => m.ReleaseDate.Date > DateTime.Now);
 
 			return _mapper.Map<List<MovieDTO>>(movies);
 		}

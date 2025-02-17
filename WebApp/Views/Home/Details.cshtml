@@ -162,7 +162,22 @@
             <div class="col-md-8">
                 <div style="display: flex; align-items: center;">
                     <h1>@Model.Movie.Title</h1>
-                    <h3 class="ms-5">@Model.Movie.VoteAverage ⭐</h3>
+                    @{
+                        DateTime? releaseDate2 = null;
+                        DateTime parsedDate2;
+                        if (DateTime.TryParseExact(@Model.Movie.ReleaseDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out parsedDate2))
+                        {
+                            releaseDate2 = parsedDate2;
+                        }
+                    }
+                    @if (releaseDate2.HasValue && releaseDate2.Value <= DateTime.Today)
+                    {
+                        <h3 class="ms-5">@Model.Movie.VoteAverage ⭐</h3>
+                    }
+                    else
+                    {
+                        <span style="font-weight: bold; font-size: 20px; margin-left: 20px;">Очікується прем'єра</span>
+                    }
                 </div>
                 <br /><br /><br />
                 <h5 class="detail-label">Release Date:</h5>
@@ -228,7 +243,22 @@
                                 <h4 class="card-title p-2 text-center" style="color: white">@title</h4>
                             </div>
                             <h5 class="card-title" style="color: white; position: absolute; bottom: 45px; left: 10px; background-color: rgba(0, 0, 0, 0.6); padding: 5px 10px; border-radius: 5px;">
-                                @movie.VoteAverage ⭐
+                                @{
+                                    DateTime? releaseDate = null;
+                                    DateTime parsedDate;
+                                    if (DateTime.TryParseExact(movie.ReleaseDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out parsedDate))
+                                    {
+                                        releaseDate = parsedDate;
+                                    }
+                                }
+                                @if (releaseDate.HasValue && releaseDate.Value <= DateTime.Today)
+                                {
+                                    <span style="color: white">@movie.VoteAverage ⭐</span>
+                                }
+                                else
+                                {
+                                    <text>Очікується прем'єра</text>
+                                }
                             </h5>
                         </div>
                     </a>
